@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------
 
 #pragma hdrstop
 
@@ -232,6 +232,26 @@ TCHAR ConvertSmbFrom1251 (char smb)
 	{
 		SMB = (TCHAR)(smb);
     }
+
+	return SMB;
+}
+
+
+TCHAR ConvertSmbFromUTF8 (char smb)
+{
+	TCHAR SMB = 0;
+
+	wcscpy(tcutf16, sutf16.c_bstr());
+	BYTE code = smb;
+
+	if (code >=0x90) {
+
+		SMB = (TCHAR)tcutf16[code - 0x90];
+	}
+	else
+	{
+		SMB = (TCHAR)(smb);
+	}
 
 	return SMB;
 }

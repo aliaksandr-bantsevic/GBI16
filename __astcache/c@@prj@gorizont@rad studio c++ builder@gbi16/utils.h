@@ -48,3 +48,4 @@ extern int CreateTextFile_UTF16LEBOM (TCHAR* pszFilePath);
 extern int ConvertTextFile_UTF16LEBOM (TCHAR* pszFilePath);
 extern TCHAR ConvertSmbFrom1251 (char smb);
 extern int CheckTextFile_UTF16LEBOM (TCHAR* pszFilePath);
+extern TCHAR ConvertSmbFromUTF8 (char smb);
