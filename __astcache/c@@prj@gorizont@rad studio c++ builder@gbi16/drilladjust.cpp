@@ -65,6 +65,9 @@ void __fastcall TForm_DrillAdjust::Timer_startTimer(TObject *Sender)
 
 	Timer_start->Enabled = false;
 
+	this->Edit_Input_point->Text = L"0";
+	this->Edit_Output_point->Text = L"0";
+
 	if (mode == 0) {
 
 		this->Button_apply->Caption = L"Добавить";

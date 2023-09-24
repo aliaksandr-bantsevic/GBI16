@@ -1,0 +1,21 @@
+//---------------------------------------------------------------------------
+
+#ifndef DataFileH
+#define DataFileH
+//---------------------------------------------------------------------------
+#endif
+
+#include "defs.h"
+
+class TDataFile {
+
+public:
+
+	TDataFile();
+	~TDataFile();
+
+public:
+
+
+
+};

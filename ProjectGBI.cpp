@@ -10,12 +10,12 @@ USEFORM("PlaceAdjust.cpp", Form_PlaceAdjust);
 USEFORM("MeasAdjust.cpp", Form_MeasAdjust);
 USEFORM("SystemAdjust.cpp", Form_SystemAdjust);
 USEFORM("SensorAdjust.cpp", Form_SensorAdjust);
+USEFORM("Main.cpp", FMain);
 USEFORM("DataEnter.cpp", Form_data_enter);
 USEFORM("DepthAdjust.cpp", Form_DepthAdjust);
-USEFORM("Diagram.cpp", Form_diagram);
 USEFORM("About.cpp", Form_about);
-USEFORM("Main.cpp", FMain);
 USEFORM("ExcelWait.cpp", Form_excel_progress);
+USEFORM("Diagram.cpp", Form_diagram);
 USEFORM("DrillAdjust.cpp", Form_DrillAdjust);
 //---------------------------------------------------------------------------
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)

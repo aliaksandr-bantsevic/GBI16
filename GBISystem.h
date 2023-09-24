@@ -107,7 +107,9 @@ public:
 	int Clear (void);
 	int i_use_side_keyboard;
 	void Collapse(void);
-    TMeas* GetMeasByNode(TTreeNode *node);
+	TMeas* GetMeasByNode(TTreeNode *node);
+
+	int ParsDataFile(TCHAR* tpath);
 };
 
 

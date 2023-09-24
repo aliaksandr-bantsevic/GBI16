@@ -1070,4 +1070,8 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 	return res;
 }
 
+ int TGBISystem::ParsDataFile(TCHAR* tpath)
+ {
 
+	return 0;
+ }

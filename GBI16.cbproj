@@ -152,6 +152,10 @@
             <DependentOn>DataEnter.h</DependentOn>
             <BuildOrder>27</BuildOrder>
         </CppCompile>
+        <CppCompile Include="DataFile.cpp">
+            <DependentOn>DataFile.h</DependentOn>
+            <BuildOrder>29</BuildOrder>
+        </CppCompile>
         <CppCompile Include="DepthAdjust.cpp">
             <Form>Form_DepthAdjust</Form>
             <FormType>dfm</FormType>

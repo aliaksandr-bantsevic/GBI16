@@ -40,6 +40,7 @@
 #include "MeasAdjust.h"
 #include "Diagram.h"
 #include "DataEnter.h"
+#include "DataFile.h"
 
 //---------------------------------------------------------------------------
 class TFMain : public TForm

@@ -637,7 +637,6 @@ int TMeas::SaveData(int par)
 	wcscpy(tdir,dir);
 	wcscat(dir,L".gms");
 
-	CreateTextFile_UTF16LEBOM (dir);
 
 	FILE* f = _wfopen(dir,L"wb");
 	if (f == NULL) {
@@ -657,8 +656,13 @@ int TMeas::SaveData(int par)
 	fclose(f);
 
 	wcscat(tdir,L".txt");
+
+	::DeleteFileW(tdir);
+
 	CreateTextFile_UTF16LEBOM (tdir);
-	FILE* ft = _wfopen(tdir,L"wb");
+
+	FILE* ft = _wfopen(tdir,L"ab");
+
 	if (ft == NULL) {
 
 		ShowMessage(L"Не удалось открыть файл для сохранения данных измерения!");
