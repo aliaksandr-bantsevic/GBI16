@@ -34,7 +34,8 @@ public:
 	int cbuf_idx;
 	char str[1024];
 	int str_idx;
-    TCHAR tbuf[1024];
+	TCHAR tbuf[1024];
+    int tbuf_idx;
 
 public:
 

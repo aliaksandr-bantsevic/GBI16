@@ -244,14 +244,18 @@ TCHAR ConvertSmbFromUTF8 (char smb)
 	wcscpy(tcutf16, sutf16.c_bstr());
 	BYTE code = smb;
 
-	if (code >=0x90) {
+	if ((code >=0x90)&&(code <=0xbf)) {
 
 		SMB = (TCHAR)tcutf16[code - 0x90];
 	}
-	else
-	{
-		SMB = (TCHAR)(smb);
-	}
+	else if ((code >=0x80)&&(code <=0x8f)) {
+
+			SMB = (TCHAR)tcutf16[code - 0x80 + 48];
+		 }
+		 else
+		{
+			SMB = (TCHAR)(smb);
+		}
 
 	return SMB;
 }

@@ -375,7 +375,7 @@ object FMain: TFMain
           object Panel_meas_table: TPanel
             Left = 0
             Top = 0
-            Width = 1146
+            Width = 1142
             Height = 493
             Align = alClient
             Caption = #1042#1067#1041#1045#1056#1048#1058#1045' '#1048#1047#1052#1045#1056#1045#1053#1048#1045' '#1042' '#1044#1045#1056#1045#1042#1045' '#1057#1048#1057#1058#1045#1052#1067
@@ -383,7 +383,7 @@ object FMain: TFMain
             object StringGrid_meas: TStringGrid
               Left = 1
               Top = 1
-              Width = 1144
+              Width = 1140
               Height = 491
               Align = alClient
               Font.Charset = RUSSIAN_CHARSET
@@ -405,7 +405,7 @@ object FMain: TFMain
           object Panel_charts_v: TPanel
             Left = 0
             Top = 0
-            Width = 1146
+            Width = 1142
             Height = 493
             Align = alClient
             Caption = 'Panel_charts_v'
@@ -1101,8 +1101,8 @@ object FMain: TFMain
               ParentFont = False
             end
             object Button_record: TButton
-              Left = 2
-              Top = 4
+              Left = 292
+              Top = 12
               Width = 430
               Height = 241
               Caption = #1047#1040#1055#1048#1057#1068
@@ -1294,8 +1294,8 @@ object FMain: TFMain
           object ListBox_Console: TListBox
             Left = 0
             Top = 0
-            Width = 1146
-            Height = 233
+            Width = 1142
+            Height = 232
             Align = alClient
             Color = clInfoBk
             ItemHeight = 18
