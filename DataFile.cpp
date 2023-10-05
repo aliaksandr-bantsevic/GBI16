@@ -71,13 +71,7 @@ int TDataFile::GetStr(void)
 
 	while (fread(&c,1,1,file))
 	{
-		cbuf[cbuf_idx] = c;  cbuf_idx++;
-
-
-		if (((BYTE)c != 0xd0)&&((BYTE)c != 0xd1))
-		{
-			tbuf [tbuf_idx] = ConvertSmbFromUTF8 (c) ;  tbuf_idx++;
-		}
+		cbuf[cbuf_idx++] = c;
 
 		if ((cbuf[cbuf_idx-2] == '\r') && (cbuf[cbuf_idx-1] == '\n'))
 		{
@@ -85,6 +79,12 @@ int TDataFile::GetStr(void)
 			break;
 		}
    }
+
+
+   memset(tbuf,0,sizeof(tbuf));
+   tbuf_idx = 0;
+
+   ConvertStrUTF8ToUtf16 (cbuf, tbuf, cbuf_idx);
 
    return res;
 }

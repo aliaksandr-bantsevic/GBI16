@@ -1978,7 +1978,11 @@ void __fastcall TFMain::ToolButton_testClick(TObject *Sender)
 TDataFile df;
 
 df.OpenFile(L"c:\\Prj\\Gorizont\\RAD Studio C++ Builder\\GBI16\\Win32\\Debug\\Data\\IZDAT.CSV");
+
 df.CheckFile();
+
+while (df.GetStr() == 0);
+
 
 
 return;

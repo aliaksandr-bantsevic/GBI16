@@ -244,14 +244,24 @@ TCHAR ConvertSmbFromUTF8 (char smb)
 	wcscpy(tcutf16, sutf16.c_bstr());
 	BYTE code = smb;
 
-	if (code >=0x90) {
+	if ((code >=0x90)&&(code <=0xbf))
+	{
 
 		SMB = (TCHAR)tcutf16[code - 0x90];
 	}
-	else
-	{
-		SMB = (TCHAR)(smb);
-	}
+	else if ((code >=0x80)&&(code <=0x8f))
+		 {
+
+			SMB = (TCHAR)tcutf16[code - 0x80 + 48];
+		 }
+		 else if (code == 0x22)
+			  {
+				SMB = (TCHAR)'"';
+			  }
+			  else
+			  {
+				SMB = (TCHAR)(smb);
+			  }
 
 	return SMB;
 }
@@ -300,3 +310,169 @@ int CheckTextFile_UTF16LEBOM (TCHAR* pszFilePath)
 
 	return res;
 }
+
+
+int ConvertStrUTF8ToUtf16 (char* strU8, TCHAR* strU16, int U8_len)
+{
+	int i = 0;
+    unsigned long uni;
+	int todo = 0;
+	bool error = false;
+	unsigned char ch = 0;
+
+	unsigned long unicode [1024];
+	int uidx = 0;
+
+	while (i < U8_len)
+	{
+		ch = strU8[i++];
+
+		if (ch <= 0x7F)
+		{
+			uni = ch;
+			todo = 0;
+		}
+		else if (ch <= 0xBF)
+		{
+			return -1; //throw std::logic_error("not a UTF-8 string");
+		}
+		else if (ch <= 0xDF)
+		{
+			uni = ch&0x1F;
+			todo = 1;
+		}
+		else if (ch <= 0xEF)
+		{
+			uni = ch&0x0F;
+			todo = 2;
+		}
+		else if (ch <= 0xF7)
+		{
+			uni = ch&0x07;
+			todo = 3;
+		}
+		else
+		{
+			return -1; //throw std::logic_error("not a UTF-8 string");
+		}
+
+		for (int j = 0; j < todo; ++j)
+		{
+			if (i == U8_len)
+				return -1; //throw std::logic_error("not a UTF-8 string");
+			unsigned char ch1 = strU8[i++];
+			if (ch1 < 0x80 || ch1 > 0xBF)
+				return -1; //throw std::logic_error("not a UTF-8 string");
+			uni <<= 6;
+			uni += ch1 & 0x3F;
+		}
+
+		if (uni >= 0xD800 && uni <= 0xDFFF)
+			return -1; //throw std::logic_error("not a UTF-8 string");
+		if (uni > 0x10FFFF)
+			return -1; //throw std::logic_error("not a UTF-8 string");
+
+		unicode[uidx++] = uni;
+	}
+
+	TCHAR utf16[1024];
+	int utf16_idx = 0;
+
+	for (int i = 0; i < uidx; ++i)
+	{
+		unsigned long uni1 = unicode[i];
+
+		if (uni1 <= 0xFFFF)
+        {
+			utf16 [utf16_idx++] = (TCHAR)uni1;
+		}
+		else
+		{
+			uni1 -= 0x10000;
+			utf16 [utf16_idx++] = (TCHAR)((uni1 >> 10) + 0xD800);
+			utf16 [utf16_idx++] = (TCHAR)((uni1 & 0x3FF) + 0xDC00);
+        }
+	}
+
+	wcscpy(strU16, utf16);
+
+	return 0;
+}
+
+/*
+
+std::wstring utf8_to_utf16(const std::string& utf8)
+{
+    std::vector<unsigned long> unicode;
+    size_t i = 0;
+	while (i < utf8.size())
+	{
+		unsigned long uni;
+		size_t todo;
+		bool error = false;
+		unsigned char ch = utf8[i++];
+		if (ch <= 0x7F)
+		{
+			uni = ch;
+			todo = 0;
+		}
+		else if (ch <= 0xBF)
+		{
+			throw std::logic_error("not a UTF-8 string");
+		}
+		else if (ch <= 0xDF)
+		{
+			uni = ch&0x1F;
+			todo = 1;
+		}
+		else if (ch <= 0xEF)
+		{
+			uni = ch&0x0F;
+			todo = 2;
+		}
+		else if (ch <= 0xF7)
+		{
+			uni = ch&0x07;
+			todo = 3;
+		}
+		else
+		{
+			throw std::logic_error("not a UTF-8 string");
+		}
+		for (size_t j = 0; j < todo; ++j)
+		{
+			if (i == utf8.size())
+				throw std::logic_error("not a UTF-8 string");
+			unsigned char ch = utf8[i++];
+			if (ch < 0x80 || ch > 0xBF)
+				throw std::logic_error("not a UTF-8 string");
+			uni <<= 6;
+			uni += ch & 0x3F;
+		}
+		if (uni >= 0xD800 && uni <= 0xDFFF)
+			throw std::logic_error("not a UTF-8 string");
+		if (uni > 0x10FFFF)
+			throw std::logic_error("not a UTF-8 string");
+		unicode.push_back(uni);
+	}
+	std::wstring utf16;
+	for (size_t i = 0; i < unicode.size(); ++i)
+	{
+		unsigned long uni = unicode[i];
+		if (uni <= 0xFFFF)
+        {
+            utf16 += (wchar_t)uni;
+        }
+        else
+        {
+            uni -= 0x10000;
+            utf16 += (wchar_t)((uni >> 10) + 0xD800);
+            utf16 += (wchar_t)((uni & 0x3FF) + 0xDC00);
+        }
+    }
+    return utf16;
+}
+
+
+
+*/
