@@ -20,6 +20,20 @@ typedef struct {
 } data_file_record;
 
 
+/*
+Объект; Место; Дата; Направление; Позиция; X; Y;
+*/
+
+#define 	w_undef 	0
+#define 	w_place     1
+#define 	w_drill     2
+#define 	w_date      3
+#define 	w_direction 4
+#define 	w_position  5
+#define 	w_X         6
+#define 	w_Y         7
+
+
 class TDataFile {
 
 public:
@@ -35,12 +49,17 @@ public:
 	char str[1024];
 	int str_idx;
 	TCHAR tbuf[1024];
-    int tbuf_idx;
+	int tbuf_idx;
+	int pars_pos;
+	TCHAR tword[1024];
+	int tword_idx;
+	int tbuf_pars_idx;
 
 public:
 
 	int OpenFile(TCHAR* tdir);
 	int CheckFile(void);
 	void Close(void);
-    int GetStr();
+	int GetStr();
+	int GetWord(void);
 };

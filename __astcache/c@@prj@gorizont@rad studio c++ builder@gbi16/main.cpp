@@ -1975,14 +1975,72 @@ void __fastcall TFMain::Chart_y_hDblClick(TObject *Sender)
 void __fastcall TFMain::ToolButton_testClick(TObject *Sender)
 {
 
+	TCHAR tc1[64];
+	TCHAR tc2[64];
+
+
+
+	memset(tc1,0,sizeof(tc1));
+	memset(tc2,0,sizeof(tc2));
+
+	wcscpy(tc1,L" 15м  ");
+
+	int j = 0;
+
+	for (int i = 0; i < wcslen(tc1); i++) {
+
+		if ((tc1[i]!=' ')&&(tc1[i]!='м')&&(tc1[i]!='″'))
+		{
+			tc2[j++] = tc1 [i];
+		}
+
+	}
+
+	WideString ws = tc1;
+
+	double dd = 0.;
+
+	dd = ws.ToDouble();
+
+	return;
+
+/*
+
+				TDateTime t = 0.;
+				TFormatSettings FS;
+				FS.DateSeparator = '.';
+				FS.ShortDateFormat = "dd.mm.yyyy";
+				FS.LongTimeFormat = "hh:nn:ss";
+				FS.TimeSeparator = ':';
+
+				UnicodeString us = L"11.08.2023 14:21:06";
+
+				t = StrToDateTime(us, FS);
+				WideString ws;
+
+				ws = FormatDateTime(L"yyyy.dd.mm hh:nn:ss",t);
+
+				Sleep(1);
+
+return;
+*/
+
 TDataFile df;
 
 df.OpenFile(L"c:\\Prj\\Gorizont\\RAD Studio C++ Builder\\GBI16\\Win32\\Debug\\Data\\IZDAT.CSV");
 
 df.CheckFile();
 
-while (df.GetStr() == 0);
+	//while (df.GetStr() == 0)
+	//{
+	//	while (df.GetWord() == 0);
+	//
+	//}
 
+	while (df.GetStr() == 0)
+	{
+		while (df.GetWord() ==0);
+	}
 
 
 return;

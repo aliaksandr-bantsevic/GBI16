@@ -64,8 +64,13 @@ int TDataFile::GetStr(void)
     int res = -1;
 	cbuf_idx = 0;
 	tbuf_idx = 0;
+	tword_idx = 0;
+	pars_pos = w_undef;
+	tbuf_pars_idx = 0;
 
 	memset(cbuf,0,1024);
+	memset(tbuf,0,sizeof(tbuf));
+	memset(tword,0,sizeof(tword));
 
 	char c;
 
@@ -86,6 +91,8 @@ int TDataFile::GetStr(void)
 
    ConvertStrUTF8ToUtf16 (cbuf, tbuf, cbuf_idx);
 
+   tbuf_idx = wcslen(tbuf);
+
    return res;
 }
 
@@ -97,3 +104,80 @@ void TDataFile::Close(void)
 	str_idx = 0;
 	memset(str,0,1024);
 }
+
+int TDataFile::GetWord(void)
+{
+
+   TCHAR tsym = 0;
+   bool wcor = false;
+
+   memset(tword,0,sizeof(tword));
+   tword_idx = 0;
+
+   while (tbuf_pars_idx<tbuf_idx)
+   {
+	  tsym =tbuf [tbuf_pars_idx++];
+
+	  if (tsym == (TCHAR)';')
+	  {
+		  wcor = true;
+		  break;
+	  }
+	  else
+	  {
+		  tword [tword_idx++] = tsym;
+      }
+   }
+
+   if (wcor == true)
+   {
+		 pars_pos++;
+
+		 //switch (pars_pos)
+		 if (pars_pos == 3)
+		 {
+
+			//case w_date:
+
+				TDateTime t = 0.;
+				TFormatSettings FS;
+				FS.DateSeparator = '.';
+				FS.ShortDateFormat = "dd.mm.yyyy";
+				FS.LongTimeFormat = "hh:nn:ss";
+				FS.TimeSeparator = ':';
+
+				try
+				{
+
+					t = StrToDateTime((UnicodeString)tword, FS);
+					WideString ws;
+
+					ws = FormatDateTime(L"yyy.dd.mm hh:nn:ss",t);
+
+					Sleep(1);
+				}
+				catch(...)
+				{
+
+				}
+
+			//break;
+
+			//default:
+			//	return -2;
+
+		 }
+
+
+
+		 return 0;
+   }
+   else
+   {
+		 return -1;
+   }
+
+}
+
+
+
