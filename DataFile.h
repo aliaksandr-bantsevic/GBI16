@@ -7,17 +7,32 @@
 
 #include "defs.h"
 
+#define DATA_FILE_RECORD_CNT_MAX 	1000
+#define DATA_FILE_MEAS_CNT_MAX 		100
+
 typedef struct {
 
+    int         idx;
 	WideString 	place;
 	WideString 	drill;
-	TDateTime   tcreated;
-	int 		dir;
+	TDateTime   time;
+	WideString 	dir;
 	double      level;
 	double      X;
-    double      Y;
+	double      Y;
 
-} data_file_record;
+} data_file_record_type;
+
+
+typedef struct {
+
+	WideString 						place;
+	WideString 						drill;
+	TDateTime   					time;
+	int         					record_cnt;
+	data_file_record_type record 	[DATA_FILE_RECORD_CNT_MAX];
+
+} data_file_meas_type;
 
 
 /*
@@ -54,6 +69,12 @@ public:
 	TCHAR tword[1024];
 	int tword_idx;
 	int tbuf_pars_idx;
+    int pars_str_res;
+	data_file_record_type data_file_record;
+	data_file_meas_type* data_file_meas_set[DATA_FILE_MEAS_CNT_MAX];
+	int data_file_meas_set_idx;
+	int data_file_meas_set_idx_cur;
+	data_file_meas_type* data_file_meas_ptr_cur;
 
 public:
 
@@ -62,4 +83,11 @@ public:
 	void Close(void);
 	int GetStr();
 	int GetWord(void);
+	int GetSpar(void);
+	int GetTpar(void);
+	int GetDpar(void);
+
+	double d_par;
+	TDateTime t_par;
+	WideString s_par;
 };

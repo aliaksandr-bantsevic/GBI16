@@ -1975,35 +1975,6 @@ void __fastcall TFMain::Chart_y_hDblClick(TObject *Sender)
 void __fastcall TFMain::ToolButton_testClick(TObject *Sender)
 {
 
-	TCHAR tc1[64];
-	TCHAR tc2[64];
-
-
-
-	memset(tc1,0,sizeof(tc1));
-	memset(tc2,0,sizeof(tc2));
-
-	wcscpy(tc1,L" 15м  ");
-
-	int j = 0;
-
-	for (int i = 0; i < wcslen(tc1); i++) {
-
-		if ((tc1[i]!=' ')&&(tc1[i]!='м')&&(tc1[i]!='″'))
-		{
-			tc2[j++] = tc1 [i];
-		}
-
-	}
-
-	WideString ws = tc1;
-
-	double dd = 0.;
-
-	dd = ws.ToDouble();
-
-	return;
-
 /*
 
 				TDateTime t = 0.;

@@ -67,6 +67,7 @@ int TDataFile::GetStr(void)
 	tword_idx = 0;
 	pars_pos = w_undef;
 	tbuf_pars_idx = 0;
+	pars_str_res = 0;
 
 	memset(cbuf,0,1024);
 	memset(tbuf,0,sizeof(tbuf));
@@ -133,51 +134,141 @@ int TDataFile::GetWord(void)
    {
 		 pars_pos++;
 
-		 //switch (pars_pos)
-		 if (pars_pos == 3)
+		 if (pars_pos == 1)
 		 {
-
-			//case w_date:
-
-				TDateTime t = 0.;
-				TFormatSettings FS;
-				FS.DateSeparator = '.';
-				FS.ShortDateFormat = "dd.mm.yyyy";
-				FS.LongTimeFormat = "hh:nn:ss";
-				FS.TimeSeparator = ':';
-
-				try
-				{
-
-					t = StrToDateTime((UnicodeString)tword, FS);
-					WideString ws;
-
-					ws = FormatDateTime(L"yyy.dd.mm hh:nn:ss",t);
-
-					Sleep(1);
-				}
-				catch(...)
-				{
-
-				}
-
-			//break;
-
-			//default:
-			//	return -2;
-
+			 pars_str_res += GetSpar();
+			 data_file_record.place = s_par;
 		 }
 
+		 if (pars_pos == 2)
+		 {
+			 pars_str_res += GetSpar();
+			 data_file_record.drill = s_par;
+		 }
 
+		 if (pars_pos == 3)
+		 {
+			 pars_str_res += GetTpar();
+			 data_file_record.time = t_par;
+		 }
 
-		 return 0;
+		 if (pars_pos == 4)
+		 {
+			 pars_str_res += GetSpar();
+			 data_file_record.dir = s_par;
+		 }
+
+		 if (pars_pos == 5)
+		 {
+			 pars_str_res += GetDpar();
+			 data_file_record.level = d_par;
+		 }
+
+		 if (pars_pos == 6)
+		 {
+			 pars_str_res += GetDpar();
+			 data_file_record.X = d_par;
+		 }
+
+		 if (pars_pos == 7)
+		 {
+			 pars_str_res += GetDpar();
+			 data_file_record.Y = d_par;
+
+			 if (pars_str_res == 0)
+			 {
+				 Sleep(1);
+			 }
+			 else
+			 {
+				 Sleep(1);
+			 }
+		 }
+
    }
    else
    {
-		 return -1;
+	   return -1; //str pars problem
    }
 
+   return 0;
 }
 
+ int TDataFile::GetSpar(void)
+ {
 
+	TCHAR tc[1024];
+	memset(tc,0,1024);
 
+	int j = 0;
+
+	//remove spaces
+	for (int i = 0; i < wcslen(tword); i++)
+	{
+		if (tword[i] != ' ')
+		{
+		   tc [j++] = tword [i];
+		}
+	}
+
+	s_par = tc;
+	return 0;
+ }
+
+ int TDataFile::GetTpar(void)
+ {
+
+	TFormatSettings FS;
+	FS.DateSeparator = '.';
+	FS.ShortDateFormat = "dd.mm.yyyy";
+	FS.LongTimeFormat = "hh:nn:ss";
+	FS.TimeSeparator = ':';
+
+	try
+	{
+		t_par = StrToDateTime((UnicodeString)tword, FS);
+	}
+	catch(...)
+	{
+		return -1; //bad date_time format
+	}
+
+	return 0;
+}
+
+int TDataFile::GetDpar(void)
+ {
+
+	TCHAR tc[1024];
+	memset(tc,0,1024);
+
+	int j = 0;
+
+	//filter digit symbols
+	for (int i = 0; i < wcslen(tword); i++)
+	{
+		if (
+			(tword[i] == '0')||(tword[i] == '1')||(tword[i] == '2')||
+			(tword[i] == '3')||(tword[i] == '4')||(tword[i] == '5')||
+			(tword[i] == '6')||(tword[i] == '7')||(tword[i] == '8')||
+			(tword[i] == '9')||(tword[i] == '.')
+		)
+		{
+		   tc [j++] = tword [i];
+		}
+	}
+
+	WideString ws;
+	ws = tc;
+
+	try
+	{
+		d_par = ws.ToDouble();
+	}
+	catch (...)
+	{
+		return -1;
+	}
+
+	return 0;
+}
