@@ -792,9 +792,12 @@ int TGBISystem::OpenConf (TOpenDialog* dlg)
 	 dlg->InitialDir = SysConfMgr.GetCurConfFoldPath();
 	 dlg->Filter = L"*.ini|*.ini";
 	 
-	 wcscpy((TCHAR*)dlg->FileName.data(), SysConfMgr.cur_conf_name);
+	 //wcscpy((TCHAR*)dlg->FileName.data(), SysConfMgr.cur_conf_name);
 
-	 dlg->FileName = L"Пока не работает!";
+	 //dlg->FileName = L"Пока не работает!";
+
+	 dlg->FileName = SysConfMgr.cur_conf_name ;
+
 
 	 dlg->Title = L"Открыть конфигурацию";
 	 if (dlg->Execute()!=IDOK) return -1;
