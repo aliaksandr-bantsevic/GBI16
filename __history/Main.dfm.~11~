@@ -2,8 +2,8 @@ object FMain: TFMain
   Left = 0
   Top = 0
   Caption = 'GorizontMaster'
-  ClientHeight = 900
-  ClientWidth = 1571
+  ClientHeight = 895
+  ClientWidth = 1551
   Color = clBtnFace
   TransparentColorValue = clBlue
   Font.Charset = RUSSIAN_CHARSET
@@ -146,24 +146,22 @@ object FMain: TFMain
     0000000000000000000000000000000000000000000000000000000000000000
     0000000000000000000000000000000000000000000000000000000000000000
     000000000000000000000000000000000000000000000000000000000000}
-  OldCreateOrder = True
   Visible = True
   WindowState = wsMaximized
   OnDestroy = FormDestroy
-  PixelsPerInch = 96
   TextHeight = 18
   object Splitter1: TSplitter
     Left = 401
     Top = 70
     Width = 4
-    Height = 804
+    Height = 799
     ResizeStyle = rsUpdate
     ExplicitHeight = 797
   end
   object MStatusBar: TStatusBar
     Left = 0
-    Top = 874
-    Width = 1571
+    Top = 869
+    Width = 1551
     Height = 26
     BorderWidth = 2
     Panels = <
@@ -186,7 +184,7 @@ object FMain: TFMain
   object MToolBar: TToolBar
     Left = 0
     Top = 0
-    Width = 1571
+    Width = 1551
     Height = 70
     ButtonHeight = 71
     ButtonWidth = 103
@@ -308,14 +306,14 @@ object FMain: TFMain
     Left = 0
     Top = 70
     Width = 401
-    Height = 804
+    Height = 799
     Align = alLeft
     TabOrder = 2
     object TreeView_system: TTreeView
       Left = 1
       Top = 1
       Width = 399
-      Height = 802
+      Height = 797
       Align = alClient
       BorderWidth = 1
       Color = clInfoBk
@@ -341,14 +339,14 @@ object FMain: TFMain
   object Panel2: TPanel
     Left = 405
     Top = 70
-    Width = 1166
-    Height = 804
+    Width = 1146
+    Height = 799
     Align = alClient
     TabOrder = 3
     object Splitter2: TSplitter
       Left = 1
       Top = 529
-      Width = 1164
+      Width = 1144
       Height = 4
       Cursor = crVSplit
       Align = alTop
@@ -358,14 +356,14 @@ object FMain: TFMain
     object Panel_work_area: TPanel
       Left = 1
       Top = 1
-      Width = 1164
+      Width = 1144
       Height = 528
       Align = alTop
       TabOrder = 0
       object MPageControl: TPageControl
         Left = 1
         Top = 1
-        Width = 1162
+        Width = 1142
         Height = 526
         ActivePage = TabSheet_charts
         Align = alClient
@@ -374,14 +372,10 @@ object FMain: TFMain
           Caption = #1044#1072#1085#1085#1099#1077
           ImageIndex = 1
           OnShow = TabSheet_meas_tableShow
-          ExplicitLeft = 0
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           object Panel_meas_table: TPanel
             Left = 0
             Top = 0
-            Width = 1158
+            Width = 1134
             Height = 493
             Align = alClient
             Caption = #1042#1067#1041#1045#1056#1048#1058#1045' '#1048#1047#1052#1045#1056#1045#1053#1048#1045' '#1042' '#1044#1045#1056#1045#1042#1045' '#1057#1048#1057#1058#1045#1052#1067
@@ -389,7 +383,7 @@ object FMain: TFMain
             object StringGrid_meas: TStringGrid
               Left = 1
               Top = 1
-              Width = 1156
+              Width = 1132
               Height = 491
               Align = alClient
               Font.Charset = RUSSIAN_CHARSET
@@ -408,14 +402,10 @@ object FMain: TFMain
           Caption = #1043#1088#1072#1092#1080#1082#1080
           ImageIndex = 2
           OnShow = TabSheet_charts_vShow
-          ExplicitLeft = 0
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           object Panel_charts_v: TPanel
             Left = 0
             Top = 0
-            Width = 1158
+            Width = 1134
             Height = 493
             Align = alClient
             Caption = 'Panel_charts_v'
@@ -585,7 +575,7 @@ object FMain: TFMain
           object Panel_chats: TPanel
             Left = 0
             Top = 0
-            Width = 1154
+            Width = 1134
             Height = 493
             Align = alClient
             Caption = 'Panel_chats'
@@ -593,7 +583,7 @@ object FMain: TFMain
             object Panel_chartx_h: TPanel
               Left = 1
               Top = 1
-              Width = 1152
+              Width = 1132
               Height = 249
               Align = alTop
               Caption = 'Panel_chartx_h'
@@ -601,7 +591,7 @@ object FMain: TFMain
               object Splitter6: TSplitter
                 Left = 1
                 Top = 245
-                Width = 1150
+                Width = 1130
                 Height = 3
                 Cursor = crVSplit
                 Align = alBottom
@@ -611,7 +601,7 @@ object FMain: TFMain
               object Chart_x_h: TChart
                 Left = 1
                 Top = 1
-                Width = 1150
+                Width = 1130
                 Height = 244
                 MarginLeft = 2
                 MarginRight = 1
@@ -657,6 +647,7 @@ object FMain: TFMain
                   42)
                 ColorPaletteIndex = 13
                 object Series1: THorizLineSeries
+                  HoverElement = [heCurrent]
                   ColorEachLine = False
                   Brush.BackColor = clDefault
                   DrawStyle = dsCurve
@@ -672,6 +663,7 @@ object FMain: TFMain
                   YValues.Order = loNone
                 end
                 object Series2: TLineSeries
+                  HoverElement = [heCurrent]
                   Brush.BackColor = clDefault
                   Pointer.InflateMargins = True
                   Pointer.Style = psRectangle
@@ -683,6 +675,7 @@ object FMain: TFMain
                   YValues.Order = loNone
                 end
                 object Series3: TLineSeries
+                  HoverElement = [heCurrent]
                   Brush.BackColor = clDefault
                   Pointer.InflateMargins = True
                   Pointer.Style = psRectangle
@@ -694,6 +687,7 @@ object FMain: TFMain
                   YValues.Order = loNone
                 end
                 object Series4: TLineSeries
+                  HoverElement = [heCurrent]
                   Brush.BackColor = clDefault
                   Pointer.InflateMargins = True
                   Pointer.Style = psRectangle
@@ -704,6 +698,7 @@ object FMain: TFMain
                   YValues.Order = loNone
                 end
                 object Series5: TLineSeries
+                  HoverElement = [heCurrent]
                   Brush.BackColor = clDefault
                   Pointer.InflateMargins = True
                   Pointer.Style = psRectangle
@@ -714,6 +709,7 @@ object FMain: TFMain
                   YValues.Order = loNone
                 end
                 object Series6: TLineSeries
+                  HoverElement = [heCurrent]
                   Brush.BackColor = clDefault
                   Pointer.InflateMargins = True
                   Pointer.Style = psRectangle
@@ -724,6 +720,7 @@ object FMain: TFMain
                   YValues.Order = loNone
                 end
                 object Series7: TLineSeries
+                  HoverElement = [heCurrent]
                   Brush.BackColor = clDefault
                   Pointer.InflateMargins = True
                   Pointer.Style = psRectangle
@@ -734,6 +731,7 @@ object FMain: TFMain
                   YValues.Order = loNone
                 end
                 object Series8: TLineSeries
+                  HoverElement = [heCurrent]
                   Brush.BackColor = clDefault
                   Pointer.InflateMargins = True
                   Pointer.Style = psRectangle
@@ -744,6 +742,7 @@ object FMain: TFMain
                   YValues.Order = loNone
                 end
                 object Series9: TLineSeries
+                  HoverElement = [heCurrent]
                   Brush.BackColor = clDefault
                   Pointer.InflateMargins = True
                   Pointer.Style = psRectangle
@@ -754,6 +753,7 @@ object FMain: TFMain
                   YValues.Order = loNone
                 end
                 object Series10: TLineSeries
+                  HoverElement = [heCurrent]
                   Brush.BackColor = clDefault
                   Pointer.InflateMargins = True
                   Pointer.Style = psRectangle
@@ -764,6 +764,7 @@ object FMain: TFMain
                   YValues.Order = loNone
                 end
                 object Series21: TLineSeries
+                  HoverElement = [heCurrent]
                   Selected.Hover.Visible = False
                   Brush.BackColor = clDefault
                   LinePen.Color = 9300723
@@ -780,7 +781,7 @@ object FMain: TFMain
             object Panel_charty_h: TPanel
               Left = 1
               Top = 250
-              Width = 1152
+              Width = 1132
               Height = 242
               Align = alClient
               Caption = 'Panel_charty_h'
@@ -788,7 +789,7 @@ object FMain: TFMain
               object Chart_y_h: TChart
                 Left = 1
                 Top = 1
-                Width = 1150
+                Width = 1130
                 Height = 240
                 MarginLeft = 2
                 MarginRight = 1
@@ -835,6 +836,7 @@ object FMain: TFMain
                   40)
                 ColorPaletteIndex = 13
                 object Series11: TLineSeries
+                  HoverElement = [heCurrent]
                   Selected.Hover.Visible = False
                   Brush.BackColor = clDefault
                   LinePen.Color = 10708548
@@ -848,6 +850,7 @@ object FMain: TFMain
                   YValues.Order = loNone
                 end
                 object Series12: TLineSeries
+                  HoverElement = [heCurrent]
                   Selected.Hover.Visible = False
                   Brush.BackColor = clDefault
                   LinePen.Color = 3513587
@@ -861,6 +864,7 @@ object FMain: TFMain
                   YValues.Order = loNone
                 end
                 object Series13: TLineSeries
+                  HoverElement = [heCurrent]
                   Selected.Hover.Visible = False
                   Brush.BackColor = clDefault
                   LinePen.Color = 1330417
@@ -874,6 +878,7 @@ object FMain: TFMain
                   YValues.Order = loNone
                 end
                 object Series14: TLineSeries
+                  HoverElement = [heCurrent]
                   Selected.Hover.Visible = False
                   Brush.BackColor = clDefault
                   LinePen.Color = 11048782
@@ -887,6 +892,7 @@ object FMain: TFMain
                   YValues.Order = loNone
                 end
                 object Series15: TLineSeries
+                  HoverElement = [heCurrent]
                   Selected.Hover.Visible = False
                   Brush.BackColor = clDefault
                   LinePen.Color = 7028779
@@ -900,6 +906,7 @@ object FMain: TFMain
                   YValues.Order = loNone
                 end
                 object Series16: TLineSeries
+                  HoverElement = [heCurrent]
                   Selected.Hover.Visible = False
                   Brush.BackColor = clDefault
                   LinePen.Color = 6519581
@@ -913,6 +920,7 @@ object FMain: TFMain
                   YValues.Order = loNone
                 end
                 object Series17: TLineSeries
+                  HoverElement = [heCurrent]
                   Selected.Hover.Visible = False
                   Brush.BackColor = clDefault
                   LinePen.Color = 919731
@@ -926,6 +934,7 @@ object FMain: TFMain
                   YValues.Order = loNone
                 end
                 object Series18: TLineSeries
+                  HoverElement = [heCurrent]
                   Selected.Hover.Visible = False
                   Brush.BackColor = clDefault
                   LinePen.Color = 6144242
@@ -939,6 +948,7 @@ object FMain: TFMain
                   YValues.Order = loNone
                 end
                 object Series19: TLineSeries
+                  HoverElement = [heCurrent]
                   Selected.Hover.Visible = False
                   Brush.BackColor = clDefault
                   LinePen.Color = 10401629
@@ -952,6 +962,7 @@ object FMain: TFMain
                   YValues.Order = loNone
                 end
                 object Series20: TLineSeries
+                  HoverElement = [heCurrent]
                   Selected.Hover.Visible = False
                   Brush.BackColor = clDefault
                   LinePen.Color = 7368816
@@ -965,6 +976,7 @@ object FMain: TFMain
                   YValues.Order = loNone
                 end
                 object Series22: TLineSeries
+                  HoverElement = [heCurrent]
                   Selected.Hover.Visible = False
                   Brush.BackColor = clDefault
                   LinePen.Color = 9300723
@@ -986,15 +998,15 @@ object FMain: TFMain
     object Panel_console_meas_control: TPanel
       Left = 1
       Top = 533
-      Width = 1164
-      Height = 270
+      Width = 1144
+      Height = 265
       Align = alClient
       TabOrder = 1
       object LPageControl_console: TPageControl
         Left = 1
         Top = 1
-        Width = 1162
-        Height = 268
+        Width = 1142
+        Height = 263
         ActivePage = TabSheet_meas_control
         Align = alClient
         TabOrder = 0
@@ -1004,8 +1016,8 @@ object FMain: TFMain
           object Panel_meas_control: TPanel
             Left = 0
             Top = 0
-            Width = 1154
-            Height = 235
+            Width = 1134
+            Height = 230
             Align = alClient
             Color = clInfoBk
             ParentBackground = False
@@ -1089,7 +1101,7 @@ object FMain: TFMain
               ParentFont = False
             end
             object Button_record: TButton
-              Left = 2
+              Left = 0
               Top = 4
               Width = 430
               Height = 241
@@ -1279,15 +1291,11 @@ object FMain: TFMain
         object TabSheet_console: TTabSheet
           Caption = #1046#1091#1088#1085#1072#1083
           ImageIndex = 2
-          ExplicitLeft = 0
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           object ListBox_Console: TListBox
             Left = 0
             Top = 0
-            Width = 1158
-            Height = 236
+            Width = 1134
+            Height = 230
             Align = alClient
             Color = clInfoBk
             ItemHeight = 18

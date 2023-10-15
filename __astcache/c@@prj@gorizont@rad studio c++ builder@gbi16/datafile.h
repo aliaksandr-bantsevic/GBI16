@@ -86,8 +86,15 @@ public:
 	int GetSpar(void);
 	int GetTpar(void);
 	int GetDpar(void);
+	int AcceptDaTaFileRecord();
+	int GetDaTaFileMeasIdx(void);
+    int AcceptDaTaFileMeasRecord(void);
+	int ParsDaTaFile(TCHAR* tdir);
 
 	double d_par;
 	TDateTime t_par;
 	WideString s_par;
+
+    bool pars_en;
+
 };

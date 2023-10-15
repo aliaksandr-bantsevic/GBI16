@@ -137,45 +137,52 @@ int TDataFile::GetWord(void)
 		 if (pars_pos == 1)
 		 {
 			 pars_str_res += GetSpar();
+			 data_file_record.place = s_par;
 		 }
 
 		 if (pars_pos == 2)
 		 {
 			 pars_str_res += GetSpar();
+			 data_file_record.drill = s_par;
 		 }
 
 		 if (pars_pos == 3)
 		 {
 			 pars_str_res += GetTpar();
+			 data_file_record.time = t_par;
 		 }
 
 		 if (pars_pos == 4)
 		 {
 			 pars_str_res += GetSpar();
+			 data_file_record.dir = s_par;
 		 }
 
 		 if (pars_pos == 5)
 		 {
 			 pars_str_res += GetDpar();
+			 data_file_record.level = d_par;
 		 }
 
 		 if (pars_pos == 6)
 		 {
 			 pars_str_res += GetDpar();
+			 data_file_record.X = d_par;
 		 }
 
 		 if (pars_pos == 7)
 		 {
 			 pars_str_res += GetDpar();
+			 data_file_record.Y = d_par;
 
 			 if (pars_str_res == 0)
 			 {
-
+				 Sleep(1);
 			 }
 			 else
 			 {
-
-             }
+				 Sleep(1);
+			 }
 		 }
 
    }
@@ -187,7 +194,7 @@ int TDataFile::GetWord(void)
    return 0;
 }
 
- int TDataFile::GeSpar(void)
+ int TDataFile::GetSpar(void)
  {
 
 	TCHAR tc[1024];
@@ -264,4 +271,59 @@ int TDataFile::GetDpar(void)
 	}
 
 	return 0;
+}
+
+int TDataFile::AcceptDaTaFileRecord(void)
+{
+
+
+	return 0;
+}
+
+/*
+Find the meas in the meas set with the presented place, drill, time
+return if the operatin is success == 0 / not success -1
+set the  data_file_meas_set_idx_cur if the meas is found/created
+*/
+int TDataFile::GetDaTaFileMeasIdx(void)
+{
+	int res = -1; //if the meas is not found/created
+	data_file_meas_type* m;
+	bool exist = false;
+
+
+	for (int i = 0; i < data_file_meas_set_idx; i++)
+	{
+
+		m = data_file_meas_set [i];
+
+		if (
+			(data_file_record.place == m->place)&&
+			(data_file_record.drill == m->drill)&&
+			(data_file_record.time == m->time)
+		   )
+		{
+			exist = true;
+			data_file_meas_set_idx_cur = i;
+			res = 0;
+			break;
+		}
+	}
+
+	//if not exist in the list
+	if (exist == false)
+	{
+		m = new data_file_meas_type;
+		m->place = data_file_record.place;
+		m->drill = data_file_record.drill;
+		m->time = data_file_record.time;
+
+		data_file_meas_set [data_file_meas_set_idx] = m;
+		data_file_meas_set_idx_cur = data_file_meas_set_idx;
+		data_file_meas_set_idx++;
+
+		res = 0;
+	}
+
+	return res;
 }

@@ -33,6 +33,8 @@ int TDataFile::OpenFile(TCHAR* tdir)
 int TDataFile::CheckFile(void)
 {
 
+    return 0;//!!!
+
 	if (file == NULL) return -1; //file not opened
 
 	//check utf8 ebom signature
@@ -41,10 +43,10 @@ int TDataFile::CheckFile(void)
 
 	if (!fread(sdata,3,1,file)) return -2; //file read fail
 
-	for (int i = 0; i < 3; i++)
-	{
-		if (sign[i] != sdata[i]) return -3; //wrong file signature
-	}
+	//if ((sdata[0] != 0xef)||(sdata[1] != 0xef)||(sdata[2] != 0xef))
+	//{
+	//	return -3; //wrong file signature
+	//}
 
 	//check file format (header string)  [Объект; Место; Дата; Направление; Позиция; X; Y;]
 	char head [] = "Объект; Место; Дата; Направление; Позиция; X; Y;\r\n";
@@ -67,6 +69,7 @@ int TDataFile::GetStr(void)
 	tword_idx = 0;
 	pars_pos = w_undef;
 	tbuf_pars_idx = 0;
+	pars_str_res = 0;
 
 	memset(cbuf,0,1024);
 	memset(tbuf,0,sizeof(tbuf));
@@ -133,53 +136,68 @@ int TDataFile::GetWord(void)
    {
 		 pars_pos++;
 
-		 //switch (pars_pos)
-		 if (pars_pos == 3)
+		 if (pars_pos == 1)
 		 {
-
-			//case w_date:
-
-				TDateTime t = 0.;
-				TFormatSettings FS;
-				FS.DateSeparator = '.';
-				FS.ShortDateFormat = "dd.mm.yyyy";
-				FS.LongTimeFormat = "hh:nn:ss";
-				FS.TimeSeparator = ':';
-
-				try
-				{
-
-					t = StrToDateTime((UnicodeString)tword, FS);
-					WideString ws;
-
-					ws = FormatDateTime(L"yyy.dd.mm hh:nn:ss",t);
-
-					Sleep(1);
-				}
-				catch(...)
-				{
-
-				}
-
-			//break;
-
-			//default:
-			//	return -2;
-
+			 pars_str_res += GetSpar();
+			 data_file_record.place = s_par;
 		 }
 
+		 if (pars_pos == 2)
+		 {
+			 pars_str_res += GetSpar();
+			 data_file_record.drill = s_par;
+		 }
 
+		 if (pars_pos == 3)
+		 {
+			 pars_str_res += GetTpar();
+			 data_file_record.time = t_par;
+		 }
 
-		 return 0;
+		 if (pars_pos == 4)
+		 {
+			 pars_str_res += GetSpar();
+			 data_file_record.dir = s_par;
+		 }
+
+		 if (pars_pos == 5)
+		 {
+			 pars_str_res += GetDpar();
+			 data_file_record.level = d_par;
+		 }
+
+		 if (pars_pos == 6)
+		 {
+			 pars_str_res += GetDpar();
+			 data_file_record.X = d_par;
+		 }
+
+		 if (pars_pos == 7)
+		 {
+			 pars_str_res += GetDpar();
+			 data_file_record.Y = d_par;
+
+			 //if the complete res is 0 accept the record
+			 if (pars_str_res == 0)
+			 {
+				 //AcceptDaTaFileMeasRecord();
+			 }
+			 else
+			 {
+				 Sleep(1);
+			 }
+		 }
+
    }
    else
    {
-		 return -1;
+	   return -1; //str pars problem
    }
 
+   return 0;
 }
 
- int TDataFile::GeSpar(void)
+ int TDataFile::GetSpar(void)
  {
 
 	TCHAR tc[1024];
@@ -256,4 +274,116 @@ int TDataFile::GetDpar(void)
 	}
 
 	return 0;
+}
+
+int TDataFile::AcceptDaTaFileRecord(void)
+{
+
+
+	return 0;
+}
+
+/*
+Find the meas in the meas set with the presented place, drill, time
+return if the operatin is success  0 / not success -1
+set the  data_file_meas_set_idx_cur if the meas is found/created
+*/
+int TDataFile::GetDaTaFileMeasIdx(void)
+{
+	int res = -1; //if the meas is not found/created
+	data_file_meas_type* m;
+	bool exist = false;
+
+
+	for (int i = 0; i < data_file_meas_set_idx; i++)
+	{
+
+		m = data_file_meas_set [i];
+
+		if (
+			(data_file_record.place == m->place)&&
+			(data_file_record.drill == m->drill)&&
+			(data_file_record.time == m->time)
+		   )
+		{
+			exist = true;
+			data_file_meas_set_idx_cur = i;
+			res = 0;
+			break;
+		}
+	}
+
+	//if not exist in the list
+	if (exist == false)
+	{
+		m = new data_file_meas_type;
+		m->place = data_file_record.place;
+		m->drill = data_file_record.drill;
+		m->time = data_file_record.time;
+
+		data_file_meas_set [data_file_meas_set_idx] = m;
+		data_file_meas_set_idx_cur = data_file_meas_set_idx;
+		data_file_meas_set_idx++;
+
+		res = 0;
+	}
+
+	return res;
+}
+
+int TDataFile::AcceptDaTaFileMeasRecord(void)
+{
+	int res = 0;
+
+	if (GetDaTaFileMeasIdx() == 0)
+	{
+		data_file_meas_type* m = data_file_meas_set [data_file_meas_set_idx];
+
+		if (m != NULL)
+		{
+			if (m->record_cnt < DATA_FILE_MEAS_CNT_MAX)
+			{
+				m->record [m->record_cnt] = data_file_record;
+				m->record_cnt++;
+			}
+			else
+			{
+				res = -1;  //overflow
+			}
+		}
+		else
+		{
+            res = -1; //bad meas ptr
+        }
+
+	}
+
+	return res;
+}
+
+int TDataFile::ParsDaTaFile(TCHAR* tdir)
+{
+   int res = -1;
+
+   memset(data_file_meas_set, 0, sizeof(data_file_meas_set));
+   data_file_meas_set_idx = 0;
+   data_file_meas_set_idx_cur = 0;
+
+   if (OpenFile(tdir) == 0)
+   {
+	  if (CheckFile() == 0)
+	  {
+		  res = 0;
+
+		  while (GetStr() == 0)
+		  {
+			  while (GetWord() ==0)
+			  {
+
+			  }
+		  }
+	  }
+   }
+
+   return res;
 }

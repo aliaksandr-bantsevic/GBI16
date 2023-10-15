@@ -1976,6 +1976,47 @@ void __fastcall TFMain::ToolButton_testClick(TObject *Sender)
 {
 
 /*
+
+				TDateTime t = 0.;
+				TFormatSettings FS;
+				FS.DateSeparator = '.';
+				FS.ShortDateFormat = "dd.mm.yyyy";
+				FS.LongTimeFormat = "hh:nn:ss";
+				FS.TimeSeparator = ':';
+
+				UnicodeString us = L"11.08.2023 14:21:06";
+
+				t = StrToDateTime(us, FS);
+				WideString ws;
+
+				ws = FormatDateTime(L"yyyy.dd.mm hh:nn:ss",t);
+
+				Sleep(1);
+
+return;
+*/
+
+TDataFile df;
+
+df.OpenFile(L"c:\\Prj\\Gorizont\\RAD Studio C++ Builder\\GBI16\\Win32\\Debug\\Data\\IZDAT.CSV");
+
+df.CheckFile();
+
+	//while (df.GetStr() == 0)
+	//{
+	//	while (df.GetWord() == 0);
+	//
+	//}
+
+	while (df.GetStr() == 0)
+	{
+		while (df.GetWord() ==0);
+	}
+
+
+return;
+
+/*
 ::RenameFile(
 
 L"c:\\Prj\\Gorizont\\RAD Studio C++ Builder\\GBI_U16\\Win32\\Debug\\Base\\GBI\\Уренгой\\Скважина #1\\Измерение_1\\Измерение_1.txt",

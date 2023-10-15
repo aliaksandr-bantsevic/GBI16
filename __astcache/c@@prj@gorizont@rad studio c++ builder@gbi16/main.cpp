@@ -1998,20 +1998,27 @@ return;
 
 TDataFile df;
 
+df.ParsDaTaFile(L"c:\\Prj\\Gorizont\\RAD Studio C++ Builder\\GBI16\\Win32\\Debug\\Data\\IZDAT.CSV");
+
+return;
+
+
 df.OpenFile(L"c:\\Prj\\Gorizont\\RAD Studio C++ Builder\\GBI16\\Win32\\Debug\\Data\\IZDAT.CSV");
 
 df.CheckFile();
 
-	//while (df.GetStr() == 0)
-	//{
-	//	while (df.GetWord() == 0);
-	//
-	//}
+df.pars_en = true;
 
 	while (df.GetStr() == 0)
 	{
-		while (df.GetWord() ==0);
+		while (df.GetWord() == 0);
+
 	}
+
+	//while (df.GetStr() == 0)
+	//{
+	//	while (df.GetWord() ==0);
+	//}
 
 
 return;
