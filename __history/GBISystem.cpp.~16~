@@ -1084,6 +1084,14 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 	 int res = 0;
 	 TPlace* p = NULL;
 	 TDrill* d = NULL;
+	 TMeas* m = NULL;
+
+	 meas_record* r = NULL;
+	 data_file_record_type* dr;
+
+	 int dir = 0;
+	 int dircnt = 0;
+	 int single_way = 1;
 
 	 p = GetPlaceByName(dfm->place);
 
@@ -1093,19 +1101,63 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 
 		if (d != NULL)
 		{
+			 d->pname = p->name;
+			 d->drill_orient = 1;
+
+			 if (dfm->record_cnt > d->records_cnt) d->records_cnt = dfm->record_cnt;
+
+			 if (d->MeasExistByTimeCreate(dfm->time) == false)
+			 {
+				d->AddMeas(NULL, L"new_meas");
+				m = d->meas_list[d->meas_list_idx-1];
+				m->records_cnt = dfm->record_cnt;
+				m->name_place = p->name;
+				m->name_drill = d->name;
+				m->create_time = dfm->time;
+
+				for (int i =0; i < dfm->record_cnt; i++)
+				{
+
+				   dr = &dfm->record [i];
+				   if (dr->dir == L"Forward")
+				   {
+						dir = 0;
+						dircnt = 1;
+					}
+					else
+					{
+						dir = 1;
+						dircnt = 2;
+						single_way = 0;
+					}
+
+					r = &m->records[i];
+					m->AcceptDataFileRecord(dir, dr->level, dr->X, dr->Y);
+				}
+
+				m->SaveData(0);
+			 }
+			 else
+			 {
+				 res = -3; //meas already exist
+             }
 
 		}
 		else
 		{
-			res = -2;
+			res = -2; //can not find/create drill
         }
 
 	 }
 	 else
 	 {
-		 res = -1;
+		 res = -1; //can not find/create place
      }
 
+	 if (single_way == 0)
+	 {
+	   d->single_way = 0;
+	 }
 
 	 return res;
  }
@@ -1151,7 +1203,26 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 	 if (d == NULL)
 	 {
 		p->AddDrill(n, cnt);
+		d = p->drill_list[p->drill_list_idx-1];
 	 }
 
 	 return d;
+ }
+
+ int TGBISystem::ImportFromDataFile(TCHAR* path)
+ {
+	 int res = 0;
+	 data_file_meas_type* dfm = NULL;
+
+	 this->DataFile.ParsDaTaFile(path);
+
+	 for (int i =0; i < DataFile.data_file_meas_set_idx; i++)
+	 {
+		dfm = DataFile.data_file_meas_set [i];
+		AcceptDataFileMeas(dfm);
+	 }
+
+	 Redraw();
+
+	 return res;
  }

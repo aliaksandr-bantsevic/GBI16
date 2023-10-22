@@ -1,4 +1,4 @@
-﻿//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 
 #pragma hdrstop
 
@@ -1091,6 +1091,7 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 
 	 int dir = 0;
 	 int dircnt = 0;
+	 int single_way = 1;
 
 	 p = GetPlaceByName(dfm->place);
 
@@ -1101,6 +1102,9 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 		if (d != NULL)
 		{
 			 d->pname = p->name;
+			 d->drill_orient = 1;
+
+			 if (dfm->record_cnt > d->records_cnt) d->records_cnt = dfm->record_cnt;
 
 			 if (d->MeasExistByTimeCreate(dfm->time) == false)
 			 {
@@ -1109,6 +1113,7 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 				m->records_cnt = dfm->record_cnt;
 				m->name_place = p->name;
 				m->name_drill = d->name;
+				m->create_time = dfm->time;
 
 				for (int i =0; i < dfm->record_cnt; i++)
 				{
@@ -1117,16 +1122,17 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 				   if (dr->dir == L"Forward")
 				   {
 						dir = 0;
-						if (dircnt == 0) dircnt = 1;
+						dircnt = 1;
 					}
 					else
 					{
 						dir = 1;
-						if (dircnt == 1) dircnt = 2;
+						dircnt = 2;
+						single_way = 0;
 					}
 
 					r = &m->records[i];
-					m->AcceptDataFileRecord(dir, dr->level, dr->X, dr->X);
+					m->AcceptDataFileRecord(dir, dr->level, dr->X, dr->Y);
 				}
 
 				m->SaveData(0);
@@ -1148,7 +1154,7 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 		 res = -1; //can not find/create place
      }
 
-	 if (dircnt == 2)
+	 if (single_way == 0)
 	 {
 	   d->single_way = 0;
 	 }

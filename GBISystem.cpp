@@ -1110,10 +1110,11 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 			 {
 				d->AddMeas(NULL, L"new_meas");
 				m = d->meas_list[d->meas_list_idx-1];
-				m->records_cnt = dfm->record_cnt;
+				if (m->records_cnt < d->records_cnt) m->records_cnt = d->records_cnt;
 				m->name_place = p->name;
 				m->name_drill = d->name;
 				m->create_time = dfm->time;
+
 
 				for (int i =0; i < dfm->record_cnt; i++)
 				{
