@@ -361,4 +361,5 @@ bool TDrill::MeasExistByTimeCreate(TDateTime t)
 		}
 	}
 
+    return res;
 }
