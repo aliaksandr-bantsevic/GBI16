@@ -2,8 +2,8 @@ object FMain: TFMain
   Left = 0
   Top = 0
   Caption = 'GorizontMaster'
-  ClientHeight = 894
-  ClientWidth = 1547
+  ClientHeight = 893
+  ClientWidth = 1543
   Color = clBtnFace
   TransparentColorValue = clBlue
   Font.Charset = RUSSIAN_CHARSET
@@ -154,14 +154,13 @@ object FMain: TFMain
     Left = 401
     Top = 70
     Width = 4
-    Height = 798
+    Height = 797
     ResizeStyle = rsUpdate
-    ExplicitHeight = 797
   end
   object MStatusBar: TStatusBar
     Left = 0
-    Top = 868
-    Width = 1547
+    Top = 867
+    Width = 1543
     Height = 26
     BorderWidth = 2
     Panels = <
@@ -184,7 +183,7 @@ object FMain: TFMain
   object MToolBar: TToolBar
     Left = 0
     Top = 0
-    Width = 1547
+    Width = 1543
     Height = 70
     ButtonHeight = 71
     ButtonWidth = 103
@@ -306,14 +305,14 @@ object FMain: TFMain
     Left = 0
     Top = 70
     Width = 401
-    Height = 798
+    Height = 797
     Align = alLeft
     TabOrder = 2
     object TreeView_system: TTreeView
       Left = 1
       Top = 1
       Width = 399
-      Height = 796
+      Height = 795
       Align = alClient
       BorderWidth = 1
       Color = clInfoBk
@@ -339,14 +338,14 @@ object FMain: TFMain
   object Panel2: TPanel
     Left = 405
     Top = 70
-    Width = 1142
-    Height = 798
+    Width = 1138
+    Height = 797
     Align = alClient
     TabOrder = 3
     object Splitter2: TSplitter
       Left = 1
       Top = 529
-      Width = 1140
+      Width = 1136
       Height = 4
       Cursor = crVSplit
       Align = alTop
@@ -356,14 +355,14 @@ object FMain: TFMain
     object Panel_work_area: TPanel
       Left = 1
       Top = 1
-      Width = 1140
+      Width = 1136
       Height = 528
       Align = alTop
       TabOrder = 0
       object MPageControl: TPageControl
         Left = 1
         Top = 1
-        Width = 1138
+        Width = 1134
         Height = 526
         ActivePage = TabSheet_charts
         Align = alClient
@@ -375,7 +374,7 @@ object FMain: TFMain
           object Panel_meas_table: TPanel
             Left = 0
             Top = 0
-            Width = 1130
+            Width = 1126
             Height = 493
             Align = alClient
             Caption = #1042#1067#1041#1045#1056#1048#1058#1045' '#1048#1047#1052#1045#1056#1045#1053#1048#1045' '#1042' '#1044#1045#1056#1045#1042#1045' '#1057#1048#1057#1058#1045#1052#1067
@@ -383,7 +382,7 @@ object FMain: TFMain
             object StringGrid_meas: TStringGrid
               Left = 1
               Top = 1
-              Width = 1128
+              Width = 1124
               Height = 491
               Align = alClient
               Font.Charset = RUSSIAN_CHARSET
@@ -405,7 +404,7 @@ object FMain: TFMain
           object Panel_charts_v: TPanel
             Left = 0
             Top = 0
-            Width = 1130
+            Width = 1126
             Height = 493
             Align = alClient
             Caption = 'Panel_charts_v'
@@ -575,7 +574,7 @@ object FMain: TFMain
           object Panel_chats: TPanel
             Left = 0
             Top = 0
-            Width = 1130
+            Width = 1126
             Height = 493
             Align = alClient
             Caption = 'Panel_chats'
@@ -583,7 +582,7 @@ object FMain: TFMain
             object Panel_chartx_h: TPanel
               Left = 1
               Top = 1
-              Width = 1128
+              Width = 1124
               Height = 249
               Align = alTop
               Caption = 'Panel_chartx_h'
@@ -591,7 +590,7 @@ object FMain: TFMain
               object Splitter6: TSplitter
                 Left = 1
                 Top = 245
-                Width = 1126
+                Width = 1122
                 Height = 3
                 Cursor = crVSplit
                 Align = alBottom
@@ -601,7 +600,7 @@ object FMain: TFMain
               object Chart_x_h: TChart
                 Left = 1
                 Top = 1
-                Width = 1126
+                Width = 1122
                 Height = 244
                 MarginLeft = 2
                 MarginRight = 1
@@ -781,7 +780,7 @@ object FMain: TFMain
             object Panel_charty_h: TPanel
               Left = 1
               Top = 250
-              Width = 1128
+              Width = 1124
               Height = 242
               Align = alClient
               Caption = 'Panel_charty_h'
@@ -789,7 +788,7 @@ object FMain: TFMain
               object Chart_y_h: TChart
                 Left = 1
                 Top = 1
-                Width = 1126
+                Width = 1122
                 Height = 240
                 MarginLeft = 2
                 MarginRight = 1
@@ -998,15 +997,15 @@ object FMain: TFMain
     object Panel_console_meas_control: TPanel
       Left = 1
       Top = 533
-      Width = 1140
-      Height = 264
+      Width = 1136
+      Height = 263
       Align = alClient
       TabOrder = 1
       object LPageControl_console: TPageControl
         Left = 1
         Top = 1
-        Width = 1138
-        Height = 262
+        Width = 1134
+        Height = 261
         ActivePage = TabSheet_meas_control
         Align = alClient
         TabOrder = 0
@@ -1016,8 +1015,8 @@ object FMain: TFMain
           object Panel_meas_control: TPanel
             Left = 0
             Top = 0
-            Width = 1130
-            Height = 229
+            Width = 1126
+            Height = 228
             Align = alClient
             Color = clInfoBk
             ParentBackground = False
@@ -1101,8 +1100,8 @@ object FMain: TFMain
               ParentFont = False
             end
             object Button_record: TButton
-              Left = 66
-              Top = 4
+              Left = -4
+              Top = -13
               Width = 430
               Height = 241
               Caption = #1047#1040#1055#1048#1057#1068
@@ -1294,8 +1293,8 @@ object FMain: TFMain
           object ListBox_Console: TListBox
             Left = 0
             Top = 0
-            Width = 1130
-            Height = 229
+            Width = 1126
+            Height = 228
             Align = alClient
             Color = clInfoBk
             ItemHeight = 18

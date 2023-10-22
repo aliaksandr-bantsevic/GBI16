@@ -115,6 +115,8 @@ double output_point;
 int ConvertDataUTF16(void);
 int isMeasTxtUTF8(TCHAR* path);
 
+int AcceptDataFileRecord(int dir, double d, double x, double y);
+
 };
 
 #endif

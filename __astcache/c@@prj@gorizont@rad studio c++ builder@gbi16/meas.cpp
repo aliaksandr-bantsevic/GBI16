@@ -1163,3 +1163,30 @@ int TMeas::isMeasTxtUTF8(TCHAR* path)
 
 	return res;
 }
+
+int TMeas::AcceptDataFileRecord(int dir, double d, double x, double y)
+{
+	int res = -1;
+
+	 for (int i =0; i < records_cnt; i++)
+	 {
+		  if (records[i].depth == d)
+		  {
+			 if (dir == 0)
+			 {
+				records[i].X1 = x;
+				records[i].Y1 = y;
+			 }
+			 else
+			 {
+				records[i].X2 = x;
+				records[i].Y2 = y;
+			 }
+
+			 res = 0;
+		  }
+
+	 }
+
+	 return res;
+}

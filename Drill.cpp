@@ -346,3 +346,19 @@ int TDrill::ReCalc()
 
 	return 0;
 }
+
+bool TDrill::MeasExistByTimeCreate(TDateTime t)
+{
+
+	bool res = false;
+
+	for (int i = 0; i < meas_list_idx; i++)
+	{
+		if (meas_list[i]->create_time == t)
+		{
+		   res = true;
+           break;
+		}
+	}
+
+}

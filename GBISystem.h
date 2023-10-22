@@ -13,6 +13,7 @@
 #include "Meas.h"
 #include "Place.h"
 #include "SysConfMgr.h"
+#include "DataFile.h"
 
 #define SYSTEM_PLACES_MAX   100
 
@@ -110,6 +111,13 @@ public:
 	TMeas* GetMeasByNode(TTreeNode *node);
 
 	int ParsDataFile(TCHAR* tpath);
+
+	TDataFile DataFile;
+
+	int AcceptDataFileMeas(data_file_meas_type* dfm);
+	TPlace* GetPlaceByName(WideString n);
+	TDrill* GetDrillByName(TPlace* p, WideString n, int cnt);
+	int ImportFromDataFile(TCHAR* path);
 };
 
 

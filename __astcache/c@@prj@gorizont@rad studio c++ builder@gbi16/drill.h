@@ -92,6 +92,9 @@ struct {
 
 int UpdateMeas(void);
 
+bool MeasExistByTimeCreate(TDateTime t);
+
+
 };
 
 

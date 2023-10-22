@@ -792,9 +792,12 @@ int TGBISystem::OpenConf (TOpenDialog* dlg)
 	 dlg->InitialDir = SysConfMgr.GetCurConfFoldPath();
 	 dlg->Filter = L"*.ini|*.ini";
 	 
-	 wcscpy((TCHAR*)dlg->FileName.data(), SysConfMgr.cur_conf_name);
+	 //wcscpy((TCHAR*)dlg->FileName.data(), SysConfMgr.cur_conf_name);
 
-	 dlg->FileName = L"Пока не работает!";
+	 //dlg->FileName = L"Пока не работает!";
+
+	 dlg->FileName = SysConfMgr.cur_conf_name ;
+
 
 	 dlg->Title = L"Открыть конфигурацию";
 	 if (dlg->Execute()!=IDOK) return -1;
@@ -1070,4 +1073,109 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 	return res;
 }
 
+ int TGBISystem::ParsDataFile(TCHAR* tpath)
+ {
 
+	return 0;
+ }
+
+ int TGBISystem::AcceptDataFileMeas(data_file_meas_type* dfm)
+ {
+	 int res = 0;
+	 TPlace* p = NULL;
+	 TDrill* d = NULL;
+	 TMeas* m = NULL;
+
+	 meas_record* r = NULL;
+	 data_file_record_type* dr;
+
+	 int dir = 0;
+	 int dircnt = 0;
+
+	 p = GetPlaceByName(dfm->place);
+
+	 if (p != NULL)
+	 {
+		d = GetDrillByName(p, dfm->drill, dfm->record_cnt);
+
+		if (d != NULL)
+		{
+			 if (d->MeasExistByTimeCreate(dfm->time) == false)
+			 {
+				d->AddMeas(NULL, L"new_meas");
+				m = d->meas_list[d->meas_list_idx-1];
+
+				for (int i =0; i < dfm->record_cnt; i++)
+				{
+				   r = &m->records[i];
+
+
+				}
+
+			 }
+			 else
+			 {
+				 res = -3; //meas already exist
+             }
+
+		}
+		else
+		{
+			res = -2; //can not find/create drill
+        }
+
+	 }
+	 else
+	 {
+		 res = -1; //can not find/create place
+     }
+
+
+	 return res;
+ }
+
+ TPlace* TGBISystem::GetPlaceByName(WideString n)
+ {
+	 TPlace* p = NULL;
+	 TPlace* ptmp = NULL;
+
+	 for (int i = 0; i < place_list_idx; i++)
+	 {
+		ptmp = place_list[i];
+
+		if (ptmp->name == n)
+		{
+		   p = ptmp;
+		   break;
+		}
+	 }
+
+	 if (p == NULL)
+	 {
+		this->AddPlace(n);
+		p = place_list[place_list_idx-1];
+	 }
+
+	 return p;
+ }
+
+ TDrill* TGBISystem::GetDrillByName(TPlace* p, WideString n, int cnt)
+ {
+	 TDrill* d = NULL;
+
+	 for (int i =0; i < p->drill_list_idx; i++)
+	 {
+		if (p->drill_list[i]->name == n)
+		{
+		   d = p->drill_list[i];
+		   break;
+		}
+	 }
+
+	 if (d == NULL)
+	 {
+		p->AddDrill(n, cnt);
+	 }
+
+	 return d;
+ }

@@ -40,7 +40,6 @@
 #include "MeasAdjust.h"
 #include "Diagram.h"
 #include "DataEnter.h"
-#include "DataFile.h"
 
 //---------------------------------------------------------------------------
 class TFMain : public TForm
@@ -271,6 +270,7 @@ public:		// User declarations
 	void ShowChartHint_v(TChart* chart, int X, int Y);
 	void VirtKey_TouchIn_On(void);
 	void VirtKey_TouchIn_Off(void);
+
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFMain *FMain;

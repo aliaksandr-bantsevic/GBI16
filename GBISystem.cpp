@@ -1078,3 +1078,143 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 
 	return 0;
  }
+
+ int TGBISystem::AcceptDataFileMeas(data_file_meas_type* dfm)
+ {
+	 int res = 0;
+	 TPlace* p = NULL;
+	 TDrill* d = NULL;
+	 TMeas* m = NULL;
+
+	 meas_record* r = NULL;
+	 data_file_record_type* dr;
+
+	 int dir = 0;
+	 int dircnt = 0;
+
+	 p = GetPlaceByName(dfm->place);
+
+	 if (p != NULL)
+	 {
+		d = GetDrillByName(p, dfm->drill, dfm->record_cnt);
+
+		if (d != NULL)
+		{
+			 d->pname = p->name;
+
+			 if (d->MeasExistByTimeCreate(dfm->time) == false)
+			 {
+				d->AddMeas(NULL, L"new_meas");
+				m = d->meas_list[d->meas_list_idx-1];
+				m->records_cnt = dfm->record_cnt;
+				m->name_place = p->name;
+                m->name_drill = d->name;
+
+				if (dr->dir == L"Forward")
+				{
+					dir = 0;
+					if (dircnt == 0) dircnt = 1;
+				}
+				else
+				{
+					dir = 1;
+					if (dircnt == 1) dircnt = 2;
+                }
+
+				for (int i =0; i < dfm->record_cnt; i++)
+				{
+				   r = &m->records[i];
+				   m->AcceptDataFileRecord(dir, dr->level, dr->X, dr->X);
+				}
+
+				m->SaveData(0);
+			 }
+			 else
+			 {
+				 res = -3; //meas already exist
+             }
+
+		}
+		else
+		{
+			res = -2; //can not find/create drill
+        }
+
+	 }
+	 else
+	 {
+		 res = -1; //can not find/create place
+     }
+
+	 if (dircnt == 2)
+	 {
+	   d->single_way = 0;
+	 }
+
+	 return res;
+ }
+
+ TPlace* TGBISystem::GetPlaceByName(WideString n)
+ {
+	 TPlace* p = NULL;
+	 TPlace* ptmp = NULL;
+
+	 for (int i = 0; i < place_list_idx; i++)
+	 {
+		ptmp = place_list[i];
+
+		if (ptmp->name == n)
+		{
+		   p = ptmp;
+		   break;
+		}
+	 }
+
+	 if (p == NULL)
+	 {
+		this->AddPlace(n);
+		p = place_list[place_list_idx-1];
+	 }
+
+	 return p;
+ }
+
+ TDrill* TGBISystem::GetDrillByName(TPlace* p, WideString n, int cnt)
+ {
+	 TDrill* d = NULL;
+
+	 for (int i =0; i < p->drill_list_idx; i++)
+	 {
+		if (p->drill_list[i]->name == n)
+		{
+		   d = p->drill_list[i];
+		   break;
+		}
+	 }
+
+	 if (d == NULL)
+	 {
+		p->AddDrill(n, cnt);
+		d = p->drill_list[p->drill_list_idx-1];
+	 }
+
+	 return d;
+ }
+
+ int TGBISystem::ImportFromDataFile(TCHAR* path)
+ {
+	 int res = 0;
+	 data_file_meas_type* dfm = NULL;
+
+	 this->DataFile.ParsDaTaFile(path);
+
+	 for (int i =0; i < DataFile.data_file_meas_set_idx; i++)
+	 {
+		dfm = DataFile.data_file_meas_set [i];
+		AcceptDataFileMeas(dfm);
+	 }
+
+	 Redraw();
+
+	 return res;
+ }
