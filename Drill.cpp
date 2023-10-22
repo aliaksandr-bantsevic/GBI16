@@ -177,7 +177,8 @@ int TDrill::AddMeas(TStringGrid* t, WideString n)
 
 	double tdepth = 0.0;
 
-	if (meas_list_idx == 0) {
+	//!!!if (meas_list_idx == 0)
+	{
 
 		for (int i = 0; i < records_cnt; i++) {
 

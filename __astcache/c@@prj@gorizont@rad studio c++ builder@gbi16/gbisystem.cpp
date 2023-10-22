@@ -1108,23 +1108,25 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 				m = d->meas_list[d->meas_list_idx-1];
 				m->records_cnt = dfm->record_cnt;
 				m->name_place = p->name;
-                m->name_drill = d->name;
-
-				if (dr->dir == L"Forward")
-				{
-					dir = 0;
-					if (dircnt == 0) dircnt = 1;
-				}
-				else
-				{
-					dir = 1;
-					if (dircnt == 1) dircnt = 2;
-                }
+				m->name_drill = d->name;
 
 				for (int i =0; i < dfm->record_cnt; i++)
 				{
-				   r = &m->records[i];
-				   m->AcceptDataFileRecord(dir, dr->level, dr->X, dr->X);
+
+				   dr = &dfm->record [i];
+				   if (dr->dir == L"Forward")
+				   {
+						dir = 0;
+						if (dircnt == 0) dircnt = 1;
+					}
+					else
+					{
+						dir = 1;
+						if (dircnt == 1) dircnt = 2;
+					}
+
+					r = &m->records[i];
+					m->AcceptDataFileRecord(dir, dr->level, dr->X, dr->X);
 				}
 
 				m->SaveData(0);

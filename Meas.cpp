@@ -1184,6 +1184,8 @@ int TMeas::AcceptDataFileRecord(int dir, double d, double x, double y)
 			 }
 
 			 res = 0;
+
+             break;
 		  }
 
 	 }
