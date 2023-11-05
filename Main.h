@@ -173,6 +173,7 @@ __published:	// IDE-managed Components
 	TToolButton *ToolButton_open;
 	TToolButton *ToolButton_collapse;
 	TToolButton *ToolButton1;
+	TToolButton *ToolButton2;
 	void __fastcall MMFileDrawItem(TObject *Sender, TCanvas *ACanvas, TRect &ARect,
 		  bool Selected);
 	void __fastcall MMPropDrawItem(TObject *Sender, TCanvas *ACanvas, TRect &ARect,
@@ -246,6 +247,7 @@ __published:	// IDE-managed Components
 	void __fastcall ToolButton1Click(TObject *Sender);
 	void __fastcall TreeView_systemMouseMove(TObject *Sender, TShiftState Shift, int X,
           int Y);
+	void __fastcall ToolButton2Click(TObject *Sender);
 
 private:	// User declarations
 	void Test1();

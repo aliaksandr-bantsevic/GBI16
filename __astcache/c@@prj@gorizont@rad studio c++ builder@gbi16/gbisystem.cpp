@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------
 
 #pragma hdrstop
 
@@ -791,7 +791,7 @@ int TGBISystem::OpenConf (TOpenDialog* dlg)
 
 	 dlg->InitialDir = SysConfMgr.GetCurConfFoldPath();
 	 dlg->Filter = L"*.ini|*.ini";
-	 
+
 	 //wcscpy((TCHAR*)dlg->FileName.data(), SysConfMgr.cur_conf_name);
 
 	 //dlg->FileName = L"Пока не работает!";
@@ -1093,6 +1093,10 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 	 int dircnt = 0;
 	 int single_way = 1;
 
+	 int forward_cnt = 0;
+	 int back_cnt = 0;
+	 int max_cnt = 0;
+	 
 	 p = GetPlaceByName(dfm->place);
 
 	 if (p != NULL)
@@ -1104,16 +1108,17 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 			 d->pname = p->name;
 			 d->drill_orient = 1;
 
-			 if (dfm->record_cnt > d->records_cnt) d->records_cnt = dfm->record_cnt;
+			 if (dfm->record_cnt > d->records_cnt) d->records_cnt = dfm->record_cnt/2;
 
 			 if (d->MeasExistByTimeCreate(dfm->time) == false)
 			 {
 				d->AddMeas(NULL, L"new_meas");
 				m = d->meas_list[d->meas_list_idx-1];
-				m->records_cnt = dfm->record_cnt;
+				if (m->records_cnt < d->records_cnt) m->records_cnt = d->records_cnt;
 				m->name_place = p->name;
 				m->name_drill = d->name;
 				m->create_time = dfm->time;
+
 
 				for (int i =0; i < dfm->record_cnt; i++)
 				{
@@ -1123,18 +1128,35 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 				   {
 						dir = 0;
 						dircnt = 1;
+						forward_cnt++;
 					}
 					else
 					{
 						dir = 1;
 						dircnt = 2;
 						single_way = 0;
+						back_cnt++;
 					}
 
 					r = &m->records[i];
 					m->AcceptDataFileRecord(dir, dr->level, dr->X, dr->Y);
 				}
 
+				if (forward_cnt>=back_cnt)
+				{
+					max_cnt = forward_cnt;
+				}
+				else
+				{
+					max_cnt = back_cnt;
+                }
+
+				//if (max_cnt > d->records_cnt)
+				{
+					d->records_cnt = max_cnt;
+					m->records_cnt = max_cnt;
+				}
+				
 				m->SaveData(0);
 			 }
 			 else
@@ -1226,3 +1248,28 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 
 	 return res;
  }
+
+ int TGBISystem::ImportDataCSV(TOpenDialog* dlg)
+ {
+	 int res = 0;
+
+	 TCHAR tdir[1024];
+	 ::GetCurrentDirectoryW(1024,tdir);
+	 wcscat(tdir,L"\\Data\\");
+	 if (!DirectoryExists(tdir))  CreateDirectory(tdir,0);
+
+	 WideString fres(L"");
+	 dlg->InitialDir = tdir;
+	 dlg->Filter = L"*.csv|*.csv";
+	 dlg->FileName = SysConfMgr.cur_conf_name ;
+	 dlg->Title = L"Открыть конфигурацию";
+	 if (dlg->Execute()!=IDOK) return -1;
+
+	 fres = dlg->FileName;
+
+	 ImportFromDataFile(fres.c_bstr());
+
+	 return res;
+ }
+
+

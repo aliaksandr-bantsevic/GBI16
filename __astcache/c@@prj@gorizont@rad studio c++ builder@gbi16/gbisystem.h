@@ -118,6 +118,7 @@ public:
 	TPlace* GetPlaceByName(WideString n);
 	TDrill* GetDrillByName(TPlace* p, WideString n, int cnt);
 	int ImportFromDataFile(TCHAR* path);
+    int ImportDataCSV(TOpenDialog* dlg);
 };
 
 

@@ -2547,3 +2547,9 @@ void __fastcall TFMain::TreeView_systemMouseMove(TObject *Sender, TShiftState Sh
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TFMain::ToolButton2Click(TObject *Sender)
+{
+	GBISystem->ImportDataCSV(OpenDialog);
+}
+//---------------------------------------------------------------------------
+
