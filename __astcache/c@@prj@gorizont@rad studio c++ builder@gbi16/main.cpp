@@ -84,26 +84,10 @@ void __fastcall TFMain::MMFileDrawItem(TObject *Sender, TCanvas *ACanvas, TRect 
           bool Selected)
 {
 
-/*
-	if(Selected)
-	{
-		ACanvas->Brush->Color = clBlue;
-		ACanvas->Font->Color = clGray;
-	}
-	else
-	{
-		ACanvas->Brush->Color = clBtnFace;
-		ACanvas->Font->Color = clBlack;
-	}
-*/
-
 	ACanvas->FillRect(ARect);
 	ACanvas->Font->Name = "Arial";
 	ACanvas->Font->Size = 10;
 	ACanvas->Font->Style=ACanvas->Font->Style<<fsBold;
-
-//	TFontStyles
-
 
 	ACanvas->TextRect(ARect, ARect.Left + 3, ARect.Top + 3, "Ôàéë   ");
 
@@ -252,11 +236,21 @@ void __fastcall TFMain::ToolButton_StartClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
+TFMain* fm;
+
+void console(WideString obj, WideString msg)
+{
+	fm->Console(obj, msg);
+}
+
 void TFMain::SystemInit()
 {
+	fm = this;
+
 	Console(L"Приложение",L"Старт системы ...");
 
 	GBISystem = new TGBISystem(this->TreeView_system);
+	GBISystem->console = console;
 	scmgr = &GBISystem->SysConfMgr;
 	GBISystem->ask_save_conf = &b_MessageConfirmParamsetShow;
 	GBISystem->LoadSysConf();
@@ -442,15 +436,6 @@ void __fastcall TFMain::Timer_system_runTimer(TObject *Sender)
 			if (comerr == true) Console(L"Система", L"Не удалось открыть СОМ-порт");
 
 			comerr = false;
-			/*
-			GBISystem->Stop();
-			this->MToolBar->Buttons[0]->ImageIndex = 9;
-			this->MToolBar->Buttons[0]->Caption = "Ñòàðò";
-			Button_record->Enabled = false;
-			this->LPageControl_console->ActivePage = TabSheet_console;
-			return;
-			*/
-
 		}
 		else
 		{
@@ -475,10 +460,6 @@ void __fastcall TFMain::StringGrid_measDrawCell(TObject *Sender, int ACol, int A
 
 	WideString s(L"");
 
-	//if (StringGrid_meas->Col<3) StringGrid_meas->Col = 3;
-	//if (StringGrid_meas->Col>6) StringGrid_meas->Col = 6;
-
-
 	if(ACol==0||((ARow==0)&&(ACol<13))){
 
 	   StringGrid_meas->Canvas->Brush->Color=clSilver;
@@ -489,7 +470,6 @@ void __fastcall TFMain::StringGrid_measDrawCell(TObject *Sender, int ACol, int A
 
 	if(ACol>7){
 
-	   //StringGrid_meas->Canvas->Brush->Color=clYellow;
 	   StringGrid_meas->Canvas->FillRect(Rect);
 	   StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, StringGrid_meas->Cells[ACol][ARow] );
 	}
@@ -598,18 +578,15 @@ void __fastcall TFMain::StringGrid_measDrawCell(TObject *Sender, int ACol, int A
 
 		if (selected_meas->type_drill == DRILL_ORIENT_HORIZONT)
 		{
-			//if ((((ACol == 2)||(ACol == 4)||(ACol == 6)||(ACol == 8)||(ACol == 10))&&(ARow>0))||(ACol == 11)||(ACol == 12))
 			if (((ACol == 2)||(ACol == 4)||(ACol == 6)||(ACol == 8)||(ACol == 10)||(ACol == 11)||(ACol == 12))&&(ARow>0))
 			{
 			   StringGrid_meas->Canvas->Brush->Color = clSilver;
 			   StringGrid_meas->Canvas->FillRect(Rect);
 			}
 
-
 			if (selected_meas->single_way)
 			{
-				//if (((ACol == 5)&&(ARow>1))||(ACol == 11)||(ACol == 12))
-                if (((ACol == 5)||(ACol == 11)||(ACol == 12))&&(ARow>1))
+				if (((ACol == 5)||(ACol == 11)||(ACol == 12))&&(ARow>1))
 				{
 				   StringGrid_meas->Canvas->Brush->Color = clSilver;
 				   StringGrid_meas->Canvas->FillRect(Rect);
@@ -669,8 +646,7 @@ void __fastcall TFMain::Button_recordClick(TObject *Sender)
 				if (StringGrid_meas->Cells[1][row] == "") {
 
 					StringGrid_measDblClick(NULL);
-					//return;
-                    Sleep(100);
+				  Sleep(100);
 				}
 			}
 
@@ -707,16 +683,10 @@ void __fastcall TFMain::Button_recordClick(TObject *Sender)
 	  s.printf(L"%.1f",sensor->curr_X);
 	  StringGrid_meas->Cells[col][row] = s;
 
-	  //StringGrid_meas->Cells[2][2] = s;
-
 	  s.printf(L"%.1f",sensor->curr_Y);
 	  StringGrid_meas->Cells[col+1][row] = s;
 
-	  //StringGrid_meas->Cells[2][3] = s;
-
 	  TDrill* d = NULL;
-
-	  //d->i_first_request_point = 1;
 
 	  d = GBISystem->place_list[selected_meas->pnum-1]->drill_list[selected_meas->dnum-1];
 
@@ -791,9 +761,7 @@ void __fastcall TFMain::StringGrid_measDblClick(TObject *Sender)
 		return;
 	}
 
-
 	if (StringGrid_meas->Row <=1 ) return;
-	//if ((StringGrid_meas->Col !=1 )&&(StringGrid_meas->Col !=2 )) return;
 
 	WideString s(L"");
 	WideString s1(L"");
@@ -871,10 +839,8 @@ void __fastcall TFMain::StringGrid_measDblClick(TObject *Sender)
 	}
 
 }
+
 //---------------------------------------------------------------------------
-
-
-
 
 void __fastcall TFMain::PopupMenu_systemPopup(TObject *Sender)
 {
@@ -1099,9 +1065,6 @@ void __fastcall TFMain::MMAboutClick(TObject *Sender)
 	WideString sd(L"");
 	WideString sdate(L"");
 
-	//swprintf(cdate,L"%s",__DATE__);
-	//wcscpy(cdate,&cdate[wcslen(cdate)-4]);
-	//sd=sd+cdate;
 	sdate=L"г. Москва, 2023";
 
 	Form_about->Label_year->Caption = sdate;
@@ -1126,25 +1089,6 @@ void __fastcall TFMain::N_drill_addClick(TObject *Sender)
 	TDrill* d = new TDrill();
 	int cnt = 21;
 
-	/*
-	WideString s(L"");
-
-	double asimut = 0;
-	int sway = 0;
-	int startpoint = 0;
-	int orient = 0;
-	int start_request = 0;
-
-
-	Form_DrillAdjust->str = s.c_bstr();
-	Form_DrillAdjust->single_way = &sway;
-	Form_DrillAdjust->start_point = &startpoint;
-	Form_DrillAdjust->as = &asimut;
-	Form_DrillAdjust->ori = &orient;
-	Form_DrillAdjust->start_request =  &start_request;
-	Form_DrillAdjust->records_cnt_def = GBISystem->def_records_meas;
-	*/
-
 	Form_DrillAdjust->records_cnt = &cnt;
 	Form_DrillAdjust->mode = 0;
 
@@ -1158,29 +1102,6 @@ void __fastcall TFMain::N_drill_addClick(TObject *Sender)
 		p->AddDrill(d);
 		GBISystem->Redraw();
 	}
-
-	/*
-	if (s!="") {
-
-		if (p->AddDrill(s,cnt) == 0) {
-
-		TDrill* d  = p->drill_list[p->drill_list_idx-1];
-
-		d->drill_orient = orient;
-
-		if (d->drill_orient == DRILL_ORIENT_VERTICAL) {
-
-			d->drill_asimut = asimut;
-			d->start_point = startpoint;
-		}
-
-		if (d->drill_orient == DRILL_ORIENT_HORIZONT) {
-			d->single_way = (bool)sway;
-		}
-     }
-
-	}
-	*/
 
 	delete d;
 	current_place = NULL;
@@ -1282,9 +1203,7 @@ void __fastcall TFMain::N_meas_addClick(TObject *Sender)
 
 	d->meas_list[d->meas_list_idx-1]->SaveData(0);
 
-	//GBISystem->SaveConf();
 	GBISystem->Redraw();
-
 }
 //---------------------------------------------------------------------------
 
@@ -1410,7 +1329,6 @@ void __fastcall TFMain::TreeView_systemClick(TObject *Sender)
 
 		if (type == TREE_ITEM_TYPE_MEAS) {
 
-			//N_meas_adjust->Visible = true;
 			N_meas_delete->Visible = true;
 
 			current_meas = (TMeas*)obj;
@@ -1469,7 +1387,6 @@ void TFMain::ViewSelectedMeas(void)
 
 		}
 
-
 		for (int i = 0; i<MAX_RECORDS_MEAS; i++) {
 
 			table->RowHeights[i]= 20;
@@ -1486,7 +1403,6 @@ void TFMain::ViewSelectedMeas(void)
 				table->Cells[col][row]="";
 			}
 		}
-
 
 	}
 	else
@@ -1538,9 +1454,7 @@ void TFMain::ViewSelectedMeas(void)
 		this->TabSheet_charts_v->TabVisible = false;
 		this->TabSheet_meas_table->TabVisible = true;
 		this->MPageControl->ActivePage = TabSheet_meas_table;
-
 }
-
 
 void __fastcall TFMain::Button_finishClick(TObject *Sender)
 {
@@ -1549,7 +1463,6 @@ void __fastcall TFMain::Button_finishClick(TObject *Sender)
 		utils_ShowMessage(L"Выберите измрение в дереве системы!");
 		return;
 	}
-
 
 	if (selected_meas->finalized) {
 
@@ -1589,7 +1502,6 @@ void TFMain::SetWindowSize(int par)
 	this->Panel_chart_x_v->Height = chars_panel_height*950/1000;
 	this->Panel_chart_y_v->Height = chars_panel_height*950/1000;
 	this->Panel_chart_r->Height = chars_panel_height*950/1000;
-
 }
 
 //---------------------------------------------------------------------------
@@ -1616,9 +1528,6 @@ void TFMain::DevideScreen(int par)
 
 		i_table_col_width = (this->Panel_meas_table->Width/14)+3;
 
-//		this->Panel_work_area->Height = Vertres*555/1000;
-//		this->Panel_work_area->Height = Vertres*800/1000;
-
 			if (par) {
 
 				this->Panel_work_area->Height = Vertres*836/1000;
@@ -1627,11 +1536,8 @@ void TFMain::DevideScreen(int par)
 			}
 			else
 			{
-				//this->Panel_work_area->Height = Vertres*550/1000;
-				//this->Panel_chats->Height = Vertres*550/1000;
 
 				this->Panel_work_area->Height = Vertres*500/1000;
-				//this->Panel_work_area->Height = Vertres*800/1000;
 				this->Panel_chats->Height = Vertres*500/1000;
 				this->Panel_charts_v->Height = Vertres*500/1000;
 
@@ -1643,7 +1549,6 @@ void TFMain::DevideScreen(int par)
 
 		TRect r;
 		::GetWindowRect((HWND)this->Panel_console_meas_control->Handle,&r);
-		//::GetWindowRect((HWND)this->Panel_meas_control,&r);
 
 		unsigned int top,left,width,height = 0;
 
@@ -1707,9 +1612,7 @@ void TFMain::DevideScreen(int par)
 		Edit_meas_place->Left = Label_place->Left+Edit_measX->Width*450/1000;
 		Edit_meas_place->Top = Edit_measX->Top;
 		Edit_meas_place->Height = Button_record->Height/6;
-//		Edit_meas_place->Width = Panel_console_meas_control->Width*300/1000;
 		Edit_meas_place->Width = (Panel_console_meas_control->Width-Edit_meas_place->Left)*950/1000;
-
 
 		Label_place->Top = Edit_meas_place->Top+Edit_meas_place->Height/2-Label_place->Height/2;
 
@@ -1894,7 +1797,7 @@ void __fastcall TFMain::N_save_confClick(TObject *Sender)
 void __fastcall TFMain::ToolButton11Click(TObject *Sender)
 {
 	GBISystem->SysConfMgr.Backup(0, 1);
-	Console(L"Ïðèëîæåíèå","Ðó÷íîå ðåçåðâíîå êîïèðîâàíèå ÁÄ âûïîëíåíî");
+	Console(L"резервная копия базы данных сохранена",L"");
 }
 //---------------------------------------------------------------------------
 
@@ -1905,43 +1808,36 @@ void __fastcall TFMain::ToolButton12Click(TObject *Sender)
 
 		if (selected_drill != NULL)
 		{
-			this->MStatusBar->Panels->Items[2]->Text = "Ýêñïîðò â Excel ...";
+			this->MStatusBar->Panels->Items[2]->Text = L"Экспорт в Excel ...";
 			selected_drill->Excel();
 			this->MStatusBar->Panels->Items[2]->Text = "";
-            return;
-		}
-
-		if (selected_meas != NULL)
-		{
-			this->MStatusBar->Panels->Items[2]->Text = "Ýêñïîðò â Excel ...";
-			//excel_export_rate = 0.5;
-			//Timer_excel_export_progress->Enabled = true;
-			selected_meas->Excel(1);
-			//Timer_excel_export_progress->Enabled = false;
-			this->MStatusBar->Panels->Items[2]->Text = "";
+			Form_excel_progress->StopShow();
+			return;
 		}
 		else
 		{
-			utils_ShowMessage(L"Âûáåðèòå èçìåðåíèå èëè ñêâàæèíó â äåðåâå ñèñòåìû!");
-		}
+			if (selected_meas != NULL)
+			{
+				this->MStatusBar->Panels->Items[2]->Text = "Экспорт в Excel ...";
+				selected_meas->Excel(1);
+				this->MStatusBar->Panels->Items[2]->Text = "";
+				Form_excel_progress->StopShow();
+				return;
+			}
+			else
+			{
+			utils_ShowMessage(L"Для экспорта в Excel выбрать скважину или измерение в дереве системы!");
+			}
+		 }
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TFMain::Timer_excel_export_progressTimer(TObject *Sender)
 {
-
-//	  if (excel_export_rate < 0.1)
-//	  {
-		  //Timer_excel_export_progress->Enabled = false;
-		  //this->MStatusBar->Panels->Items[2]->Text = "";
-//	  }
-//	  else
-	  {
 		  WideString s(L"");
-		  s.printf(L"Ýêñïîðò â Excel ... %.1f%",excel_export_rate);
+		  s.printf(L"Экспорт в Excel ... %.1f%",excel_export_rate);
 		  this->MStatusBar->Panels->Items[2]->Text = s;
-		  //excel_export_rate+=0.5;
-	  }
+
 }
 //---------------------------------------------------------------------------
 
@@ -1957,7 +1853,6 @@ void __fastcall TFMain::Chart_y_hDblClick(TObject *Sender)
 
 		 if (this->Panel_charty_h->Height > chars_panel_height*800/1000)
 		 {
-				 //SetWindowSize(screen_mode);
 				 this->Panel_chartx_h->Height = chars_panel_height*480/1000;
 				 this->Panel_charty_h->Height = chars_panel_height*480/1000;
 		 }
@@ -1975,30 +1870,11 @@ void __fastcall TFMain::Chart_y_hDblClick(TObject *Sender)
 void __fastcall TFMain::ToolButton_testClick(TObject *Sender)
 {
 
+return;//!!!
+
 GBISystem->ImportFromDataFile(L"c:\\Prj\\Gorizont\\RAD Studio C++ Builder\\GBI16\\Win32\\Debug\\Data\\IZDAT.CSV");
 
 return;
-
-/*
-
-				TDateTime t = 0.;
-				TFormatSettings FS;
-				FS.DateSeparator = '.';
-				FS.ShortDateFormat = "dd.mm.yyyy";
-				FS.LongTimeFormat = "hh:nn:ss";
-				FS.TimeSeparator = ':';
-
-				UnicodeString us = L"11.08.2023 14:21:06";
-
-				t = StrToDateTime(us, FS);
-				WideString ws;
-
-				ws = FormatDateTime(L"yyyy.dd.mm hh:nn:ss",t);
-
-				Sleep(1);
-
-return;
-*/
 
 TDataFile df;
 
@@ -2019,24 +1895,7 @@ df.pars_en = true;
 
 	}
 
-	//while (df.GetStr() == 0)
-	//{
-	//	while (df.GetWord() ==0);
-	//}
-
-
 return;
-
-/*
-::RenameFile(
-
-L"c:\\Prj\\Gorizont\\RAD Studio C++ Builder\\GBI_U16\\Win32\\Debug\\Base\\GBI\\Уренгой\\Скважина #1\\Измерение_1\\Измерение_1.txt",
-L"c:\\Prj\\Gorizont\\RAD Studio C++ Builder\\GBI_U16\\Win32\\Debug\\Base\\GBI\\Уренгой\\Скважина #1\\Измерение_1\\Измерение_1.txt.utf8");
-
-return;
-*/
-
-//this->GBISystem->place_list[0]->drill_list[0]->meas_list[0]->ConvertDataUTF16();
 
 this->GBISystem->place_list[0]->drill_list[0]->meas_list[0]->SaveData(0);
 
@@ -2107,8 +1966,6 @@ return;
 	TDrill* d = p->drill_list[0];
 	TMeas* m = d->meas_list[0];
 
-	//m->records[0].X1 = 0;
-
 	for (int i = 0; i < m->records_cnt; i++) {
 
 		m->records[i].X1 = test_dataset_h_s_3 [i];
@@ -2120,181 +1977,8 @@ return;
 
 return;
 
-/*
-	TMeas* tmm = current_meas;
-	double xx = 12.1;
-	double yy = 14.1;
-
-	for (int i = 0; i < tmm->records_cnt; i++) {
-
-		tmm->records[i].X1 = xx;
-		tmm->records[i].Y1 = yy;
-
-		xx+=0.15;
-		yy+=0.25;
-	}
-
-
-    tmm->DataToTable();
-
-	return;//!!!
-
-	typedef struct {
-
-		double depth;
-		double xreal;
-		double x1;
-		double x2;
-		double xres;
-		double lx;
-
-	} test_data;
-
-
-	test_data test_Data [] = {
-
-		{0,		4,		6,	-2,		4,	0},
-		{1,		5,		7,	-3,		5,	0.019392547},
-		{2,		-5,		-3,	7,		-5,	0.043633231},
-		{3,		5,		7,	-3,		5,	0.019392547},
-		{4,		5,		7,	-3,		5,	0.043633231},
-		{5,		5,		7,	-3,		5,	0.067873915},
-		{6,		5,		7,	-3,		5,	0.092114599},
-		{7,		5,		7,	-3,		5,	0.116355283},
-		{8,		5,		7,	-3,		5,	0.140595968},
-		{9,		10,		12,	-8,		10,	0.164836652},
-		{10,	10,		12,	-8,		10,	0.21331802},
-		{11,	11,		13,	-9,		11,	0.261799388},
-		{12,	5,		7,	-3,		5,	0.315128893},
-		{13,	5,		7,	-3,		5,	0.339369577},
-		{14,	5,		7,	-3,		5,	0.363610261},
-
-	};
-
-
-	TMeas t1(StringGrid_meas,"test1");
-	t1.type_drill = 0;
-	t1.single_way = 0;
-	t1.records_cnt = sizeof(test_Data)/sizeof(test_data);
-	t1.DataToTable();
-
-	for (int i = 0; i < t1.records_cnt; i++) {
-
-		t1.records[i].depth = test_Data[i].depth;
-		t1.records[i].X1 = test_Data[i].x1;
-		t1.records[i].X2 = test_Data[i].x2;
-
-	}
-
-	t1.Calculate();
-
-	t1.DataToTable();
-
-	utils_ShowMessage(L"test 1");
-
-
-	double dt [20];
-
-	dt[0] = t1.records[0].LX - test_Data[0].lx;
-	dt[1] = t1.records[1].LX - test_Data[1].lx;
-	dt[2] = t1.records[2].LX - test_Data[2].lx;
-	dt[3] = t1.records[3].LX - test_Data[3].lx;
-	dt[4] = t1.records[4].LX - test_Data[4].lx;
-	dt[5] = t1.records[5].LX - test_Data[5].lx;
-	dt[6] = t1.records[6].LX - test_Data[6].lx;
-	dt[7] = t1.records[7].LX - test_Data[7].lx;
-	dt[8] = t1.records[8].LX - test_Data[8].lx;
-	dt[9] = t1.records[9].LX - test_Data[9].lx;
-	dt[10] = t1.records[10].LX - test_Data[10].lx;
-	dt[11] = t1.records[11].LX - test_Data[11].lx;
-	dt[12] = t1.records[12].LX - test_Data[12].lx;
-	dt[13] = t1.records[13].LX - test_Data[13].lx;
-	dt[14] = t1.records[14].LX - test_Data[14].lx;
-
-	Sleep(1);
-
- 	test_data test_Data1 [] = {
-
-		{0,		1,		-3132,		-3192,	30,		0},
-		{0.5,	1,		-3261,		0,		-99,	0.072722052},
-		{1,		1,		-3284,		0,		-122,	-0.167260711},
-		{1.5,	2,		-3375,		0,		-213,	-0.462997039},
-		{2,		3,		-3375,		0,		-213,	-0.979323518},
-		{2.5,	3,		8,			0,		3170,	-1.495649996},
-		{3,		3,		8,			0,		3170,	6.188344356},
-		{3.5, 	2,		7,			0,		3169,	13.87233871},
-		{4,		1,		6,			0,		3168,	21.55390928},
-		{4.5,	1,		6,			0,		3168,	29.23305607},
-		{5,		0,		5,			0,		3167,	36.91220285},
-		{5.5,	-1,		4,			0,		3166,	44.58892586},
-		{6,		-1,		4,			0,		3166,	52.26322508},
-		{6.5,	-1,		4,			0,		3166,	59.9375243},
-		{7,		-2,		3,			0,		3165,	67.61182352},
-
-	};
-
-
-	t1.records_cnt = sizeof(test_Data1)/sizeof(test_data);
-	t1.single_way = 1;
-	t1.DataToTable();
-
-	for (int i = 0; i < t1.records_cnt; i++) {
-
-		t1.records[i].depth = test_Data1[i].depth;
-		t1.records[i].X1 = test_Data1[i].x1;
-		t1.records[i].X2 = test_Data1[i].x2;
-
-	}
-
-	t1.Calculate();
-
-	t1.DataToTable();
-	utils_ShowMessage(L"test 2");
-
-
-	dt[0] = t1.records[0].LX - test_Data1[0].lx;
-	dt[1] = t1.records[1].LX - test_Data1[1].lx;
-	dt[2] = t1.records[2].LX - test_Data1[2].lx;
-	dt[3] = t1.records[3].LX - test_Data1[3].lx;
-	dt[4] = t1.records[4].LX - test_Data1[4].lx;
-	dt[5] = t1.records[5].LX - test_Data1[5].lx;
-	dt[6] = t1.records[6].LX - test_Data1[6].lx;
-	dt[7] = t1.records[7].LX - test_Data1[7].lx;
-	dt[8] = t1.records[8].LX - test_Data1[8].lx;
-	dt[9] = t1.records[9].LX - test_Data1[9].lx;
-	dt[10] = t1.records[10].LX - test_Data1[10].lx;
-	dt[11] = t1.records[11].LX - test_Data1[11].lx;
-	dt[12] = t1.records[12].LX - test_Data1[12].lx;
-	dt[13] = t1.records[13].LX - test_Data1[13].lx;
-	dt[14] = t1.records[14].LX - test_Data1[14].lx;
-
-	Sleep(1);
-
-
-	return;
-
-	TMeas* m = selected_meas;
-
-	if (m == NULL) {
-
-		return;
-
-	}
-
-	double dep = 5.5;
-
-	for (int i = 1; i < m->records_cnt; i++) {
-
-		m->records[i].depth = dep;
-		m->records[i].tuberr = 0.001;
-		dep+=5.5;
-	}
-
-	m->DataToTable();
-*/
 
 }
-
 
 //---------------------------------------------------------------------------
 
@@ -2472,15 +2156,10 @@ int TFMain::ClearTable(void)
 
 void TFMain::VirtKey_TouchIn_On(void)
 {
-   //if (GBISystem->i_use_side_keyboard != 0)
-   {
 		TCHAR dir[1024];
 		GetCurrentDirectoryW(1024,dir);
-		//strcat(dir, L"\\Utils\\Touch-It\\");
-		//ShellExecute(NULL,NULL,"TouchIt.exe","",dir,0);
 		wcscat(dir, L"\\Utils\\FreeVK\\");
 		ShellExecuteW(NULL,NULL,L"FreeVK.exe",L"",dir,0);
-   }
 }
 //---------------------------------------------------------------------------
 
@@ -2549,6 +2228,7 @@ void __fastcall TFMain::TreeView_systemMouseMove(TObject *Sender, TShiftState Sh
 
 void __fastcall TFMain::ToolButton2Click(TObject *Sender)
 {
+    LPageControl_console->ActivePage = TabSheet_console;
 	GBISystem->ImportDataCSV(OpenDialog);
 }
 //---------------------------------------------------------------------------

@@ -9,7 +9,7 @@
 extern bool b_MessageConfirmParamsetShow;
 
 #define BUILD           2
-#define VERSION         2
+#define VERSION         3
 #define SUBVERSION      0
 
 /*
@@ -39,6 +39,6 @@ extern bool b_MessageConfirmParamsetShow;
 	For debuf development mode
 */
 
-#define DEBUG_DEVELOPMENT_MODE
+//#define DEBUG_DEVELOPMENT_MODE
 
 

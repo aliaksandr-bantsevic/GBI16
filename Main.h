@@ -40,6 +40,7 @@
 #include "MeasAdjust.h"
 #include "Diagram.h"
 #include "DataEnter.h"
+#include "ExcelWait.h"
 
 //---------------------------------------------------------------------------
 class TFMain : public TForm
@@ -253,12 +254,13 @@ private:	// User declarations
 	void Test1();
 	void CurrentTimeView();
 	void ApplicationInit();
-	void Console(WideString obj, WideString msg);
+
 	void SystemInit();
 	void SetMenuFont(TRect &ARect, TCanvas* ACanvas, WideString text);
 public:		// User declarations
 	__fastcall TFMain(TComponent* Owner);
 
+	void Console(WideString obj, WideString msg);
 	void ViewSelectedMeas(void);
 	void ViewSelectedDrill(void);
 	void SetWindowSize(int par);

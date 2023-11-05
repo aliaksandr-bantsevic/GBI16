@@ -14,14 +14,14 @@ Variant mSheet;
 bool ShowExcel = false;
 bool FormatCellsOn = false;
 
-char* XCOL[]={
+TCHAR* XCOL[]={
 
-(char*)"-",
-(char*)"A",(char*)"B",(char*)"C",(char*)"D",(char*)"E",(char*)"F",(char*)"G",(char*)"H",(char*)"I",(char*)"J",(char*)"K",(char*)"L",(char*)"M",(char*)"N",(char*)"O",(char*)"P",(char*)"Q",(char*)"R",(char*)"S",(char*)"T",(char*)"U",(char*)"V",(char*)"W",(char*)"X",(char*)"Y",(char*)"Z",
-(char*)"AA",(char*)"AB",(char*)"AC",(char*)"AD",(char*)"AE",(char*)"AF",(char*)"AG",(char*)"AH",(char*)"AI",(char*)"AJ",(char*)"AK",(char*)"AL",(char*)"AM",(char*)"AN",(char*)"AO",(char*)"AP",(char*)"AQ",(char*)"AR",(char*)"AS",(char*)"AT",(char*)"AU",(char*)"AV",(char*)"AW",(char*)"AX",
-(char*)"AY",(char*)"AZ",(char*)"BA",(char*)"BB",(char*)"BC",(char*)"BD",(char*)"BE",(char*)"BF",(char*)"BG",(char*)"BH",(char*)"BI",(char*)"BJ",(char*)"BK",(char*)"BL",(char*)"BM",(char*)"BN",(char*)"BO",(char*)"BP",(char*)"BQ",(char*)"BR",(char*)"BS",(char*)"BT",(char*)"BU",(char*)"BV",
-(char*)"BW",(char*)"BX",(char*)"BY",(char*)"BZ",(char*)"CA",(char*)"CB",(char*)"CC",(char*)"CD",(char*)"CE",(char*)"CF",(char*)"CG",(char*)"CH",(char*)"CI",(char*)"CJ",(char*)"CK",(char*)"CL",(char*)"CM",(char*)"CN",(char*)"CO",(char*)"CP",(char*)"CQ",(char*)"CR",(char*)"CS",(char*)"CT",
-(char*)"CU",(char*)"CV",(char*)"CW",(char*)"CX",(char*)"CY",(char*)"CZ",
+(TCHAR*)L"-",
+(TCHAR*)L"A",(TCHAR*)L"B",(TCHAR*)L"C",(TCHAR*)L"D",(TCHAR*)L"E",(TCHAR*)L"F",(TCHAR*)L"G",(TCHAR*)L"H",(TCHAR*)L"I",(TCHAR*)L"J",(TCHAR*)L"K",(TCHAR*)L"L",(TCHAR*)L"M",(TCHAR*)L"N",(TCHAR*)L"O",(TCHAR*)L"P",(TCHAR*)L"Q",(TCHAR*)L"R",(TCHAR*)L"S",(TCHAR*)L"T",(TCHAR*)L"U",(TCHAR*)L"V",(TCHAR*)L"W",(TCHAR*)L"X",(TCHAR*)L"Y",(TCHAR*)L"Z",
+(TCHAR*)L"AA",(TCHAR*)L"AB",(TCHAR*)L"AC",(TCHAR*)L"AD",(TCHAR*)L"AE",(TCHAR*)L"AF",(TCHAR*)L"AG",(TCHAR*)L"AH",(TCHAR*)L"AI",(TCHAR*)L"AJ",(TCHAR*)L"AK",(TCHAR*)L"AL",(TCHAR*)L"AM",(TCHAR*)L"AN",(TCHAR*)L"AO",(TCHAR*)L"AP",(TCHAR*)L"AQ",(TCHAR*)L"AR",(TCHAR*)L"AS",(TCHAR*)L"AT",(TCHAR*)L"AU",(TCHAR*)L"AV",(TCHAR*)L"AW",(TCHAR*)L"AX",
+(TCHAR*)L"AY",(TCHAR*)L"AZ",(TCHAR*)L"BA",(TCHAR*)L"BB",(TCHAR*)L"BC",(TCHAR*)L"BD",(TCHAR*)L"BE",(TCHAR*)L"BF",(TCHAR*)L"BG",(TCHAR*)L"BH",(TCHAR*)L"BI",(TCHAR*)L"BJ",(TCHAR*)L"BK",(TCHAR*)L"BL",(TCHAR*)L"BM",(TCHAR*)L"BN",(TCHAR*)L"BO",(TCHAR*)L"BP",(TCHAR*)L"BQ",(TCHAR*)L"BR",(TCHAR*)L"BS",(TCHAR*)L"BT",(TCHAR*)L"BU",(TCHAR*)L"BV",
+(TCHAR*)L"BW",(TCHAR*)L"BX",(TCHAR*)L"BY",(TCHAR*)L"BZ",(TCHAR*)L"CA",(TCHAR*)L"CB",(TCHAR*)L"CC",(TCHAR*)L"CD",(TCHAR*)L"CE",(TCHAR*)L"CF",(TCHAR*)L"CG",(TCHAR*)L"CH",(TCHAR*)L"CI",(TCHAR*)L"CJ",(TCHAR*)L"CK",(TCHAR*)L"CL",(TCHAR*)L"CM",(TCHAR*)L"CN",(TCHAR*)L"CO",(TCHAR*)L"CP",(TCHAR*)L"CQ",(TCHAR*)L"CR",(TCHAR*)L"CS",(TCHAR*)L"CT",
+(TCHAR*)L"CU",(TCHAR*)L"CV",(TCHAR*)L"CW",(TCHAR*)L"CX",(TCHAR*)L"CY",(TCHAR*)L"CZ",
 };
 
 
@@ -32,20 +32,13 @@ bool OpenExcelReportTable(int sheets)
 
 		try
 		{
-				mExcel = CreateOleObject("Excel.Application");
+				mExcel = CreateOleObject(L"Excel.Application");
 
-				if (ShowExcel)  mExcel.OlePropertySet("Visible", True);
-				else            mExcel.OlePropertySet("Visible", False);
+				if (ShowExcel)  mExcel.OlePropertySet(L"Visible", True);
+				else            mExcel.OlePropertySet(L"Visible", False);
 
-				mExcel.OlePropertySet("SheetsInNewWorkbook",sheets);
-				mExcel.OlePropertyGet("WorkBooks").OleProcedure("Add");
-
-				//Variant mSheet;
-				//mSheet = mExcel.OlePropertyGet("Worksheets").OlePropertyGet("Item",1);
-
-				//Sleep(1);
-
-				//mSheet.OlePropertySet("Name",WideString("Æåëòûé ëèñò"));
+				mExcel.OlePropertySet(L"SheetsInNewWorkbook",sheets);
+				mExcel.OlePropertyGet(L"WorkBooks").OleProcedure(L"Add");
 
 		}
 		catch(...)
@@ -58,21 +51,16 @@ bool OpenExcelReportTable(int sheets)
 }
 
 
-bool OpenExcelReportSheet(AnsiString sheetname, int sheet)
+bool OpenExcelReportSheet(WideString sheetname, int sheet)
 {
 
 		bool bres = true;
 
 		try
 		{
-				//mExcel.OlePropertyGet("WorkBooks").OleProcedure("Add");
-
-				//mExcel.OlePropertyGet("WorkBooks").OlePropertyGet("WorkSheets").OleProcedure("Add");
-				//mSheet = mExcel.OlePropertyGet("ActiveSheet");
-
-				mSheet = mExcel.OlePropertyGet("Worksheets").OlePropertyGet("Item",sheet);
-				mSheet.OlePropertySet("Name",WideString(sheetname));
-				mSheet.OleProcedure("Activate");
+				mSheet = mExcel.OlePropertyGet(L"Worksheets").OlePropertyGet(L"Item",sheet);
+				mSheet.OlePropertySet(L"Name",WideString(sheetname));
+				mSheet.OleProcedure(L"Activate");
 
 		}
 		catch(...)
@@ -85,38 +73,15 @@ bool OpenExcelReportSheet(AnsiString sheetname, int sheet)
 }
 
 
-bool WriteExcelReportCell(int row, int col, AnsiString sval)
+bool WriteExcelReportCell(int row, int col, WideString sval)
 {
-		//TODO: Add your source code here
 		bool bres = true;
 
 		try
 		{
-				//mExcel.OlePropertyGet("ActiveSheet").OlePropertyGet("Cells", row, WideString(XCOL[col])).OlePropertySet(WideString("NumberFormat"),WideString("@"));
-
-				mExcel.OlePropertyGet("ActiveSheet").OlePropertyGet("Cells", row, WideString(XCOL[col])).OlePropertySet(WideString("NumberFormat"),WideString("0,00"));
-
-				mExcel.OlePropertyGet("ActiveSheet").OlePropertyGet("Cells", row, WideString(XCOL[col])).OlePropertySet(WideString("Value"),WideString(sval));
-
-				/*
-				AnsiString s1 = "Value";
-				AnsiString s2 = "1234567890";
-
-				AnsiString& ss1 = s1;
-				AnsiString& ss2 = s2;
-
-
-		Variant v1, v2, v3;
-		v1 = mExcel.OlePropertyGet("ActiveSheet");
-		v2 = v1.OlePropertyGet("Cells", 2,2);
-		v2.OlePropertySet(WideString("NumberFormat"),WideString("@"));
-		v2.OlePropertySet(WideString("Value"),WideString("123456"));
-				  */
-
-
-		 //v1 = v.OlePropertyGet("Cells", 2, 2);
-		 //v2 = v1.OlePropertySet("Value", "sdfasdggdf");
-
+				mExcel.OlePropertyGet(L"ActiveSheet").OlePropertyGet(L"Cells", row, WideString(XCOL[col])).OlePropertySet(WideString(L"NumberFormat"),WideString(L"@"));
+				//mExcel.OlePropertyGet(L"ActiveSheet").OlePropertyGet(L"Cells", row, WideString(XCOL[col])).OlePropertySet(WideString(L"CommonFormat"),WideString(L"0,00"));
+				mExcel.OlePropertyGet(L"ActiveSheet").OlePropertyGet(L"Cells", row, WideString(XCOL[col])).OlePropertySet(WideString(L"Value"),WideString(sval));
 
 		}
 		catch(...)
@@ -128,16 +93,15 @@ bool WriteExcelReportCell(int row, int col, AnsiString sval)
 
 }
 
-bool SaveExcelReport(AnsiString spath)
+bool SaveExcelReport(WideString spath)
 {
-		//TODO: Add your source code here
 		bool bres=true;
 
 		try
 		{
-		  mExcel.OlePropertyGet("WorkBooks", 1).OleProcedure(WideString("SaveAs"),WideString(spath));
-		  mExcel.OlePropertyGet("ActiveWindow").OleProcedure("Close");
-		  mExcel.OleProcedure(WideString("Quit"));
+		  mExcel.OlePropertyGet(L"WorkBooks", 1).OleProcedure(WideString(L"SaveAs"),WideString(spath));
+		  mExcel.OlePropertyGet(L"ActiveWindow").OleProcedure(L"Close");
+		  mExcel.OleProcedure(WideString(L"Quit"));
 		}
 		catch(...)
 		{
@@ -145,10 +109,8 @@ bool SaveExcelReport(AnsiString spath)
 		}
 
 
-		AnsiString s("");
-		s.printf("Îò÷åò ñîõðàíåí â ôàéëå %s",spath.c_str());
-		//WideChar mes[1024];
-		//StringToWideChar(s.c_str(),mes,1024);
+		WideString s(L"");
+		s.printf(L"Отчет сохранен в файле %s",spath.c_bstr());
 		utils_ShowMessage(s);
 
 		return bres;
@@ -157,12 +119,11 @@ bool SaveExcelReport(AnsiString spath)
 
 bool SetExcelColumnWidth(int row, int col, int w)
 {
-        //TODO: Add your source code here
 		bool res = true;
 
         try
         {
-			 mExcel.OlePropertyGet("ActiveSheet").OlePropertyGet("Cells", row, XCOL[col]).OlePropertySet("ColumnWidth",w);
+			 mExcel.OlePropertyGet(L"ActiveSheet").OlePropertyGet(L"Cells", row, XCOL[col]).OlePropertySet(L"ColumnWidth",w);
         }
         catch(...)
         {
@@ -176,19 +137,18 @@ bool SetExcelCellFontBold(int row, int col)
 {
 		if (FormatCellsOn == false) return false;
 
-        //TODO: Add your source code here
-        bool res=true;
+		bool res=true;
 
-        try
-        {
-             mExcel.OlePropertyGet("ActiveSheet").OlePropertyGet("Cells", row, XCOL[col]).OlePropertyGet("Font").OlePropertySet("Bold",true);
-        }
-        catch(...)
-        {
-              res=false;
-        }
+		try
+		{
+			 mExcel.OlePropertyGet(L"ActiveSheet").OlePropertyGet(L"Cells", row, XCOL[col]).OlePropertyGet(L"Font").OlePropertySet(L"Bold",true);
+		}
+		catch(...)
+		{
+			  res=false;
+		}
 
-        return res;
+		return res;
 
 }
 
@@ -197,12 +157,11 @@ bool SetExellCellColor(int row, int col, int color)
 {
 		if (FormatCellsOn == false) return false;
 
-        //TODO: Add your source code here
-        bool res=true;
+		bool res=true;
 
         try
         {
-             mExcel.OlePropertyGet("ActiveSheet").OlePropertyGet("Cells", row, XCOL[col]).OlePropertyGet("Interior").OlePropertySet("ColorIndex",color);
+             mExcel.OlePropertyGet(L"ActiveSheet").OlePropertyGet(L"Cells", row, XCOL[col]).OlePropertyGet(L"Interior").OlePropertySet(L"ColorIndex",color);
         }
         catch(...)
         {
@@ -217,54 +176,52 @@ bool SetExcelRangeBorder(int row1, int col1, int row2, int col2, int line)
 {
 		if (FormatCellsOn == false) return false;
 
-        //TODO: Add your source code here
-        bool res=false;
+	   bool res=false;
 
-        Variant vVarCell;
-        AnsiString srange("");
-        AnsiString s1=XCOL[col1];
-        AnsiString s2=XCOL[col2];
-		srange.printf("%s%d:%s%d",s1.c_str(),row1,s2.c_str(),row2);
+		Variant vVarCell;
+		WideString srange(L"");
+		WideString s1=XCOL[col1];
+		WideString s2=XCOL[col2];
+		srange.printf(L"%s%d:%s%d",s1.c_bstr(),row1,s2.c_bstr(),row2);
 
-              try
-              {
-                      vVarCell=mExcel.OlePropertyGet("ActiveSheet").OlePropertyGet("Range",srange.c_str());
-                      for (int b=7; b<=10; b++)
-                      {
-                        vVarCell.OlePropertyGet("Borders",b).OlePropertySet("Weight",line);
-                      }
-              }
-              catch(...)
-              {
-                      res=false;
-              }
+			  try
+			  {
+					  vVarCell=mExcel.OlePropertyGet(L"ActiveSheet").OlePropertyGet(L"Range",srange.c_bstr());
+					  for (int b=7; b<=10; b++)
+					  {
+						vVarCell.OlePropertyGet(L"Borders",b).OlePropertySet(L"Weight",line);
+					  }
+			  }
+			  catch(...)
+			  {
+					  res=false;
+			  }
 
-              return res;
+			  return res;
 }
 
-bool ExcelMergeAndWrite(int row1, int col1, int row2, int col2, AnsiString s)
+bool ExcelMergeAndWrite(int row1, int col1, int row2, int col2, WideString s)
 {
-        //TODO: Add your source code here
-        bool res=true;
+		bool res=true;
 
-        try
-        {
-                Variant vVarCell;
-                AnsiString srange("");
-                AnsiString s1=XCOL[col1];
-                AnsiString s2=XCOL[col2];
-				srange.printf("%s%d:%s%d",s1.c_str(),row1,s2.c_str(),row2);
+		try
+		{
+				Variant vVarCell;
+				WideString srange(L"");
+				WideString s1=XCOL[col1];
+				WideString s2=XCOL[col2];
+				srange.printf(L"%s%d:%s%d",s1.c_bstr(),row1,s2.c_bstr(),row2);
 
-                vVarCell=mExcel.OlePropertyGet("ActiveSheet").OlePropertyGet("Range",srange.c_str());
-                vVarCell.OleProcedure("Merge");
+				vVarCell=mExcel.OlePropertyGet(L"ActiveSheet").OlePropertyGet(L"Range",srange.c_bstr());
+				vVarCell.OleProcedure(L"Merge");
 
-                WriteExcelReportCell(row1,col1,s);
+				WriteExcelReportCell(row1,col1,s);
 		}
 		catch(...)
-        {
-                res=false;
-        }
+		{
+				res=false;
+		}
 
-        return res;
+		return res;
 }
 

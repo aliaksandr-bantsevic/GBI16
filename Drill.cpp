@@ -316,7 +316,7 @@ int TDrill::Excel(void)
 
 			if (OpenExcelReportTable(this->meas_list_idx) == false)
 			{
-				Application->MessageBoxW(L"Не удалось создать таблицу!",L"ОШИБКА",0);
+				Application->MessageBoxW(L"Не удалось создать таблицу! Проверьте наличие установленного MS Excell.",L"ОШИБКА",0);
 				return -1;
 			}
 

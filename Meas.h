@@ -12,10 +12,6 @@
 #include "ExcelDrv.h"
 #include "ExcelWait.h"
 
-/*
-	Одна запись измерения
-*/
-
 #define MAX_RECORDS_MEAS   500
 
 typedef struct {
@@ -116,6 +112,9 @@ int ConvertDataUTF16(void);
 int isMeasTxtUTF8(TCHAR* path);
 
 int AcceptDataFileRecord(int dir, double d, double x, double y);
+
+WideString dts(double d);
+void dtc(TCHAR* str);
 
 };
 

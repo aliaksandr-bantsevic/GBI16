@@ -50,8 +50,6 @@ public:
 
 	TTreeNode* node;
 
-//Список мест
-
 public:
 
 	TPlace* place_list[SYSTEM_PLACES_MAX];
@@ -118,7 +116,9 @@ public:
 	TPlace* GetPlaceByName(WideString n);
 	TDrill* GetDrillByName(TPlace* p, WideString n, int cnt);
 	int ImportFromDataFile(TCHAR* path);
-    int ImportDataCSV(TOpenDialog* dlg);
+	int ImportDataCSV(TOpenDialog* dlg);
+
+	void (*console) (WideString obj, WideString msg);
 };
 
 

@@ -1096,8 +1096,12 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 	 int forward_cnt = 0;
 	 int back_cnt = 0;
 	 int max_cnt = 0;
-	 
+
 	 p = GetPlaceByName(dfm->place);
+
+	 WideString msg("");
+	 WideString wtm("");
+	 WideString ws("");
 
 	 if (p != NULL)
 	 {
@@ -1110,8 +1114,17 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 
 			 if (dfm->record_cnt > d->records_cnt) d->records_cnt = dfm->record_cnt/2;
 
+			 wtm = FormatDateTime(L" yyyy-mm-dd hh:nn:ss ", dfm->time);
+			 //msg.printf(L"Измерение %S-%S-%S ", p->name, d->name, wtm);
+			 msg =  p->name + L"-" + d->name + L"-" + wtm;
+
+
 			 if (d->MeasExistByTimeCreate(dfm->time) == false)
 			 {
+				int record_cnt_accepted = 0;
+				msg = msg + L"добавлено";
+				ws.printf(L" [%d записей]", dfm->record_cnt);
+
 				d->AddMeas(NULL, L"new_meas");
 				m = d->meas_list[d->meas_list_idx-1];
 				if (m->records_cnt < d->records_cnt) m->records_cnt = d->records_cnt;
@@ -1139,8 +1152,14 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 					}
 
 					r = &m->records[i];
-					m->AcceptDataFileRecord(dir, dr->level, dr->X, dr->Y);
+					if (m->AcceptDataFileRecord(dir, dr->level, dr->X, dr->Y) == 0)
+					{
+						record_cnt_accepted++;
+                    }
 				}
+
+				ws.printf(L" [%d записей]", record_cnt_accepted);
+				msg = msg + ws;
 
 				if (forward_cnt>=back_cnt)
 				{
@@ -1158,21 +1177,26 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 				}
 				
 				m->SaveData(0);
+				console(L"Система", msg);
 			 }
 			 else
 			 {
+				 msg = msg + L" уже существует";
+				 console(L"Система", msg);
 				 res = -3; //meas already exist
-             }
+			 }
 
 		}
 		else
 		{
+			console(L"Система", L"Не удалось найти/создать скважину");
 			res = -2; //can not find/create drill
-        }
+		}
 
 	 }
 	 else
 	 {
+		 console(L"Система", L"Не удалось найти/создать измерение");
 		 res = -1; //can not find/create place
      }
 
@@ -1234,23 +1258,42 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
  int TGBISystem::ImportFromDataFile(TCHAR* path)
  {
 	 int res = 0;
+	 int total = 0;
 	 data_file_meas_type* dfm = NULL;
+	 WideString msg("");
 
-	 this->DataFile.ParsDaTaFile(path);
-
-	 for (int i =0; i < DataFile.data_file_meas_set_idx; i++)
+	 if (this->DataFile.ParsDaTaFile(path) == 0)
 	 {
-		dfm = DataFile.data_file_meas_set [i];
-		AcceptDataFileMeas(dfm);
+
+		 WideString msg("");
+		 msg.printf(L"Фйал распознан, %d измерений обнаружено", DataFile.data_file_meas_set_idx );
+		 console(L"Система", msg);
+
+		 for (int i =0; i < DataFile.data_file_meas_set_idx; i++)
+		 {
+			dfm = DataFile.data_file_meas_set [i];
+			if (AcceptDataFileMeas(dfm) == 0)
+			{
+				total++;
+            }
+		 }
+
+		 Redraw();
+		 msg.printf(L"%d новых измерений добавлено в систему", total);
+		 console(L"Система", msg);
 	 }
-
-	 Redraw();
-
+	 else
+	 {
+		console(L"Система", L"Ошибка распознаваниф файла CSV");
+     }
 	 return res;
  }
 
  int TGBISystem::ImportDataCSV(TOpenDialog* dlg)
  {
+
+	 console(L"Система", L"Импорт данных из внешнего файлс CSV ...");
+
 	 int res = 0;
 
 	 TCHAR tdir[1024];
@@ -1263,7 +1306,11 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 	 dlg->Filter = L"*.csv|*.csv";
 	 dlg->FileName = SysConfMgr.cur_conf_name ;
 	 dlg->Title = L"Открыть конфигурацию";
-	 if (dlg->Execute()!=IDOK) return -1;
+	 if (dlg->Execute()!=IDOK)
+	 {
+		console(L"Система", L"... отмена");
+		return -1;
+	 }
 
 	 fres = dlg->FileName;
 
