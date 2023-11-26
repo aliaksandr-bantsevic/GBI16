@@ -109,28 +109,28 @@ void TFMain::SetMenuFont(TRect &ARect, TCanvas* ACanvas, WideString text)
 void __fastcall TFMain::MMPropDrawItem(TObject *Sender, TCanvas *ACanvas, TRect &ARect,
 		  bool Selected)
 {
-	SetMenuFont(ARect, ACanvas, "Íàñòðîéêè   ");
+	SetMenuFont(ARect, ACanvas, "Настройки   ");
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TFMain::MMViewDrawItem(TObject *Sender, TCanvas *ACanvas, TRect &ARect,
 		  bool Selected)
 {
-	SetMenuFont(ARect, ACanvas, "Âèä   ");
+	SetMenuFont(ARect, ACanvas, "Вид   ");
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TFMain::MMToolsDrawItem(TObject *Sender, TCanvas *ACanvas, TRect &ARect,
           bool Selected)
 {
-	SetMenuFont(ARect, ACanvas, "Èíñòðóìåíòû   ");
+	SetMenuFont(ARect, ACanvas, "Инструменты   ");
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TFMain::MMHelpDrawItem(TObject *Sender, TCanvas *ACanvas, TRect &ARect,
 		  bool Selected)
 {
-	SetMenuFont(ARect, ACanvas, "Ñïðàâêà   ");
+	SetMenuFont(ARect, ACanvas, "Справка   ");
 }
 //---------------------------------------------------------------------------
 
@@ -1415,11 +1415,7 @@ void TFMain::ViewSelectedMeas(void)
 
 		if (selected_meas->finalized == true) {
 
-
 			s = FormatDateTime(L"dd-mm-yyyy hh:nn:ss",selected_meas->finalize_time);
-			//ss = FormatDateTime(L"dd_mm_yyyy_hh_nn_ss",selected_meas->finalize_time);
-			//s=selected_meas->name + "_" + ss;
-			//s.printf(L"%s",selected_meas->num,ss.c_bstr());
 		}
 		else
 		{

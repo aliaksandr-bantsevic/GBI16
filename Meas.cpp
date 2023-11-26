@@ -346,9 +346,7 @@ int TMeas::Calculate(void)
 
 					if (single_way == 1) {
 
-					   //lx = (records[i].depth - records[i-1].depth) * sin(records[i-1].Xres/3600*PI/180) * 1000 + records[i-1].LX;
-					   //ly = (records[i].depth - records[i-1].depth) * sin(records[i-1].Yres/3600*PI/180) * 1000 + records[i-1].LY;
-                        						/* в таблице заказчика расчет делается не по предыдущей точке а по текущей */
+					   /* в таблице заказчика расчет делается не по предыдущей точке а по текущей */
 					   lx = (records[i].depth - records[i-1].depth) * sin(records[i].Xres/3600*PI/180) * 1000 + records[i-1].LX;
 					   /* для горизонтальной однопроходной применяется гео поправка */
 					   if (geo_on == true) {
@@ -415,14 +413,6 @@ int TMeas::Calculate(void)
 				records[i].LY = ly;
 
 				records[i].LR = sqrt((lx*lx)+(ly*ly));
-
-				/*
-				records[i].LR = rt; rt+=0.05; //!!!test
-				records[i].LX = i*rt;//!!!
-				records[i].LY = 2*i*rt;//!!!
-				records[i].Xres = i*rt;//!!!
-				records[i].Yres = 2*i*rt;//!!!
-				  */
 
 				if (abs(records[i].LX) > 0.0001) {
 
@@ -1077,8 +1067,8 @@ int TMeas::Excel (int par)
 	WriteExcelReportCell(irow,icol,L"Глубина"); icol++;
 	WriteExcelReportCell(irow,icol,L"Погр. тр."); icol++;
 	WriteExcelReportCell(irow,icol,L"X1"); icol++;
-	WriteExcelReportCell(irow,icol,L"Y1"); icol++;
 	WriteExcelReportCell(irow,icol,L"X2"); icol++;
+	WriteExcelReportCell(irow,icol,L"Y1"); icol++;
 	WriteExcelReportCell(irow,icol,L"Y2"); icol++;
 	WriteExcelReportCell(irow,icol,L"LX"); icol++;
 	WriteExcelReportCell(irow,icol,L"LY"); icol++;
@@ -1098,8 +1088,8 @@ int TMeas::Excel (int par)
 		WriteExcelReportCell(irow,icol,dts(r->depth)); icol++;
 		WriteExcelReportCell(irow,icol,dts(r->tuberr)); icol++;
 		WriteExcelReportCell(irow,icol,dts(r->X1)); icol++;
-		WriteExcelReportCell(irow,icol,dts(r->Y1)); icol++;
 		WriteExcelReportCell(irow,icol,dts(r->X2)); icol++;
+		WriteExcelReportCell(irow,icol,dts(r->Y1)); icol++;
 		WriteExcelReportCell(irow,icol,dts(r->Y2)); icol++;
 		WriteExcelReportCell(irow,icol,dts(r->LX)); icol++;
 		WriteExcelReportCell(irow,icol,dts(r->LY)); icol++;
@@ -1202,7 +1192,7 @@ int TMeas::isMeasTxtUTF8(TCHAR* path)
 
 	if (fread(buf,10,1,f))
 	{
-		 if (buf[0]!=0xCC) {
+		 if (buf[0] != 0xCC) {
 
 			res = -1;
 

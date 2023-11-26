@@ -39,7 +39,6 @@ __published:	// IDE-managed Components
 	TButton *Button_port_open;
 	TEdit *Edit_port_prop;
 	TButton *Button_port_adjust;
-	TGroupBox *Sensor;
 	TEdit *Edit_serial;
 	TEdit *Edit_version;
 	TEdit *Edit_X;

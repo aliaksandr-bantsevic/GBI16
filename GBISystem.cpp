@@ -204,17 +204,6 @@ void TGBISystem::LoadSysConf()
 
 void TGBISystem::Start(TEdit* ex, TEdit* ey)
 {
-	//if (this->port.IsOpen() == false) {
-
-		/*
-		if (port.Open() != 0) {
-
-			utils_ShowMessage(L"Не удалось открыть порт!");
-			return;
-		}
-		*/
-	//}
-
 	run = true;
 	edit_meas_X = ex;
 	edit_meas_Y = ey;
@@ -265,9 +254,6 @@ int TGBISystem::RunProc(void)
 	if (sensor->GetMeasResult() == 0)
 	{
 		WideString s;
-
-		//sensor->curr_X = xx;
-		//sensor->curr_Y = yy;
 
 		COLORREF c = RGB(0,255,0);
 
@@ -791,13 +777,7 @@ int TGBISystem::OpenConf (TOpenDialog* dlg)
 
 	 dlg->InitialDir = SysConfMgr.GetCurConfFoldPath();
 	 dlg->Filter = L"*.ini|*.ini";
-
-	 //wcscpy((TCHAR*)dlg->FileName.data(), SysConfMgr.cur_conf_name);
-
-	 //dlg->FileName = L"Пока не работает!";
-
 	 dlg->FileName = SysConfMgr.cur_conf_name ;
-
 
 	 dlg->Title = L"Открыть конфигурацию";
 	 if (dlg->Execute()!=IDOK) return -1;
@@ -833,7 +813,6 @@ int TGBISystem::OpenConf (TOpenDialog* dlg)
 
 	return 0;
 }
-
 
 int TGBISystem::SaveConf (TSaveDialog* dlg)
 {
@@ -886,8 +865,6 @@ int TGBISystem::SaveConf (TSaveDialog* dlg)
 	 TCHAR cres[1024];
 	 
 	 wcscpy(cres,fres.c_bstr());
-
-
 
 	 for (i = wcslen(cres); i >=0 ; i--) {
 
@@ -1034,14 +1011,8 @@ void TGBISystem::Collapse(void)
 		   }
 
 		   place->node->Collapse(true);
-
-		   //Sleep(100);
 	 }
 
-	 //if (tt_gobal_sens_node != NULL) {
-	 //
-	 //	 tt_gobal_sens_node->Collapse(true);
-	 //}
 }
 
 TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
@@ -1115,7 +1086,7 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 			 if (dfm->record_cnt > d->records_cnt) d->records_cnt = dfm->record_cnt/2;
 
 			 wtm = FormatDateTime(L" yyyy-mm-dd hh:nn:ss ", dfm->time);
-			 //msg.printf(L"Измерение %S-%S-%S ", p->name, d->name, wtm);
+
 			 msg =  p->name + L"-" + d->name + L"-" + wtm;
 
 

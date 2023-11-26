@@ -3,17 +3,15 @@ object Form_SystemAdjust: TForm_SystemAdjust
   Top = 0
   BorderStyle = bsDialog
   Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1072' '#1089#1080#1089#1090#1077#1084#1099
-  ClientHeight = 362
-  ClientWidth = 785
+  ClientHeight = 361
+  ClientWidth = 781
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -15
   Font.Name = 'Tahoma'
   Font.Style = [fsBold]
-  OldCreateOrder = False
   OnCreate = FormCreate
-  PixelsPerInch = 96
   TextHeight = 18
   object Button_exit: TButton
     Left = 662

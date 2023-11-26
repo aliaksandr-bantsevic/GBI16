@@ -25,22 +25,6 @@ __fastcall TChartThread::TChartThread(bool CreateSuspended)
 	: TThread(CreateSuspended)
 {
 
-/*
-	TChartThread::TChartThread()
-	{
-
-	}
-
-	TChartThread::TChartThread(TChart* c)
-	{
-
-	}
-
-	TChartThread::~TChartThread()
-	{
-
-	}
-*/
 
 }
 
@@ -67,27 +51,14 @@ __fastcall TChartThread::TChartThread(bool CreateSuspended, TChart* c, int ds, i
 		Ser->DrawStyle = dsSegments;
 		Ser->Active = true;
 
-		//Ser->SortByLabels(0);
-		//Ser->
-
 		Ser->Pointer->Visible = true;
 
 		Ser->Legend->Text = L" ";
 		Ser->Legend->Visible = false;
 		Ser->Pen->Width = 1;
 
-		//Ser->YValues->Order = loAscending;
-		//Ser->YValues->Order = loDescending;
-		//Ser->XValues->Order = loNone;
-
-		//Ser->Sort;
-
 		Ser->YValues->Order = loDescending;
 		Ser->XValues->Order = loNone;
-
-
-
-		//Ser->Color =  (TColor)(RGB(r,g,b));
 
 		Ser->Color = ChartColorsTable[i%20];
 
@@ -97,7 +68,6 @@ __fastcall TChartThread::TChartThread(bool CreateSuspended, TChart* c, int ds, i
 
 		if (r == 255) {
 
-			//b = 255;
 			b+=85;
 			r = 0;
 			g = 0;
@@ -105,14 +75,12 @@ __fastcall TChartThread::TChartThread(bool CreateSuspended, TChart* c, int ds, i
 		else if (b == 255) {
 
 				b = 0;
-				//g = 255;
 				g+=85;
 				r  = 0;
 
 			 }
 			 else if (g == 255) {
 					  g = 0;
-					  //r = 255;
 					  r+=85;
 					  b = 0;
 				  }
@@ -128,9 +96,6 @@ __fastcall TChartThread::TChartThread(bool CreateSuspended, TChart* c, int ds, i
 //---------------------------------------------------------------------------
 void __fastcall TChartThread::Execute()
 {
-	//---- Place thread code here ----
-
-	//SetName();
 
 	while (Terminated == false)
 	{
@@ -138,6 +103,7 @@ void __fastcall TChartThread::Execute()
 		Sleep(1);
 
 		if ( redraw_flag == true) {
+
 				 redraw_flag = false;
 				//StartRedraw();
 				//chart->Refresh();
@@ -219,44 +185,6 @@ void __fastcall TChartThread::StartRedraw(void)
 		}
 	}
 
-	/*
-	if (drill != NULL)
-	{
-
-			if (drill->meas_list_idx < 2) {
-
-		chart->Series[2]->Legend->Text = L" ";
-		chart->Series[2]->Color = clWhite;
-		chart->Series[2]->Legend->Visible = false;
-
-		chart->Series[3]->Legend->Text = L" ";
-		chart->Series[3]->Color = clWhite;
-		chart->Series[3]->Legend->Visible = false;
-
-		}
-	}
-    */
-
-	/*
-	chart->Series[drill->meas_list_idx]->Legend->Text = L" ";
-	chart->Series[drill->meas_list_idx]->Color = clWhite;
-	chart->Series[drill->meas_list_idx]->Legend->Visible = false;
-	*/
-
-
-	/*
-	chart->Series[100]->Legend->Text = L" ";
-	chart->Series[100]->Color = clWhite;
-	chart->Series[100]->Legend->Visible = false;
-
-	if (drill->meas_list_idx<2) {
-
-			chart->Series[100]->Legend->Visible = true;
-
-	}
-    */
-
-//------
 	if (drill == NULL)
 	{
 
@@ -288,8 +216,6 @@ void __fastcall TChartThread::StartRedraw(void)
 
 	}
 
-//---------
-
 		double ymax = 0;
 		double ymin = 0;
 
@@ -310,9 +236,6 @@ void __fastcall TChartThread::StartRedraw(void)
 
 		for (int i = 0; i < cnum; i++) {
 
-			//chart->Series[i]->Marks->Visible = true;
-			//chart->Pointe->Visible = true;
-
 			m = drill->meas_list[i];
 
 			for (int j = 0; j < tnum; j++) {
@@ -328,7 +251,7 @@ void __fastcall TChartThread::StartRedraw(void)
 				//Если отрисовываем Y
 				if (data_source == DATA_SOURCE_Y) d = m->records[j].LY;
 				//Если отрисовываем Res
-				if (data_source == DATA_SOURCE_R) d = m->records[j].LR;//!!!sqrt(((m->records[j].LY)*(m->records[j].LY))+((m->records[j].LX)*(m->records[j].LX)));
+				if (data_source == DATA_SOURCE_R) d = m->records[j].LR;
 
 				//Макс по оси Y
 				if (d>ymax) ymax = d;
@@ -373,7 +296,6 @@ void __fastcall TChartThread::StartRedraw(void)
 		}
 
 
-			//TMeas* m = NULL;
 			double datay = 0;
 			double datax = 0;
 			double dtmp = 0;
@@ -390,17 +312,6 @@ void __fastcall TChartThread::StartRedraw(void)
 			datay = 0;
 			datax = 0;
 			dtmp=0;
-
-			/*
-			if (drill -> drill_orient == DRILL_ORIENT_VERTICAL) {
-
-				   m->Sort(0);
-			}
-			else
-			{
-				   m->Sort(-1);
-			}
-			*/
 
 				   m->Sort(-1);
 
@@ -454,9 +365,6 @@ void __fastcall TChartThread::StartRedraw(void)
 		}
 
 	}
-
-
-//---------
 
 	chart->Refresh();
 	chart->Update();

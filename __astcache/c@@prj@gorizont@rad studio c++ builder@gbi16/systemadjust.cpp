@@ -221,7 +221,6 @@ void __fastcall TForm_SystemAdjust::Button1Click(TObject *Sender)
 		}
     }
 
-	//MessageBox(NULL,"Íàñòðîéêè ñîõðàíåíû","Ñèñòåìà",0);
 	Button_exitClick(NULL);
 
 }
@@ -236,7 +235,6 @@ void __fastcall TForm_SystemAdjust::CheckBox_backupClick(TObject *Sender)
 	else
 	{
 		this->ComboBox_backup->Enabled = true;
-		//this->ComboBox_backup->Text = "1";
 	}
 
 }

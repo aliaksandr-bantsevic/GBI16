@@ -401,7 +401,9 @@ int ConvertStrUTF8ToUtf16 (char* strU8, TCHAR* strU16, int U8_len)
 
 
 
-
+/*
+	Examples
+*/
 
 
 /*

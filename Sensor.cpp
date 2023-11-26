@@ -224,16 +224,6 @@ int TSensor::GetSoftVer(void)
 int TSensor::calc_sko_X(void)
 {
 
-   /*
-   if (hist_x_idx > 9) {
-
-	hist_x_idx = 0;
-
-   }
-   */
-
-//   hist_x[hist_x_idx%10] = curr_X; hist_x_idx++;
-
 	for (int i = 9; i > 0; i--) {
 
 		hist_x[i] = hist_x[i-1];
@@ -269,17 +259,7 @@ int TSensor::calc_sko_X(void)
 
 int TSensor::calc_sko_Y(void)
 {
-   /*
-   if (hist_y_idx > 9) {
-
-	hist_y_idx = 0;
-
-   }
-   */
-
-
-  //hist_y[hist_y_idx%10] = curr_Y; hist_y_idx++;
-
+ 
   	for (int i = 9; i > 0; i--) {
 
 		hist_y[i] = hist_y[i-1];

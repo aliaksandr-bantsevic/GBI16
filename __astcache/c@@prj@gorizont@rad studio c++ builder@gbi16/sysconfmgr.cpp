@@ -89,20 +89,6 @@
 			 ConvertTextFile_UTF16LEBOM (dirgcf);
 		}
 
-		/*
-		FILE* ftmp = NULL;
-		ftmp = _wfopen(dirgcf,L"rb");
-
-		if (ftmp == NULL)
-		{
-
-			CreateTextFile_UTF16LEBOM (dirgcf);
-
-		}
-
-		fclose (ftmp);
-		*/
-
 		CreateTextFile_UTF16LEBOM (dirgcf);
 		TIniFile *inigcf = new TIniFile(dirgcf);
 
@@ -136,22 +122,6 @@
 
 		if (ini != NULL) delete ini;
 
-
-		/*
-		ftmp = _wfopen(cur_conf_path, L"rb");
-
-		if (ftmp == NULL)
-		{
-
-			CreateTextFile_UTF16LEBOM (cur_conf_path);
-		}
-
-		fclose (ftmp);
-		*/
-
-
-
-
 		if (isIniTxtUTF8(cur_conf_path) ==0 )
 		{
 		   ConvertTextFile_UTF16LEBOM (cur_conf_path);
@@ -161,8 +131,6 @@
 		CreateTextFile_UTF16LEBOM (cur_conf_path);
 
 		ini = new TIniFile (cur_conf_path);
-
-
    }
 
    TCHAR* TSysConfMgr::GetCurBase(void)
@@ -252,7 +220,6 @@
 		WideString sbase = sdir+"\\Base";
 		WideString sback = sdir+"\\Backup\\";
 
-		//WideString sfold = FormatDateTime("dd_mm_yyyy_hh_nn_ss\\",t);
 		WideString sfold = FormatDateTime("yyyy_mm_dd_hh_nn_ss\\",t);
 
 		sback = sback + sfold;
@@ -261,16 +228,13 @@
 		WideString cmd("copy ");
 		cmd.printf (L"copy \"%s\" \"%sGBI16.gcf\"",sgini.c_bstr(),sback.c_bstr());
 		system((char*)cmd.c_bstr());
-		//ShellExecute(0,"open",cmd.c_str(),0,0,SW_HIDE);
 
 		cmd.printf (L"xcopy /s /i \"%s\" \"%sBase\"",sbase.c_bstr(),sback.c_bstr());
 		system((char*)cmd.c_bstr());
-		//ShellExecute(0,"open",cmd.c_str(),0,0,SW_HIDE);
 
 		cmd.printf (L"xcopy /s /i \"%s\" \"%sConfig\"",sconf.c_bstr(),sback.c_bstr());
 
 		system((char*)cmd.c_bstr());
-		//ShellExecute(0,"open",cmd.c_str(),0,0,SW_HIDE);
 
 		if (autobackup == 0)
 		{
@@ -281,7 +245,6 @@
 		}
 		else
 		{
-			//ShowMessage("Auto backup!");
 			auto_backup_flag_completed = true;
 		}
 
@@ -296,13 +259,13 @@
 #define T_ONE_MSEC      ((1./(24.*60.*60.))/1000)
 #define T_ONE_DSEC      ((1./(24.*60.*60.))/10)
 
-//Ñêîëüêî äíåé ïðîøëî ïîñå ïîñëåäíåãî áýêàïà
+//Сколько дней прошло посе последнего бэкапа
    double TSysConfMgr::GetBckTime (void)
    {
 
 		double dayage = 0.0;
 
-//Ñþäà áóäåì ÷èòàòü àòðèáóòû ïàïêè
+//Сюда будем читать атрибуты папки
 		WIN32_FIND_DATA FileDataAtr;
 
 		WideString fpath(L"");
@@ -310,32 +273,32 @@
 		LONGLONG T = 0;
 		LONGLONG Tmax = 0;
 
-//Õýíäë äëÿ ïîèñêà ôàéëîâ â ïàïêå
+//Хэндл для поиска файлов в папке
 		WIN32_FIND_DATA w32fd;
 		HANDLE hFind;
 
-//Ïóòü ê ïàïêå ñ ôàéëàìè
+//Путь к папке с файлами
 		TCHAR dbpath [1024];
 		wcscpy(dbpath,GetCurBackFoldPath());
 
-//Ìàñêà
+//Маска
 		TCHAR cpar[1024];
 		swprintf(cpar,L"*.*");
 		wcscat(dbpath,cpar);
 
-//×èòàåì ïåðâûé ôàéë â ïàïêå
+///Читаем первый файл в папке
 		hFind=FindFirstFile(dbpath,&w32fd);
 
 		SYSTEMTIME sysTime;
 		FILETIME creationTime;
 		FILETIME localfiletime;
 
-//Â ïàïêå íåò ôàéëîâ
+///В папке нет файлов
 		if ((hFind==INVALID_HANDLE_VALUE)||(hFind==NULL))
 		{
 			return 0.0;
 		}
-//Åñëè ôàéëû åñòü ÷èòàåì âåñü äèðåêòîðèé
+//Если файлы есть читаем весь директорий
 		else
 		{
 				  FileDataAtr = w32fd;
@@ -362,32 +325,13 @@
 						  if (T>Tmax)
 						  {
 							Tmax = T;
-                            creationTime = FileDataAtr.ftCreationTime;
+							creationTime = FileDataAtr.ftCreationTime;
 						  }
 
 					}
 
-					/*
-			//GetFileTime(hFind, &creationTime, 0, 0);
-			creationTime = FileDataAtr.ftCreationTime;
-			FileTimeToLocalFileTime(&creationTime,&localfiletime);
-			FileTimeToSystemTime(&localfiletime, &sysTime);
-
-			unsigned short year, mon, day, hour, min, sec, msec = 0;
-
-			year = sysTime.wYear; mon = sysTime.wMonth; day = sysTime.wDay;
-			hour = sysTime.wHour; min = sysTime.wMinute; sec = sysTime.wSecond; msec = sysTime.wMilliseconds;
-			TDateTime ct = TDateTime(year,mon,day) + TDateTime(hour,min,sec,msec);
-			TDateTime age = Now() - ct;
-			dayage = (double)age;
-
-			//dayage/=T_ONE_DAY;
-
-			dayage/=T_ONE_MIN;
-					*/
 		}
 
-			//GetFileTime(hFind, &creationTime, 0, 0);
 			creationTime = FileDataAtr.ftCreationTime;
 			FileTimeToLocalFileTime(&creationTime,&localfiletime);
 			FileTimeToSystemTime(&localfiletime, &sysTime);
@@ -401,8 +345,6 @@
 			dayage = (double)age;
 
 			dayage/=T_ONE_DAY;
-			//dayage/=T_ONE_MIN;
-
 
 	return dayage;
 }

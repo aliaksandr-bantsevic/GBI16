@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+п»ї//---------------------------------------------------------------------------
 
 #pragma hdrstop
 
@@ -73,10 +73,10 @@ int TProtocol_211::EscapeBytesEncode(unsigned char* buf, int* len)
         return 0;
 }
 
-//---------------------------Основные пакета запроса-------------------------------------------
+//---------------------------РћСЃРЅРѕРІРЅС‹Рµ РїР°РєРµС‚Р° Р·Р°РїСЂРѕСЃР°-------------------------------------------
 
 
-//Запрос результатов измерения основной пакет
+//Р—Р°РїСЂРѕСЃ СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ РёР·РјРµСЂРµРЅРёСЏ РѕСЃРЅРѕРІРЅРѕР№ РїР°РєРµС‚
 void TProtocol_211::RequestMeasureResult(unsigned char addr, unsigned char* buf, int* len)
 {
 
@@ -84,7 +84,7 @@ void TProtocol_211::RequestMeasureResult(unsigned char addr, unsigned char* buf,
 
 }
 
-//Запросить версию измерителя
+//Р—Р°РїСЂРѕСЃРёС‚СЊ РІРµСЂСЃРёСЋ РёР·РјРµСЂРёС‚РµР»СЏ
 void TProtocol_211::RequestMeterVerion(unsigned char addr, unsigned char* buf, int* len)
 {
 
@@ -92,7 +92,7 @@ void TProtocol_211::RequestMeterVerion(unsigned char addr, unsigned char* buf, i
 
 }
 
-//---------------------------Дополнительные пакета запроса-------------------------------------------
+//---------------------------Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РїР°РєРµС‚Р° Р·Р°РїСЂРѕСЃР°-------------------------------------------
 void TProtocol_211::RequestSensorBaudRate(unsigned char addr, unsigned char* buf, int* len)
 {
         RequestAddnMeterPacket(addr, GET_BAUD, buf, len);
@@ -132,57 +132,57 @@ void TProtocol_211::RequestSensorAveragingPeriod(unsigned char addr, unsigned ch
 
 //--------------------------------------received packet process-----------------------------------------------------------
 
-//Обработка основного пакета съема показаний датчика
+//РћР±СЂР°Р±РѕС‚РєР° РѕСЃРЅРѕРІРЅРѕРіРѕ РїР°РєРµС‚Р° СЃСЉРµРјР° РїРѕРєР°Р·Р°РЅРёР№ РґР°С‚С‡РёРєР°
 int TProtocol_211::AcceptSensorMeasVal(BYTE* buf,double* x, double* y, BYTE* unitx, BYTE* unity)
 {
 
-//D5.7 знак угла по оси X
+//D5.7 Р·РЅР°Рє СѓРіР»Р° РїРѕ РѕСЃРё X
   unsigned char signX=(buf[DATAOFFSET+5])&(1<<7);
 
-//D5.6 размерность углапо оси X
+//D5.6 СЂР°Р·РјРµСЂРЅРѕСЃС‚СЊ СѓРіР»Р°РїРѕ РѕСЃРё X
   unsigned char unitsX=(buf[DATAOFFSET+5])&(1<<6);
 
-//D5.5 - D4.0 целая часть угла по X
+//D5.5 - D4.0 С†РµР»Р°СЏ С‡Р°СЃС‚СЊ СѓРіР»Р° РїРѕ X
   unsigned int intX=((unsigned int) (buf[DATAOFFSET+5])&0x3F)<<8;
 			   intX+=(unsigned int)buf[DATAOFFSET+4];
 
-//D3.7 - D3.0 дробная часть угла по X
+//D3.7 - D3.0 РґСЂРѕР±РЅР°СЏ С‡Р°СЃС‚СЊ СѓРіР»Р° РїРѕ X
   unsigned int flX=(unsigned int) (buf[DATAOFFSET+3]);
 
-//D2.7 знак угла по оси Y
+//D2.7 Р·РЅР°Рє СѓРіР»Р° РїРѕ РѕСЃРё Y
   unsigned char signY=(buf[DATAOFFSET+2])&(1<<7);
 
-//D2.6 размерность угла по оси Y
+//D2.6 СЂР°Р·РјРµСЂРЅРѕСЃС‚СЊ СѓРіР»Р° РїРѕ РѕСЃРё Y
   unsigned char unitsY=(buf[DATAOFFSET+2])&(1<<6);
 
-//D2.5-D1.0 - целая часть угла Y
+//D2.5-D1.0 - С†РµР»Р°СЏ С‡Р°СЃС‚СЊ СѓРіР»Р° Y
   unsigned int intY=((unsigned int) (buf[DATAOFFSET+2])&0x3F)<<8;
 			   intY+=(unsigned int)buf[DATAOFFSET+1];
 
-//D3.7 - D3.0 дробная часть угла по X
+//D3.7 - D3.0 РґСЂРѕР±РЅР°СЏ С‡Р°СЃС‚СЊ СѓРіР»Р° РїРѕ X
   unsigned int flY=(unsigned int) (buf[DATAOFFSET+0]);
 
-//Устанавливаем датчику единицы по Х
+//РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј РґР°С‚С‡РёРєСѓ РµРґРёРЅРёС†С‹ РїРѕ РҐ
   if (unitsX==0)        *unitx=ANGLE_SECONDS;
   else                  *unitx=ANGLE_MINUTES;
 
-//Устанавливаем датчику единицы по Y
+//РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј РґР°С‚С‡РёРєСѓ РµРґРёРЅРёС†С‹ РїРѕ Y
   if (unitsY==0)        *unity=ANGLE_SECONDS;
   else                  *unity=ANGLE_MINUTES;
 
-//Вычисляем и устанавливаем значение угла по X
+//Р’С‹С‡РёСЃР»СЏРµРј Рё СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј Р·РЅР°С‡РµРЅРёРµ СѓРіР»Р° РїРѕ X
   double angle = (double)intX+((double)flX/(double)0x100);
 
-//Приводим к 3знакам послезапятой
+//РџСЂРёРІРѕРґРёРј Рє 3Р·РЅР°РєР°Рј РїРѕСЃР»РµР·Р°РїСЏС‚РѕР№
 //  angle*=1000; angle=floor(angle); angle/=1000;
 
   if (signX) angle*=-1;
   *x = angle;
 
-//Вычисляеми устанавливаем значение угла пл Y
+//Р’С‹С‡РёСЃР»СЏРµРјРё СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј Р·РЅР°С‡РµРЅРёРµ СѓРіР»Р° РїР» Y
   angle = (double)intY+((double)flY/(double)0x100);
 
-//Приводим к 3знакам послезапятой
+//РџСЂРёРІРѕРґРёРј Рє 3Р·РЅР°РєР°Рј РїРѕСЃР»РµР·Р°РїСЏС‚РѕР№
 //  angle*=1000; angle=floor(angle); angle/=1000;
 
   if (signY) angle*=-1;
@@ -213,59 +213,59 @@ int TProtocol_211::AcceptSensorSoftVersion(BYTE* buf, unsigned int* sv)
 //--------------------------------------global functions packet creating--------------------------------------------------
 
 
-//Основной протокол пакета запроса
+//РћСЃРЅРѕРІРЅРѕР№ РїСЂРѕС‚РѕРєРѕР» РїР°РєРµС‚Р° Р·Р°РїСЂРѕСЃР°
 void TProtocol_211::RequestMainMeterPacket(unsigned char addr, main_packet_211_id packet, unsigned char* buf, int* len)
 {
-//Инициализация
+//РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ
       int idx=0; unsigned char chsum=0; ClearRequestBuf();
 
-//Начало пакета
+//РќР°С‡Р°Р»Рѕ РїР°РєРµС‚Р°
 	  request_packetBUF[idx]=PACKET_START; idx++;
-//Тип протокола
+//РўРёРї РїСЂРѕС‚РѕРєРѕР»Р°
 	  request_packetBUF[idx]=MAIN_PR_211;       chsum=chsum^request_packetBUF[idx]; idx++;
-//Тип пакета
+//РўРёРї РїР°РєРµС‚Р°
 	  request_packetBUF[idx]=packet;            chsum=chsum^request_packetBUF[idx]; idx++;
-//Адркс измерителя
+//РђРґСЂРєСЃ РёР·РјРµСЂРёС‚РµР»СЏ
 	  request_packetBUF[idx]=addr;              chsum=chsum^request_packetBUF[idx]; idx++;
-//Контрольная сумма
+//РљРѕРЅС‚СЂРѕР»СЊРЅР°СЏ СЃСѓРјРјР°
 	  request_packetBUF[idx]=chsum;                                                 idx++;
-//Конец пакета
+//РљРѕРЅРµС† РїР°РєРµС‚Р°
 	  request_packetBUF[idx]=PACKET_END;                                            idx++;
 
 	  request_packetLEN=idx;
 
-//Кодируем ESCAP Eпоследовательности
+//РљРѕРґРёСЂСѓРµРј ESCAP EРїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚Рё
 	   this->EscapeBytesEncode(request_packetBUF,&request_packetLEN);
 
-//Копируем пакет и длину вызвавшей процедуре
+//РљРѕРїРёСЂСѓРµРј РїР°РєРµС‚ Рё РґР»РёРЅСѓ РІС‹Р·РІР°РІС€РµР№ РїСЂРѕС†РµРґСѓСЂРµ
 		memcpy(buf,request_packetBUF,request_packetLEN); *len=request_packetLEN;
 }
 
 
-//Дополнительный протокол пакета запроса
+//Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Р№ РїСЂРѕС‚РѕРєРѕР» РїР°РєРµС‚Р° Р·Р°РїСЂРѕСЃР°
 void TProtocol_211::RequestAddnMeterPacket(unsigned char addr, addn_packet_211_id packet, unsigned char* buf, int* len)
 {
-//Инициализация
+//РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ
       int idx=0; unsigned char chsum=0; ClearRequestBuf();
 
-//Начало пакета
+//РќР°С‡Р°Р»Рѕ РїР°РєРµС‚Р°
       request_packetBUF[idx]=PACKET_START; idx++;
-//Тип протокола
+//РўРёРї РїСЂРѕС‚РѕРєРѕР»Р°
       request_packetBUF[idx]=ADDN_PR_211;       chsum=chsum^request_packetBUF[idx]; idx++;
-//Тип пакета
+//РўРёРї РїР°РєРµС‚Р°
       request_packetBUF[idx]=packet;            chsum=chsum^request_packetBUF[idx]; idx++;
-//Адрес измерителя
+//РђРґСЂРµСЃ РёР·РјРµСЂРёС‚РµР»СЏ
       request_packetBUF[idx]=addr;              chsum=chsum^request_packetBUF[idx]; idx++;
-//Контрольная сумма
+//РљРѕРЅС‚СЂРѕР»СЊРЅР°СЏ СЃСѓРјРјР°
       request_packetBUF[idx]=chsum;                                                 idx++;
-//Конец пакета
+//РљРѕРЅРµС† РїР°РєРµС‚Р°
       request_packetBUF[idx]=PACKET_END;                                            idx++;
 
       request_packetLEN=idx;
 
-//Кодируем ESCAPE Eпоследовательности
+//РљРѕРґРёСЂСѓРµРј ESCAPE EРїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚Рё
 	   this->EscapeBytesEncode(request_packetBUF,&request_packetLEN);
-//Копируем пакет и длину вызвавшей процедуре
+//РљРѕРїРёСЂСѓРµРј РїР°РєРµС‚ Рё РґР»РёРЅСѓ РІС‹Р·РІР°РІС€РµР№ РїСЂРѕС†РµРґСѓСЂРµ
         memcpy(buf,request_packetBUF,request_packetLEN); *len=request_packetLEN;
 }
 
@@ -296,4 +296,5 @@ int TProtocol_211::CheckPacket(unsigned char addr, unsigned char* buf, int* len)
 	return 0;
 }
 //---------------------------------------------------------------------------
+
 

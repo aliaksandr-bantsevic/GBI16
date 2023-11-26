@@ -291,7 +291,6 @@ void __fastcall TForm_SensorAdjust::Timer_scanTimer(TObject *Sender)
 		s_tmp->SetAddr(scan_addr);
 
 		if (s_tmp->GetSerial() == 0) {
-		//if (s_tmp->GetMeasResult() == 0) {
 
 			total_sensors++;
 			this->ComboBox_addr_found->Items->Add(utils_int_to_str(scan_addr, 0));
