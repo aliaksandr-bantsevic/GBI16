@@ -16,7 +16,7 @@ __fastcall TForm_MeasAdjust::TForm_MeasAdjust(TComponent* Owner)
 //---------------------------------------------------------------------------
 void __fastcall TForm_MeasAdjust::Button_applyClick(TObject *Sender)
 {
-	meas->mark = Edit_mark->Text;
+	meas->UpdateMark(Edit_mark->Text);
 	Close();
 }
 //---------------------------------------------------------------------------

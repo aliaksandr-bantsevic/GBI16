@@ -489,6 +489,23 @@ int TMeas::Calculate(void)
 	return 0;
 }
 
+void TMeas::UpdateMark(WideString mark)
+{
+	if (this->node != NULL)
+	{
+
+		this->mark = mark;
+		WideString s(L"");
+		WideString st(L"");
+
+		st = FormatDateTime("[yyyy-mm-dd hh:nn:ss]", this->create_time);
+		s.printf(L"%d.%d.%d %s [%s]",pnum, dnum, num, st.c_bstr(), this->mark.c_bstr());
+		this->node->Text = s;
+
+	}
+
+}
+
 TTreeNode* TMeas::Redraw(TTreeView* t, TTreeNode* n)
 {
 	if (n == NULL) {
@@ -497,8 +514,10 @@ TTreeNode* TMeas::Redraw(TTreeView* t, TTreeNode* n)
 	}
 
 	WideString s(L"");
+	WideString st(L"");
 
-	s.printf(L"%d.%d.%d [%s]",  pnum, dnum, num, name.c_bstr());
+	st = FormatDateTime("[yyyy-mm-dd hh:nn:ss]", this->create_time);
+	s.printf(L"%d.%d.%d %s [%s]",pnum, dnum, num, st.c_bstr(), this->mark.c_bstr());
 
 	node  =	t->Items->AddChild(n,s);
 
@@ -1210,7 +1229,25 @@ int TMeas::isMeasTxtUTF8(TCHAR* path)
 
 int TMeas::AcceptDataFileRecord(int dir, double d, double x, double y)
 {
-	int res = -1;
+	 int res = -1;
+
+    /* auto adjust the records cnt using step 0.5 */
+	int rec_num_calc = (d/0.5) + 1;
+
+	if (this->records_cnt < rec_num_calc)
+	{
+		records_cnt = rec_num_calc;
+
+		for (int i = 1; i < records_cnt; i++)
+		{
+			if (records[i].depth != (records[i-1].depth + 0.5))
+			{
+				records[i].depth = (records[i-1].depth + 0.5);
+			}
+		}
+	}
+	/* end of records cnt auto adjust */
+
 
 	 for (int i =0; i < records_cnt; i++)
 	 {

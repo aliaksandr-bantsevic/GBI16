@@ -3,17 +3,15 @@ object Form_MeasAdjust: TForm_MeasAdjust
   Top = 0
   BorderStyle = bsDialog
   Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1072' '#1080#1079#1084#1077#1088#1077#1085#1080#1103
-  ClientHeight = 164
-  ClientWidth = 645
+  ClientHeight = 163
+  ClientWidth = 641
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -15
   Font.Name = 'Tahoma'
   Font.Style = [fsBold]
-  OldCreateOrder = False
   OnCreate = FormCreate
-  PixelsPerInch = 96
   TextHeight = 18
   object Label1: TLabel
     Left = 8

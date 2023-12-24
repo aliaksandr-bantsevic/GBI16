@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------
 
 #pragma hdrstop
 
@@ -163,7 +163,7 @@ void TGBISystem::LoadSysConf()
 	last_place_idx = ini->ReadInteger(L"SYSTEM",L"last_place_idx",-1);
 	last_drill_idx = ini->ReadInteger(L"SYSTEM",L"last_drill_idx",-1);
 
-	port->pause_transact = ini->ReadInteger(L"PORT",L"PauseTransact",50);
+	port->pause_transact = ini->ReadInteger(L"PORT",L"PauseTransact",10);
 	port->pause_reopen = ini->ReadInteger(L"PORT",L"PauseReopen",5000);
 	port->baud = (EBaudrate)ini->ReadInteger(L"PORT",L"BaudRate",EBaud9600);
 	port->port = ini->ReadInteger(L"PORT",L"Port",1);

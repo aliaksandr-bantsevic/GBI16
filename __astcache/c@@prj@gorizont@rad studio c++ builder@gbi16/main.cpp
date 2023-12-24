@@ -1181,6 +1181,16 @@ void __fastcall TFMain::N_drill_deleteClick(TObject *Sender)
 	GBISystem->Redraw();
 
 	GBISystem->ResaveData();
+
+	current_drill = NULL;
+	current_meas = NULL;
+	current_place = NULL;
+
+	selected_drill = NULL;
+	selected_meas = NULL;
+
+	GBISystem->Redraw();
+
 }
 //---------------------------------------------------------------------------
 

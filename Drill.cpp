@@ -156,7 +156,7 @@ int TDrill::AddMeas(TStringGrid* t, WideString n)
 	m->num = meas_list_idx+1;
 
 	m->name.printf(L"Измерение_%d", meas_list_idx+1);
-	m->mark.printf(L"Маркировка Измерение_%d", meas_list_idx+1);
+	m->mark.printf(L"...", meas_list_idx+1);
 
 	m->pnum = this->pnum;
 	m->dnum = this->num;

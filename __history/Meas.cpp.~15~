@@ -107,7 +107,6 @@ int PutDblCell(TStringGrid* table, int col, int row, double d)
 
 		WideString s;
 
-		//if (((d == 0)&&(row>1))||((d == 0)&&(col>3)))
 		if (d == 0)
 		{
 			s = "0";
@@ -136,50 +135,12 @@ int TMeas::DataToTable(void)
 Иициализация таблицы
 */
 
-
    table->RowCount = records_cnt+1;
-
-/*
-   table->ColCount = 10;
-*/
-
-/*
-	for (int i = 0; i<10; i++) {
-
-	table->ColWidths[i]= 100;
-
-	}
-*/
-
-/*
-	for (int i = 0; i<records_cnt; i++) {
-
-	table->RowHeights[i]= 20;
-
-	}
-*/
-
-/*
-	table->FixedCols = 1;
-	table->FixedRows = 1;
-*/
-
 
 	for (int i = 0; i < records_cnt; i++) {
 
 		PutDblCell(table,1,i+1,this->records[i].depth);
 		PutDblCell(table,2,i+1,this->records[i].tuberr);
-
-		/*
-		PutDblCell(table,2,i+1,this->records[i].X1);
-		PutDblCell(table,3,i+1,this->records[i].X2);
-
-		PutDblCell(table,4,i+1,this->records[i].Y1);
-		PutDblCell(table,5,i+1,this->records[i].Y2);
-
-		PutDblCell(table,6,i+1,this->records[i].LX);
-		PutDblCell(table,7,i+1,this->records[i].LY);
-		*/
 
 		PutDblCell(table,3,i+1,this->records[i].X1);
 		PutDblCell(table,4,i+1,this->records[i].Y1);
@@ -280,17 +241,6 @@ int TMeas::TableToData(void)
 		GetDblCell(table,1,i+1,&this->records[i].depth);
 		GetDblCell(table,2,i+1,&this->records[i].tuberr);
 
-		/*
-		GetDblCell(table,2,i+1,&this->records[i].X1);
-		GetDblCell(table,3,i+1,&this->records[i].X2);
-
-		GetDblCell(table,4,i+1,&this->records[i].Y1);
-		GetDblCell(table,5,i+1,&this->records[i].Y2);
-
-		GetDblCell(table,6,i+1,&this->records[i].LX);
-		GetDblCell(table,7,i+1,&this->records[i].LY);
-		*/
-
 		GetDblCell(table,3,i+1,&this->records[i].X1);
 		GetDblCell(table,4,i+1,&this->records[i].Y1);
 
@@ -307,7 +257,6 @@ int TMeas::TableToData(void)
 		GetDblCell(table,12,i+1,&this->records[i].AR);
 
 	}
-
 
 	return 0;
 }
@@ -339,9 +288,6 @@ int TMeas::Calculate(void)
    double dd = 0;
 
    double zshift = 0;
-
-//int type_drill;
-//int single_way;
 
 
 	for (int i = 0; i < records_cnt; i++) {
@@ -400,9 +346,7 @@ int TMeas::Calculate(void)
 
 					if (single_way == 1) {
 
-					   //lx = (records[i].depth - records[i-1].depth) * sin(records[i-1].Xres/3600*PI/180) * 1000 + records[i-1].LX;
-					   //ly = (records[i].depth - records[i-1].depth) * sin(records[i-1].Yres/3600*PI/180) * 1000 + records[i-1].LY;
-                        						/* в таблице заказчика расчет делается не по предыдущей точке а по текущей */
+					   /* в таблице заказчика расчет делается не по предыдущей точке а по текущей */
 					   lx = (records[i].depth - records[i-1].depth) * sin(records[i].Xres/3600*PI/180) * 1000 + records[i-1].LX;
 					   /* для горизонтальной однопроходной применяется гео поправка */
 					   if (geo_on == true) {
@@ -469,14 +413,6 @@ int TMeas::Calculate(void)
 				records[i].LY = ly;
 
 				records[i].LR = sqrt((lx*lx)+(ly*ly));
-
-				/*
-				records[i].LR = rt; rt+=0.05; //!!!test
-				records[i].LX = i*rt;//!!!
-				records[i].LY = 2*i*rt;//!!!
-				records[i].Xres = i*rt;//!!!
-				records[i].Yres = 2*i*rt;//!!!
-				  */
 
 				if (abs(records[i].LX) > 0.0001) {
 
@@ -592,22 +528,35 @@ void TMeas::Unselect()
 	selected = false;
 }
 
+void TMeas::dtc(TCHAR* str)
+{
+
+	for (int i = 0; str[i] != '\0'; i++)
+	{
+		if (str[i] == '.')
+		{
+			str [i] = ',';
+		}
+
+		if (i > 1023)
+		{
+			break;
+		}
+	}
+
+}
+
 int TMeas::SaveData(int par)
 {
 	if (par) this->TableToData();
 
 	TCHAR dir[1024];
 	TCHAR tdir[1024];
+	TCHAR csvdir[1024];
 
-	/*
-	GetCurrentDirectory(1024,dir);
-	wcscat(dir,L"\\");
-	wcscat(dir,L"Base");
-	*/
 	wcscpy(dir,SysConfMgr->GetCurBase());
 	if (!DirectoryExists(dir))  CreateDirectory(dir,0);
 
-	//wcscat(dir,L"\\");
 	wcscat(dir,this->name_place.c_bstr());
 	if (!DirectoryExists(dir))  CreateDirectory(dir,0);
 
@@ -618,15 +567,6 @@ int TMeas::SaveData(int par)
 	WideString s(L"");
 	s.printf(L"Измерение_%d", this->num);
 
-	/*
-	if (finalized == true) {
-
-		WideString ss(L"");
-		ss = FormatDateTime(L"_dd_mm_yyyy_hh_nn_ss",this->finalize_time);
-		s=s+ss;
-	}
-	*/
-
 	wcscat(dir,L"\\");
 	wcscat(dir,s.c_bstr());
 	if (!DirectoryExists(dir))  CreateDirectory(dir,0);
@@ -635,7 +575,11 @@ int TMeas::SaveData(int par)
 	wcscat(dir,s.c_bstr());
 
 	wcscpy(tdir,dir);
+	wcscpy(csvdir,dir);
 	wcscat(dir,L".gms");
+
+	/* dir for csv file */
+	wcscat(csvdir,L".csv");
 
 
 	FILE* f = _wfopen(dir,L"wb");
@@ -656,11 +600,8 @@ int TMeas::SaveData(int par)
 	fclose(f);
 
 	wcscat(tdir,L".txt");
-
 	::DeleteFileW(tdir);
-
 	CreateTextFile_UTF16LEBOM (tdir);
-
 	FILE* ft = _wfopen(tdir,L"ab");
 
 	if (ft == NULL) {
@@ -669,10 +610,24 @@ int TMeas::SaveData(int par)
 		return -1;
 	}
 
+	::DeleteFileW(csvdir);
+	CreateTextFile_UTF16LEBOM (csvdir);
+	FILE* fc = _wfopen(csvdir,L"ab");
+
+	if (fc == NULL) {
+
+		ShowMessage(L"Не удалось открыть файл CSV для сохранения данных измерения!");
+		return -1;
+	}
+
 
 	WideString spar(L"");
 	TCHAR cpar[1024];
 
+	WideString spar_csv(L"");
+	TCHAR cpar_csv[1024];
+
+	/* Place */
 	spar.printf(L"Место:\t\t%s\r\n", name_place.c_bstr());
 	wcscpy(cpar,spar.c_bstr());
 	fwrite(cpar,wcslen(cpar)*2,1,ft);
@@ -681,6 +636,17 @@ int TMeas::SaveData(int par)
 	wcscpy(cpar,spar.c_bstr());
 	fwrite(cpar,wcslen(cpar)*2,1,ft);
 
+	/* CSV */
+
+	spar_csv.printf(L"Место;%s\r\n", name_place.c_bstr());
+	wcscpy(cpar_csv,spar_csv.c_bstr());
+	fwrite(cpar_csv,wcslen(cpar_csv)*2,1,fc);
+
+	spar_csv.printf(L"Скважина;%s\r\n", name_drill.c_bstr());
+	wcscpy(cpar_csv,spar_csv.c_bstr());
+	fwrite(cpar_csv,wcslen(cpar_csv)*2,1,fc);
+
+	/* Drill */
 	if (type_drill == 0)
 	{
 		spar.printf(L"Направление:\tГОРИЗОНТАЛЬНАЯ\r\n");
@@ -691,6 +657,20 @@ int TMeas::SaveData(int par)
 	}
 	wcscpy(cpar,spar.c_bstr());
 	fwrite(cpar,wcslen(cpar)*2,1,ft);
+
+	/* CSV */
+    if (type_drill == 0)
+	{
+		spar_csv.printf(L"Направление;ГОРИЗОНТАЛЬНАЯ\r\n");
+	}
+	else
+	{
+		spar_csv.printf(L"Направление;ВЕРТИКАЛЬНАЯ\r\n");
+	}
+	wcscpy(cpar_csv,spar_csv.c_bstr());
+	fwrite(cpar_csv,wcslen(cpar_csv)*2,1,fc);
+
+	//----------------------------------------------------
 
 	if (single_way == 0)
 	{
@@ -703,14 +683,43 @@ int TMeas::SaveData(int par)
 	wcscpy(cpar,spar.c_bstr());
 	fwrite(cpar,wcslen(cpar)*2,1,ft);
 
+	/* CSV */
+
+	if (single_way == 0)
+	{
+		spar_csv.printf(L"Один проход;НЕТ\r\n");
+	}
+	else
+	{
+		spar.printf(L"Один проход;ДА\r\n");
+	}
+	wcscpy(cpar_csv,spar_csv.c_bstr());
+	fwrite(cpar_csv,wcslen(cpar_csv)*2,1,fc);
+
+	//----------------------------------------------------
+
 	spar.printf(L"Измерение:\t%d\r\n", this->num);
 	wcscpy(cpar,spar.c_bstr());
 	fwrite(cpar,wcslen(cpar)*2,1,ft);
+
+	/* CSV */
+	spar_csv.printf(L"Измерение;%d\r\n", this->num);
+	wcscpy(cpar_csv,spar_csv.c_bstr());
+	fwrite(cpar_csv,wcslen(cpar_csv)*2,1,fc);
+
+	//----------------------------------------------------
 
 	spar = FormatDateTime(L"Создано:\tdd-mm-yyyy hh:nn:ss\r\n",create_time);
 	wcscpy(cpar,spar.c_bstr());
 	fwrite(cpar,wcslen(cpar)*2,1,ft);
 
+	/* CSV */
+
+	spar_csv = FormatDateTime(L"Создано;dd-mm-yyyy hh:nn:ss\r\n",create_time);
+	wcscpy(cpar_csv,spar_csv.c_bstr());
+	fwrite(cpar_csv,wcslen(cpar_csv)*2,1,fc);
+
+	//------------------------------------------------------
 	if (finalized == true) {
 
 		spar = FormatDateTime(L"Завершено:\tdd-mm-yyyy hh:nn:ss\r\n\r\n",finalize_time);
@@ -724,9 +733,32 @@ int TMeas::SaveData(int par)
 	wcscpy(cpar,spar.c_bstr());
 	fwrite(cpar,wcslen(cpar)*2,1,ft);
 
+	/* CSV */
+
+	if (finalized == true) {
+
+		spar_csv = FormatDateTime(L"Завершено;dd-mm-yyyy hh:nn:ss\r\n\r\n",finalize_time);
+		wcscpy(cpar_csv,spar_csv.c_bstr());
+	}
+	else
+	{
+		spar_csv = L"Завершено;НЕТ\r\n\r\n";
+	}
+
+	wcscpy(cpar_csv,spar_csv.c_bstr());
+	fwrite(cpar_csv,wcslen(cpar_csv)*2,1,fc);
+
+	//-----------------------------------------------------------
 	spar = L"Номер\tГлубина\t\tОшибка\t\tX1\t\tY1\t\tX2\t\tY2\t\tLX\t\tLY\t\tLR\t\tAR\r\n";
 	wcscpy(cpar,spar.c_bstr());
 	fwrite(cpar,wcslen(cpar)*2,1,ft);
+
+	/* CSV */
+	spar_csv = L"Номер;Глубина;Ошибка;X1;Y1;X2;Y2;LX;LY;LR;AR\r\n";
+	wcscpy(cpar_csv,spar_csv.c_bstr());
+	fwrite(cpar_csv,wcslen(cpar_csv)*2,1,fc);
+
+	//-----------------------------------------------------------
 
 	for (int i = 0; i < records_cnt; i++) {
 
@@ -751,8 +783,36 @@ int TMeas::SaveData(int par)
 
 	}
 
+	/* CSV */
+
+	for (int i = 0; i < records_cnt; i++) {
+
+		spar_csv.printf(L"%d;%.1f;%.1f;%.1f;%.1f;%.1f;%.1f;%.1f;%.1f;%.1f;%.1f\r\n",
+
+		i,
+		this->records[i].depth,
+		this->records[i].tuberr,
+		this->records[i].X1,
+		this->records[i].X2,
+		this->records[i].Y1,
+		this->records[i].Y2,
+		this->records[i].LX,
+		this->records[i].LY,
+		this->records[i].LR,
+		this->records[i].AR
+
+		);
+
+	wcscpy(cpar_csv,spar_csv.c_bstr());
+	dtc (cpar_csv);
+	fwrite(cpar_csv,wcslen(cpar_csv)*2,1,fc);
+
+	}
+
+	//--------------------------------------------------------------------------
 
 	fclose(ft);
+	fclose(fc);
 
 	return 0;
 }
@@ -763,12 +823,7 @@ int TMeas::LoadData()
 	TCHAR dir[1024];
 	TCHAR tdir[1024];
 
-	/*
-	GetCurrentDirectory(1024,dir);
-	wcscat(dir,L"\\");
-	wcscat(dir,L"Base");
-	*/
-    wcscpy (dir, SysConfMgr->GetCurBase());
+	wcscpy (dir, SysConfMgr->GetCurBase());
 	if (!DirectoryExists(dir))  CreateDirectory(dir,0);
 
 	//wcscat(dir,L"\\");
@@ -781,15 +836,6 @@ int TMeas::LoadData()
 
 	WideString s(L"");
 	s.printf(L"Измерение_%d", this->num);
-
-	/*
-	if (finalized == true) {
-
-		WideString ss(L"");
-		ss = FormatDateTime(L"_dd_mm_yyyy_hh_nn_ss",this->finalize_time);
-		s=s+ss;
-	}
-	*/
 
 	wcscat(dir,L"\\");
 	wcscat(dir,s.c_bstr());
@@ -878,6 +924,27 @@ return true;
 
 extern double excel_export_rate;
 
+WideString TMeas::dts(double d)
+{
+	WideString s(L"");
+	TCHAR t[1024];
+	//s.printf(L"%.2f", d);
+
+	swprintf(t, L"%.2f", d);
+
+	for (int i = 0; i < wcslen(t); i++)
+	{
+		if (t[i] == '.')
+		{
+			t[i] = ',';
+		}
+	}
+
+	s = t;
+
+	return s;
+}
+
 int TMeas::Excel (int par)
 {
 
@@ -924,7 +991,7 @@ int TMeas::Excel (int par)
 		{
 			if (OpenExcelReportTable(1) == false)
 			{
-				MessageBox(NULL,L"Не удалось создать таблицу!",L"ОШИБКА",0);
+				MessageBox(NULL,L"Не удалось создать таблицу!  Проверьте наличие установленного MS Excell.",L"ОШИБКА",0);
 				return -1;
 			}
 		}
@@ -1000,8 +1067,8 @@ int TMeas::Excel (int par)
 	WriteExcelReportCell(irow,icol,L"Глубина"); icol++;
 	WriteExcelReportCell(irow,icol,L"Погр. тр."); icol++;
 	WriteExcelReportCell(irow,icol,L"X1"); icol++;
-	WriteExcelReportCell(irow,icol,L"Y1"); icol++;
 	WriteExcelReportCell(irow,icol,L"X2"); icol++;
+	WriteExcelReportCell(irow,icol,L"Y1"); icol++;
 	WriteExcelReportCell(irow,icol,L"Y2"); icol++;
 	WriteExcelReportCell(irow,icol,L"LX"); icol++;
 	WriteExcelReportCell(irow,icol,L"LY"); icol++;
@@ -1018,16 +1085,16 @@ int TMeas::Excel (int par)
 	{
 		r = &this->records[i];
 		icol = 1;
-		WriteExcelReportCell(irow,icol,r->depth); icol++;
-		WriteExcelReportCell(irow,icol,r->tuberr); icol++;
-		WriteExcelReportCell(irow,icol,r->X1); icol++;
-		WriteExcelReportCell(irow,icol,r->Y1); icol++;
-		WriteExcelReportCell(irow,icol,r->X2); icol++;
-		WriteExcelReportCell(irow,icol,r->Y2); icol++;
-		WriteExcelReportCell(irow,icol,r->LX); icol++;
-		WriteExcelReportCell(irow,icol,r->LY); icol++;
-		WriteExcelReportCell(irow,icol,r->LR); icol++;
-		WriteExcelReportCell(irow,icol,r->AR); icol++;
+		WriteExcelReportCell(irow,icol,dts(r->depth)); icol++;
+		WriteExcelReportCell(irow,icol,dts(r->tuberr)); icol++;
+		WriteExcelReportCell(irow,icol,dts(r->X1)); icol++;
+		WriteExcelReportCell(irow,icol,dts(r->X2)); icol++;
+		WriteExcelReportCell(irow,icol,dts(r->Y1)); icol++;
+		WriteExcelReportCell(irow,icol,dts(r->Y2)); icol++;
+		WriteExcelReportCell(irow,icol,dts(r->LX)); icol++;
+		WriteExcelReportCell(irow,icol,dts(r->LY)); icol++;
+		WriteExcelReportCell(irow,icol,dts(r->LR)); icol++;
+		WriteExcelReportCell(irow,icol,dts(r->AR)); icol++;
 		irow++;
 
 		per = ((i+1)/records_cnt)*100;
@@ -1092,7 +1159,6 @@ int TMeas::ConvertDataUTF16(void)
 {
 
 	TCHAR dir[1024];
-	//TCHAR tdir[1024];
 
 	wcscpy(dir,SysConfMgr->GetCurBase());
 	if (!DirectoryExists(dir))  CreateDirectory(dir,0);
@@ -1112,27 +1178,6 @@ int TMeas::ConvertDataUTF16(void)
 
 	wcscat(dir,L".txt");
 
-	/*
-	if (isMeasTxtUTF8(dir) != 0) {
-
-		return -1;
-
-	}
-	*/
-
-	/*
-	FILE* ft = _wfopen(dir,L"wb");
-
-	if (ft == NULL) {
-
-		ShowMessage(L"Не удалось открыть файл для конвертации текстовых данных измерения!");
-		return -2;
-	}
-
-	fclose (ft);
-	*/
-
-
 	ConvertTextFile_UTF16LEBOM (dir);
 
 	return 0;
@@ -1147,8 +1192,7 @@ int TMeas::isMeasTxtUTF8(TCHAR* path)
 
 	if (fread(buf,10,1,f))
 	{
-		 //if (strstr(buf, "Место:") == 0 )
-		 if (buf[0]!=0xCC) {
+		 if (buf[0] != 0xCC) {
 
 			res = -1;
 
@@ -1184,6 +1228,8 @@ int TMeas::AcceptDataFileRecord(int dir, double d, double x, double y)
 			 }
 
 			 res = 0;
+
+             break;
 		  }
 
 	 }

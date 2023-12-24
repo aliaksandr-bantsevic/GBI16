@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------
 
 #pragma hdrstop
 
@@ -1143,8 +1143,17 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 
 				//if (max_cnt > d->records_cnt)
 				{
-					d->records_cnt = max_cnt;
-					m->records_cnt = max_cnt;
+					//d->records_cnt = max_cnt;
+					//m->records_cnt = max_cnt;
+					for (int i = 0; i < d->meas_list_idx; i++)
+					{
+						if (d->meas_list [i]->records_cnt > d->records_cnt)
+						{
+						   d->records_cnt = d->meas_list [i]->records_cnt;
+						}
+					}
+
+
 				}
 				
 				m->SaveData(0);
