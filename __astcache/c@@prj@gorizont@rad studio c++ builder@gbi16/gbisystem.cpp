@@ -5,6 +5,7 @@
 #include "GBISystem.h"
 #include <vcl.h>
 //#include <filesystem>
+#include <string.h>
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 
@@ -816,7 +817,7 @@ int TGBISystem::OpenConf (TOpenDialog* dlg)
 
 int TGBISystem::SaveConf (TSaveDialog* dlg)
 {
-     this->port.Close();
+	 this->port.Close();
 
 	 this->edit_meas_X->Text = L"";
 	 this->edit_meas_Y->Text = L"";
@@ -826,11 +827,10 @@ int TGBISystem::SaveConf (TSaveDialog* dlg)
 
 	 dlg->InitialDir = SysConfMgr.GetCurConfFoldPath();
 	 dlg->Filter = L"*.ini|*.ini";
-	 
-	 wcscpy((TCHAR*)dlg->FileName.data(), SysConfMgr.cur_conf_name);
 
-	 dlg->FileName = L"Пока не работает!";
-	 
+	 dlg->FileName = SysConfMgr.cur_conf_name ;
+
+
 	 dlg->Title = L"Сохранить конфигурацию как ...";
 	 if (dlg->Execute()!=IDOK) return -1;
 
@@ -1285,7 +1285,7 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 	 dlg->InitialDir = tdir;
 	 dlg->Filter = L"*.csv|*.csv";
 	 dlg->FileName = SysConfMgr.cur_conf_name ;
-	 dlg->Title = L"Открыть конфигурацию";
+	 dlg->Title = L"Импортировать данные из файла CSV ...";
 	 if (dlg->Execute()!=IDOK)
 	 {
 		console(L"Система", L"... отмена");
@@ -1299,4 +1299,145 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 	 return res;
  }
 
+int TGBISystem::ExportConfTxt(TSaveDialog* dlg)
+{
+	 console(L"Система", L"Экспорт конфигурации в файл txt ...");
 
+	 int res = 0;
+
+	 TCHAR tdir[1024];
+	 ::GetCurrentDirectoryW(1024,tdir);
+	 wcscat(tdir,L"\\Data\\");
+	 if (!DirectoryExists(tdir))  CreateDirectory(tdir,0);
+
+	 WideString fres(L"");
+	 dlg->InitialDir = tdir;
+	 dlg->Filter = L"*.txt|*.txt";
+
+	 dlg->FileName = L"ObjNames.txt";
+
+	 dlg->Title = L"Сохранить конфигурацию в файле txt";
+	 if (dlg->Execute()!=IDOK)
+	 {
+		console(L"Система", L"... отмена");
+		return -1;
+	 }
+
+	 fres = dlg->FileName;
+
+	 //ExportSysConfToTxtFileUnicode(fres.c_bstr());
+	 if (ExportSysConfToTxtFileUtf8(fres.c_bstr()) == 0)
+	 {
+			 console(L"Система", L" ... завершен успешно");
+	 }
+	 else
+	 {
+			console(L"ОШИБКА:", L" ... не удалось выполнить");
+     }
+
+
+	 return res;
+}
+
+int TGBISystem::ExportSysConfToTxtFileUnicode(TCHAR* path)
+{
+	int res = 0;
+
+	::DeleteFile(path);
+	CreateTextFile_UTF16LEBOM (path);
+
+	FILE* f = NULL;
+
+	f = _wfopen(path,L"wb");
+
+	if (f == NULL)
+	{
+		ShowMessage(L"Не удалось открыть файл для экспорта конфигурации!");
+		return -1;
+	}
+
+	TCHAR tstr [1024];
+
+	wcscpy(tstr, L";---- Файл описания сбора данных с измерителей ----");
+	fwrite(tstr, 1, wcslen(tstr)*2, f);
+
+	WideString ws(L"");
+	ws.printf(L"\r\n;---- Имя конфигурации: %s ----\r\n", this->SysConfMgr.cur_conf_name);
+
+	wcscpy(tstr, ws.c_bstr());
+	fwrite(tstr, 1, wcslen(tstr)*2, f);
+
+
+	for (int i = 0; i < place_list_idx; i++)
+	{
+		TPlace* p = place_list [i];
+
+		ws.printf(L"\r\n#%s",p->name.c_bstr());
+		wcscpy(tstr, ws.c_bstr());
+		fwrite(tstr, 1, wcslen(tstr)*2, f);
+
+		for (int j = 0; j < p->drill_list_idx; j++)
+		{
+			TDrill* d = p->drill_list [j];
+			ws.printf(L"\t%s\r\n",d->name.c_bstr());
+			wcscpy(tstr, ws.c_bstr());
+			fwrite(tstr, 1, wcslen(tstr)*2, f);
+		}
+
+	}
+
+	fclose(f);
+	return res;
+}
+
+int TGBISystem::ExportSysConfToTxtFileUtf8(TCHAR* path)
+{
+	int res = 0;
+
+	char utf8_sgn [] = {0xEF, 0xBB, 0xBF};
+	WideString unicode_str(L"");
+	WideString& ustr = unicode_str;
+	char utf8_str [1024];
+
+	::DeleteFile(path);
+	CreateTextFile_UTF16LEBOM (path);
+
+	FILE* f = NULL;
+
+	f = _wfopen(path,L"wb");
+
+	if (f == NULL)
+	{
+		ShowMessage(L"Не удалось открыть файл для экспорта конфигурации!");
+		return -1;
+	}
+
+	//Write utf8 header signature
+	fwrite(utf8_sgn, 1, 3, f);
+
+	//Write system conf header
+	ustr = L";---- Файл описания сбора данных с измерителей ----";
+	ConvertStrUnicodeToUtf8(ustr, utf8_str); fwrite(utf8_str, 1, strlen(utf8_str), f);
+
+	ustr.printf(L"\r\n;---- Имя конфигурации: %s ----\r\n", this->SysConfMgr.cur_conf_name);
+	ConvertStrUnicodeToUtf8(ustr, utf8_str); fwrite(utf8_str, 1, strlen(utf8_str), f);
+
+	for (int i = 0; i < place_list_idx; i++)
+	{
+		TPlace* p = place_list [i];
+
+		ustr.printf(L"\r\n#%s",p->name.c_bstr());
+		ConvertStrUnicodeToUtf8(ustr, utf8_str); fwrite(utf8_str, 1, strlen(utf8_str), f);
+
+		for (int j = 0; j < p->drill_list_idx; j++)
+		{
+			TDrill* d = p->drill_list [j];
+			ustr.printf(L"\r\n  %s",d->name.c_bstr());
+			ConvertStrUnicodeToUtf8(ustr, utf8_str); fwrite(utf8_str, 1, strlen(utf8_str), f);
+		}
+
+	}
+
+	fclose(f);
+	return res;
+}

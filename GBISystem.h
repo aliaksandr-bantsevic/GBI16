@@ -117,8 +117,11 @@ public:
 	TDrill* GetDrillByName(TPlace* p, WideString n, int cnt);
 	int ImportFromDataFile(TCHAR* path);
 	int ImportDataCSV(TOpenDialog* dlg);
-
+	int ExportConfTxt(TSaveDialog* dlg);
+	int ExportSysConfToTxtFileUnicode(TCHAR* path);
+	int ExportSysConfToTxtFileUtf8(TCHAR* path);
 	void (*console) (WideString obj, WideString msg);
+
 };
 
 

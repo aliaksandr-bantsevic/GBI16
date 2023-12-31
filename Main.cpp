@@ -163,7 +163,7 @@ void __fastcall TFMain::ToolButton8Click(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TFMain::ToolButton4Click(TObject *Sender)
+void __fastcall TFMain::ToolButton_syspropClick(TObject *Sender)
 {
 	Form_SystemAdjust->system = this->GBISystem;
 	Form_SystemAdjust->Start();
@@ -919,13 +919,13 @@ void __fastcall TFMain::PopupMenu_systemPopup(TObject *Sender)
 
 void __fastcall TFMain::N_system_adjustClick(TObject *Sender)
 {
-   ToolButton4Click(NULL);
+   ToolButton_syspropClick(NULL);
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TFMain::N3Click(TObject *Sender)
 {
-   ToolButton4Click(NULL);
+   ToolButton_syspropClick(NULL);
 }
 //---------------------------------------------------------------------------
 
@@ -1800,7 +1800,7 @@ void __fastcall TFMain::N_save_confClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TFMain::ToolButton11Click(TObject *Sender)
+void __fastcall TFMain::ToolButton_baseresClick(TObject *Sender)
 {
 	GBISystem->SysConfMgr.Backup(0, 1);
 	Console(L"резервная копия базы данных сохранена",L"");
@@ -2140,7 +2140,7 @@ void __fastcall TFMain::MManualClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TFMain::ToolButton7Click(TObject *Sender)
+void __fastcall TFMain::ToolButton_helpClick(TObject *Sender)
 {
 	//MManualClick(NULL);
 	MMAboutClick(NULL);
@@ -2199,7 +2199,7 @@ void __fastcall TFMain::ToolButton_collapseClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TFMain::ToolButton1Click(TObject *Sender)
+void __fastcall TFMain::ToolButton_kbdClick(TObject *Sender)
 {
       VirtKey_TouchIn_On();
 }
@@ -2236,6 +2236,20 @@ void __fastcall TFMain::ToolButton2Click(TObject *Sender)
 {
     LPageControl_console->ActivePage = TabSheet_console;
 	GBISystem->ImportDataCSV(OpenDialog);
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TFMain::ToolButton_save_asClick(TObject *Sender)
+{
+	GBISystem->SaveConf (SaveDialog);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFMain::ToolButton_exportClick(TObject *Sender)
+{
+	LPageControl_console->ActivePage = TabSheet_console;
+	GBISystem->ExportConfTxt(SaveDialog);
 }
 //---------------------------------------------------------------------------
 

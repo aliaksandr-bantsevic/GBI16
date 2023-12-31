@@ -67,12 +67,12 @@ __published:	// IDE-managed Components
 	TMenuItem *N_save_conf;
 	TImageList *ImageList_Mtoolbar;
 	TToolButton *ToolButton_test;
-	TToolButton *ToolButton4;
-	TToolButton *ToolButton7;
+	TToolButton *ToolButton_sysprop;
+	TToolButton *ToolButton_help;
 	TToolButton *ToolButton8;
 	TToolButton *ToolButton9;
 	TToolButton *ToolButton_Start;
-	TToolButton *ToolButton11;
+	TToolButton *ToolButton_baseres;
 	TToolButton *ToolButton12;
 	TMenuItem *N1;
 	TMenuItem *N2;
@@ -173,8 +173,9 @@ __published:	// IDE-managed Components
 	TToolButton *ToolButton_create;
 	TToolButton *ToolButton_open;
 	TToolButton *ToolButton_collapse;
-	TToolButton *ToolButton1;
+	TToolButton *ToolButton_kbd;
 	TToolButton *ToolButton2;
+	TToolButton *ToolButton_export;
 	void __fastcall MMFileDrawItem(TObject *Sender, TCanvas *ACanvas, TRect &ARect,
 		  bool Selected);
 	void __fastcall MMPropDrawItem(TObject *Sender, TCanvas *ACanvas, TRect &ARect,
@@ -188,7 +189,7 @@ __published:	// IDE-managed Components
 	void __fastcall ToolButton_createClick(TObject *Sender);
 	void __fastcall ToolButton9Click(TObject *Sender);
 	void __fastcall ToolButton8Click(TObject *Sender);
-	void __fastcall ToolButton4Click(TObject *Sender);
+	void __fastcall ToolButton_syspropClick(TObject *Sender);
 	void __fastcall ToolButton_StartClick(TObject *Sender);
 	void __fastcall Timer_seconds_system_eventTimer(TObject *Sender);
 	void __fastcall FormDestroy(TObject *Sender);
@@ -227,7 +228,7 @@ __published:	// IDE-managed Components
 	void __fastcall N_create_confClick(TObject *Sender);
 	void __fastcall N_open_confClick(TObject *Sender);
 	void __fastcall N_save_confClick(TObject *Sender);
-	void __fastcall ToolButton11Click(TObject *Sender);
+	void __fastcall ToolButton_baseresClick(TObject *Sender);
 	void __fastcall ToolButton12Click(TObject *Sender);
 	void __fastcall Timer_excel_export_progressTimer(TObject *Sender);
 	void __fastcall Panel1DblClick(TObject *Sender);
@@ -241,14 +242,16 @@ __published:	// IDE-managed Components
 	void __fastcall Chart_y_vMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall Chart_rMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall MManualClick(TObject *Sender);
-	void __fastcall ToolButton7Click(TObject *Sender);
+	void __fastcall ToolButton_helpClick(TObject *Sender);
 	void __fastcall ToolButton_saveClick(TObject *Sender);
 	void __fastcall ToolButton_openClick(TObject *Sender);
 	void __fastcall ToolButton_collapseClick(TObject *Sender);
-	void __fastcall ToolButton1Click(TObject *Sender);
+	void __fastcall ToolButton_kbdClick(TObject *Sender);
 	void __fastcall TreeView_systemMouseMove(TObject *Sender, TShiftState Shift, int X,
           int Y);
 	void __fastcall ToolButton2Click(TObject *Sender);
+	void __fastcall ToolButton_save_asClick(TObject *Sender);
+	void __fastcall ToolButton_exportClick(TObject *Sender);
 
 private:	// User declarations
 	void Test1();

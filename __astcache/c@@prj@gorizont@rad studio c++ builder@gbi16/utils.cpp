@@ -400,18 +400,159 @@ int ConvertStrUTF8ToUtf16 (char* strU8, TCHAR* strU16, int U8_len)
 }
 
 
+int ConvertStrUTF8ToUtf16 (TCHAR* strU16, char* strU8, int U16_len)
+{
+
+	TCHAR t16;
+
+	//System::UnicodeToUtf8(strU8, strU16, strlen(strU16));
+
+	return 0;
+}
+
+String UnicodeToUTF8____(const WideString& str)
+{
+	char*     pElementText;
+	int    iTextLen;
+
+	// wide char to multi char
+	iTextLen = WideCharToMultiByte( CP_UTF8,
+		 0,
+		 str.c_bstr(),
+		 -1,
+		 NULL,
+		 0,
+		 NULL,
+		 NULL );
+   pElementText = new char[iTextLen + 1];
+   memset( ( void* )pElementText, 0, sizeof( char ) * ( iTextLen + 1 ) );
+   ::WideCharToMultiByte( CP_UTF8,
+		 0,
+		 str.c_bstr(),
+		 -1,
+		 pElementText,
+		 iTextLen,
+		 NULL,
+		 NULL );
+	String strText;
+	strText = pElementText;
+	delete[] pElementText;
+	return strText;
+}
+
+/*
+String UnicodeToUTF8__(const WideString& str)
+{
+	char*     pElementText;
+	int    iTextLen;
+
+	// wide char to multi char
+	iTextLen = WideCharToMultiByte( CP_UTF8,
+		 0,
+		 str.c_bstr(),
+		 -1,
+		 NULL,
+		 0,
+		 NULL,
+		 NULL );
+   pElementText = new char[iTextLen + 1];
+   memset( ( void* )pElementText, 0, sizeof( char ) * ( iTextLen + 1 ) );
+   ::WideCharToMultiByte( CP_UTF8,
+		 0,
+		 str.c_bstr(),
+		 -1,
+		 pElementText,
+		 iTextLen,
+		 NULL,
+		 NULL );
+	String strText;
+	strText = pElementText;
+	delete[] pElementText;
+	return strText;
+}
+*/
+
+int ConvertStrUnicodeToUtf8(WideString& ws, char* cstr)
+{
+	//String s("");
+	TCHAR tws [1024];
+	wcscpy(tws, ws.c_bstr());
+	int iwlen = wcslen(tws);
+	char cws[1024];
+	memset(cws, 0, sizeof(cws));
+	int j = 0;
+
+
+	for(int i = 0; i < iwlen; i++)
+	{
+		wchar_t wc = tws[i];
+
+		if ( 0 <= wc && wc <= 0x7f )
+		{
+			cws [j] = (char)wc; j++;
+			Sleep(1);
+		}
+		else if ( 0x80 <= wc && wc <= 0x7ff )
+		{
+			cws [j] = ( 0xc0 | (wc >> 6)); j++;
+			cws [j] = ( 0x80 | (wc & 0x3f)); j++;
+		}
+		else if ( 0x800 <= wc && wc <= 0xffff )
+		{
+			cws [j] = ( 0xe0 | (wc >> 12)); j++;
+			cws [j] = ( 0x80 | ((wc >> 6) & 0x3f)); j++;
+			cws [j] = ( 0x80 | (wc & 0x3f)); j++;
+		}
+		else if ( 0x10000 <= wc && wc <= 0x1fffff )
+		{
+			cws [j] = ( 0xf0 | (wc >> 18)); j++;
+			cws [j] = ( 0x80 | ((wc >> 12) & 0x3f)); j++;;
+			cws [j] = ( 0x80 | ((wc >> 6) & 0x3f)); j++;
+			cws [j] = ( 0x80 | (wc & 0x3f)); j++;
+		}
+		else if ( 0x200000 <= wc && wc <= 0x3ffffff )
+		{
+			cws [j] = ( 0xf8 | (wc >> 24));  j++;
+			cws [j] = ( 0x80 | ((wc >> 18) & 0x3f)); j++;
+			cws [j] = ( 0x80 | ((wc >> 12) & 0x3f)); j++;
+			cws [j] = ( 0x80 | ((wc >> 6) & 0x3f)); j++;
+			cws [j] = ( 0x80 | (wc & 0x3f)); j++;
+		}
+		else if ( 0x4000000 <= wc && wc <= 0x7fffffff )
+		{
+			cws [j] = ( 0xfc | (wc >> 30)); j++;
+			cws [j] = ( 0x80 | ((wc >> 24) & 0x3f)); j++;
+			cws [j] = ( 0x80 | ((wc >> 18) & 0x3f)); j++;
+			cws [j] = ( 0x80 | ((wc >> 12) & 0x3f)); j++;
+			cws [j] = ( 0x80 | ((wc >> 6) & 0x3f)); j++;
+			cws [j] = ( 0x80 | (wc & 0x3f)); j++;
+		}
+
+		Sleep(1);
+	}
+
+	//s = "";
+	//s += cws;
+
+	strcpy(cstr, (const char*) cws);
+
+	return 0;
+}
+
+
+
+
 
 /*
 	Examples
 */
 
-
 /*
 
 std::wstring utf8_to_utf16(const std::string& utf8)
 {
-    std::vector<unsigned long> unicode;
-    size_t i = 0;
+	std::vector<unsigned long> unicode;
+	size_t i = 0;
 	while (i < utf8.size())
 	{
 		unsigned long uni;
@@ -545,51 +686,51 @@ wstring UTF8toUnicode(const string& s)
 
 string UnicodeToUTF8( const wstring& ws )
 {
-    string s;
-    for( int i = 0;i < ws.size(); ++i )
-    {
-        wchar_t wc = ws[i];
-        if ( 0 <= wc && wc <= 0x7f )
-        {
-            s += (char)wc;
-        }
-        else if ( 0x80 <= wc && wc <= 0x7ff )
-        {
-            s += ( 0xc0 | (wc >> 6) );
-            s += ( 0x80 | (wc & 0x3f) );
-        }
-        else if ( 0x800 <= wc && wc <= 0xffff )
-        {
-            s += ( 0xe0 | (wc >> 12) );
-            s += ( 0x80 | ((wc >> 6) & 0x3f) );
-            s += ( 0x80 | (wc & 0x3f) );
-        }
-        else if ( 0x10000 <= wc && wc <= 0x1fffff )
-        {
-            s += ( 0xf0 | (wc >> 18) );
-            s += ( 0x80 | ((wc >> 12) & 0x3f) );
-            s += ( 0x80 | ((wc >> 6) & 0x3f) );
-            s += ( 0x80 | (wc & 0x3f) );
-        }
-        else if ( 0x200000 <= wc && wc <= 0x3ffffff )
-        {
-            s += ( 0xf8 | (wc >> 24) );
-            s += ( 0x80 | ((wc >> 18) & 0x3f) );
-            s += ( 0x80 | ((wc >> 12) & 0x3f) );
-            s += ( 0x80 | ((wc >> 6) & 0x3f) );
-            s += ( 0x80 | (wc & 0x3f) );
-        }
-        else if ( 0x4000000 <= wc && wc <= 0x7fffffff )
-        {
-            s += ( 0xfc | (wc >> 30) );
-            s += ( 0x80 | ((wc >> 24) & 0x3f) );
-            s += ( 0x80 | ((wc >> 18) & 0x3f) );
-            s += ( 0x80 | ((wc >> 12) & 0x3f) );
-            s += ( 0x80 | ((wc >> 6) & 0x3f) );
-            s += ( 0x80 | (wc & 0x3f) );
-        }
-    }
-    return s;
+	string s;
+	for( int i = 0;i < ws.size(); ++i )
+	{
+		wchar_t wc = ws[i];
+		if ( 0 <= wc && wc <= 0x7f )
+		{
+			s += (char)wc;
+		}
+		else if ( 0x80 <= wc && wc <= 0x7ff )
+		{
+			s += ( 0xc0 | (wc >> 6));
+			s += ( 0x80 | (wc & 0x3f));
+		}
+		else if ( 0x800 <= wc && wc <= 0xffff )
+		{
+			s += ( 0xe0 | (wc >> 12));
+			s += ( 0x80 | ((wc >> 6) & 0x3f));
+			s += ( 0x80 | (wc & 0x3f));
+		}
+		else if ( 0x10000 <= wc && wc <= 0x1fffff )
+		{
+			s += ( 0xf0 | (wc >> 18));
+			s += ( 0x80 | ((wc >> 12) & 0x3f));
+			s += ( 0x80 | ((wc >> 6) & 0x3f));
+			s += ( 0x80 | (wc & 0x3f));
+		}
+		else if ( 0x200000 <= wc && wc <= 0x3ffffff )
+		{
+			s += ( 0xf8 | (wc >> 24));
+			s += ( 0x80 | ((wc >> 18) & 0x3f));
+			s += ( 0x80 | ((wc >> 12) & 0x3f));
+			s += ( 0x80 | ((wc >> 6) & 0x3f));
+			s += ( 0x80 | (wc & 0x3f));
+		}
+		else if ( 0x4000000 <= wc && wc <= 0x7fffffff )
+		{
+			s += ( 0xfc | (wc >> 30));
+			s += ( 0x80 | ((wc >> 24) & 0x3f));
+			s += ( 0x80 | ((wc >> 18) & 0x3f));
+			s += ( 0x80 | ((wc >> 12) & 0x3f));
+			s += ( 0x80 | ((wc >> 6) & 0x3f));
+			s += ( 0x80 | (wc & 0x3f));
+		}
+	}
+	return s;
 }
 
 */

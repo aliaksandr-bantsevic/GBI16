@@ -50,3 +50,5 @@ extern TCHAR ConvertSmbFrom1251 (char smb);
 extern int CheckTextFile_UTF16LEBOM (TCHAR* pszFilePath);
 extern TCHAR ConvertSmbFromUTF8 (char smb);
 extern int ConvertStrUTF8ToUtf16 (char* strU8, TCHAR* strU16, int U8_len);
+extern int ConvertStrUTF8ToUtf16 (TCHAR* strU16, char* strU8, int U16_len);
+extern int ConvertStrUnicodeToUtf8(WideString& ws, char* cstr);
