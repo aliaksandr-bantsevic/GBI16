@@ -1099,11 +1099,14 @@ void __fastcall TFMain::N_drill_addClick(TObject *Sender)
 
 	if (Form_DrillAdjust->OK == true )
 	{
-		p->AddDrill(d);
+		if (p->AddDrill(d) != 0)
+		{
+			delete d;
+		}
+
 		GBISystem->Redraw();
 	}
 
-	delete d;
 	current_place = NULL;
 }
 //---------------------------------------------------------------------------

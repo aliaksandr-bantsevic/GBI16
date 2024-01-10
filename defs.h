@@ -9,7 +9,7 @@
 extern bool b_MessageConfirmParamsetShow;
 
 #define BUILD           2
-#define VERSION         4
+#define VERSION         5
 #define SUBVERSION      0
 
 /*
