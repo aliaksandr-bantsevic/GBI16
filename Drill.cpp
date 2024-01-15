@@ -135,6 +135,12 @@ int TDrill::SaveConfig (TIniFile* ini)
 
 	ini->WriteInteger(section,L"SINGLEWAY", single_way);
 
+	s.printf(L"%.1f",this->level_start);
+	ini->WriteString(section, L"LEVEL_START", s);
+
+	s.printf(L"%.1f",this->level_end);
+	ini->WriteString(section, L"LEVEL_END", s);
+
 		for (int i = 0; i < meas_list_idx; i++) {
 
 			TMeas* m = meas_list[i];

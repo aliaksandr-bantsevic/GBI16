@@ -1434,6 +1434,28 @@ int TGBISystem::ExportSysConfToTxtFileUtf8(TCHAR* path)
 			TDrill* d = p->drill_list [j];
 			ustr.printf(L"\r\n  %s",d->name.c_bstr());
 			ConvertStrUnicodeToUtf8(ustr, utf8_str); fwrite(utf8_str, 1, strlen(utf8_str), f);
+
+			TCHAR cdt = ' ';
+
+			if (d->drill_orient == DRILL_ORIENT_VERTICAL)
+			{
+				cdt = '@';
+			}
+			else if (d->drill_orient == DRILL_ORIENT_HORIZONT)
+			{
+
+				if (d->single_way == 0)
+				{
+					cdt = '$';
+				}
+				else
+				{
+					cdt = '&';
+				}
+			}
+
+			ustr.printf(L" %C%.1f-%.1f", cdt, d->level_start, d->level_end);
+			ConvertStrUnicodeToUtf8(ustr, utf8_str); fwrite(utf8_str, 1, strlen(utf8_str), f);
 		}
 
 	}

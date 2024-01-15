@@ -18,6 +18,14 @@ void __fastcall TForm_DrillAdjust::Button_applyClick(TObject *Sender)
 {
 	 Update();
 
+		FormToDrill();
+		OK = true;
+        *OOK = true;
+		Close();
+
+	 return;//!!!
+
+
 	 if (MAX_RECORDS_MEAS  < *records_cnt) {
 
 		utils_ShowMessage(L"Превышен лимит числа уровней!");
@@ -81,7 +89,7 @@ void __fastcall TForm_DrillAdjust::Timer_startTimer(TObject *Sender)
 		DrillToForm();
 	}
 
-	this->ShowModal();
+	//this->ShowModal();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_DrillAdjust::Button_cancelClick(TObject *Sender)
@@ -237,6 +245,7 @@ void TForm_DrillAdjust::DrillToForm()
 	}
 
 	//start collect data
+    GroupBox_start_collect_data->Enabled = false;
 	//forward
 	if (dl2>dl1)
 	{
@@ -259,13 +268,13 @@ void TForm_DrillAdjust::DrillToForm()
 	//pass 1/2
 	if (drill->single_way == 1)
 	{
-		RadioButton_pass_1->Checked = FALSE;
-		RadioButton_pass_2->Checked = TRUE;
+		RadioButton_pass_1->Checked = TRUE;
+		RadioButton_pass_2->Checked = FALSE;
 	}
 	else
 	{
-		RadioButton_pass_1->Checked = TRUE;
-		RadioButton_pass_2->Checked = FALSE;
+		RadioButton_pass_1->Checked = FALSE;
+		RadioButton_pass_2->Checked = TRUE;
 	}
 
 	//Geo bind horizontal only
@@ -393,56 +402,66 @@ int TForm_DrillAdjust::FormToDrill()
 	}
 
 	//calc start TOP/BOTTOM vertical only
-	if (drill->drill_orient == DRILL_ORIENT_HORIZONT)
+	if (this->RadioButton_top->Checked == TRUE)
 	{
-		this->RadioGroup_calc_start->Visible = false;
-		this->RadioButton_top->Visible = false;
-		this->RadioButton_bot->Visible = false;
+		drill->start_point = DRILL_TOP_POINT;
 	}
-	else if (drill->drill_orient == DRILL_ORIENT_VERTICAL)
+	else if (this->RadioButton_bot->Checked == TRUE)
 	{
-		this->RadioGroup_calc_start->Visible = true;
-
-		if (drill->start_point == DRILL_TOP_POINT)
-		{
-			this->RadioGroup_calc_start->Visible = true;
-			this->RadioButton_top->Visible = TRUE;
-			this->RadioButton_bot->Visible = TRUE;
-			this->RadioButton_top->Checked = TRUE;
-			this->RadioButton_bot->Checked = FALSE;
-		}
-		else if (drill->start_point == DRILL_BOT_POINT)
-		{
-			this->RadioGroup_calc_start->Visible = true;
-			this->RadioButton_top->Visible = TRUE;
-			this->RadioButton_bot->Visible = TRUE;
-			this->RadioButton_top->Checked = FALSE;
-			this->RadioButton_bot->Checked = TRUE;
-		}
-
+		drill->start_point = DRILL_BOT_POINT;
 	}
 
 	//start collect data
-	GroupBox_start_collect_data->Visible = true;
-	RadioButton_start_first->Visible = TRUE;
-	RadioButton_start_last->Visible = TRUE;
-	RadioButton_start_first->Checked = TRUE;
-	RadioButton_start_last->Checked = FALSE;
+	/*
+	*   This patrameter is adjusted auto as level_start<>level_end
+	*/
+
+	/*
+	if (RadioButton_start_first->Checked == TRUE)
+	{
+		drill->i_first_request_point = DRILL_FIRST_REQUEST_TOP;
+	}
+	else if (RadioButton_start_last->Checked == TRUE)
+	{
+		drill->i_first_request_point = DRILL_FIRST_REQUEST_BOT;
+	}
+	*/
 
 	//pass 1/2
-	GroupBox_pass->Visible = true;
-	RadioButton_pass_1->Visible = TRUE;
-	RadioButton_pass_2->Visible = TRUE;
-	RadioButton_pass_1->Checked = TRUE;
-	RadioButton_pass_2->Checked = FALSE;
+	if (RadioButton_pass_1->Checked == TRUE)
+	{
+		drill->single_way = 1;
+	}
+	else  if (RadioButton_pass_2->Checked == TRUE)
+	{
+		drill->single_way = 0;
+	}
 
 	//Geo bind
-	GroupBox_geo->Visible = true;
-	Edit_Input_point->Visible = true;
-	Edit_Output_point->Visible = true;
+	if (CheckBox_GeoOn->Checked == true)
+	{
+		drill->geo_data.geo_on = true;
 
-	Edit_Input_point->Text = L"0";
-	Edit_Output_point->Text = L"0";
+		try
+		{
+			drill->geo_data.input_point = Edit_Input_point->Text.ToDouble();
+			drill->geo_data.output_point = Edit_Output_point->Text.ToDouble();
+		}
+		catch(...)
+		{
+			drill->geo_data.input_point = 0;
+			drill->geo_data.output_point = 0;
+
+			ShowMessage(L"Ошибка ввода данных геопривязки!");
+		}
+
+	}
+	else
+	{
+		drill->geo_data.geo_on = false;
+		drill->geo_data.input_point = 0;
+		drill->geo_data.output_point = 0;
+	}
 
 	return 0;
 }
@@ -455,6 +474,36 @@ void TForm_DrillAdjust::FormChange()
 
 
 void __fastcall TForm_DrillAdjust::ComboBox_orientChange(TObject *Sender)
+{
+	FormChange();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_DrillAdjust::CheckBox_GeoOnClick(TObject *Sender)
+{
+	Update();
+
+	if (CheckBox_GeoOn->Checked == TRUE)
+	{
+		this->Edit_Input_point->Enabled = true;
+		this->Edit_Output_point->Enabled = true;
+	}
+	else
+	{
+		this->Edit_Input_point->Enabled = false;
+		this->Edit_Output_point->Enabled = false;
+	}
+
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_DrillAdjust::ComboBox_level_startChange(TObject *Sender)
+{
+   	FormChange();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_DrillAdjust::ComboBox_level_endChange(TObject *Sender)
 {
 	FormChange();
 }

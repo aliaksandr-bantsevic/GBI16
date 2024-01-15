@@ -63,6 +63,9 @@ __published:	// IDE-managed Components
 	void __fastcall Button_cancelClick(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall ComboBox_orientChange(TObject *Sender);
+	void __fastcall CheckBox_GeoOnClick(TObject *Sender);
+	void __fastcall ComboBox_level_startChange(TObject *Sender);
+	void __fastcall ComboBox_level_endChange(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TForm_DrillAdjust(TComponent* Owner);
@@ -82,6 +85,7 @@ public:		// User declarations
 
 
 	bool OK;
+    bool* OOK;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm_DrillAdjust *Form_DrillAdjust;

@@ -19,6 +19,9 @@ TDrill::TDrill()
 	geo_data.output_point = 0.;
 
 	drill_asimut = 0.;
+	level_start = 0.;
+	level_end = 0.;
+
 }
 
 
@@ -55,6 +58,8 @@ TDrill::TDrill(WideString n)
 	geo_data.output_point = 0.;
 
 	drill_asimut = 0.;
+	level_start = 0.;
+	level_end = 0.;
 
 }
 
@@ -129,6 +134,12 @@ int TDrill::SaveConfig (TIniFile* ini)
 	ini->WriteInteger(section,L"GEO_DATA_ON", geo_data.geo_on);
 
 	ini->WriteInteger(section,L"SINGLEWAY", single_way);
+
+	s.printf(L"%.1f",this->level_start);
+	ini->WriteString(section, L"LEVEL_START", s);
+
+	s.printf(L"%.1f",this->level_end);
+	ini->WriteString(section, L"LEVEL_END", s);
 
 		for (int i = 0; i < meas_list_idx; i++) {
 

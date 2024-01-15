@@ -226,16 +226,40 @@ int TPlace::LoadDrillConfig(TIniFile* ini)
 				catch (...)
 				{
 
-                }
+				}
 
 				drill_list[drill_list_idx-1]->single_way =  ini->ReadInteger(section, L"SINGLEWAY", 0);
 				drill_list[drill_list_idx-1]->LoadMeasConfig(ini);
-  				drill_list[drill_list_idx-1]->pname = this->name;
+				drill_list[drill_list_idx-1]->pname = this->name;
+
+				spar =  ini->ReadString(section, L"LEVEL_START", L"0.0");
+
+				try
+				{
+					drill_list[drill_list_idx-1]->level_start = spar.ToDouble();
+				}
+				catch (...)
+				{
+
+				}
+
+				spar =  ini->ReadString(section, L"LEVEL_END", L"0.0");
+
+				try
+				{
+					drill_list[drill_list_idx-1]->level_end = spar.ToDouble();
+				}
+				catch (...)
+				{
+
+				}
+
 			}
 			else
 			{
 				break;
 			}
+
 
 	}
 

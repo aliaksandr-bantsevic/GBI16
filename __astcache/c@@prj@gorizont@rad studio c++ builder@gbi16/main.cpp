@@ -1087,17 +1087,16 @@ void __fastcall TFMain::N_drill_addClick(TObject *Sender)
 {
 	TPlace* p = current_place;
 	TDrill* d = new TDrill();
-	int cnt = 21;
+	bool OOK = false;
 
-	Form_DrillAdjust->records_cnt = &cnt;
+
+	Form_DrillAdjust->OOK = &OOK;
 	Form_DrillAdjust->mode = 0;
-
 	Form_DrillAdjust->OK = false;
-	Form_DrillAdjust->drill = d;
-	Form_DrillAdjust->Start();
+	Form_DrillAdjust->Start(d,0);
 	Form_DrillAdjust->ShowModal();
 
-	if (Form_DrillAdjust->OK == true )
+	if (OOK == true )
 	{
 		if (p->AddDrill(d) != 0)
 		{
@@ -1114,28 +1113,23 @@ void __fastcall TFMain::N_drill_addClick(TObject *Sender)
 void __fastcall TFMain::N_drill_adjustClick(TObject *Sender)
 {
 
-	TDrill* d = new TDrill();
-	WideString s(L"");
-	int records_cnt = 0;
+	if (current_drill == NULL)
+	{
 
-	int init_start = current_drill->start_point;
-
-	current_place->UpdateDrill(d, current_drill);
-
-	records_cnt = d->records_cnt;
-	Form_DrillAdjust->records_cnt = &records_cnt;
-
-	Form_DrillAdjust->drill = d;
-	Form_DrillAdjust->mode = 1;
+		ShowMessage(L"Онибка выбора скважины!");
+		return;
+	}
 
 
-	Form_DrillAdjust->Start();
+	TDrill* d = current_drill;
+	bool OOK = false;
 
 	Form_DrillAdjust->OK = false;
-	Form_DrillAdjust->Start();
+	Form_DrillAdjust->OOK = &OOK;
+	Form_DrillAdjust->Start(d,1);
 	Form_DrillAdjust->ShowModal();
 
-	if (Form_DrillAdjust->OK == true)
+	if (OOK == true)
 	{
 
 		current_place->UpdateDrill(current_drill, d);
@@ -1146,6 +1140,7 @@ void __fastcall TFMain::N_drill_adjustClick(TObject *Sender)
 		GBISystem->Redraw();
 		GBISystem->ResaveData();
 
+		/*
 		if (init_start != current_drill->start_point)
 		{
 			if(Application->MessageBoxW(L"Параметры скважины изменились. Выполнить перерасчет всех измерений?",L"ВНИМАНИЕ!",1) == IDOK )
@@ -1153,13 +1148,14 @@ void __fastcall TFMain::N_drill_adjustClick(TObject *Sender)
 			   current_drill->ReCalc();
 			}
 		}
+        */
 
 	   current_drill->UpdateMeas();
 	   this->ViewSelectedDrill();
+	   current_drill = NULL;
    }
 
-   delete d;
-   current_drill = NULL;
+
 }
 //---------------------------------------------------------------------------
 

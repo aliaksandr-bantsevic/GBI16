@@ -16,7 +16,7 @@ object Form_DrillAdjust: TForm_DrillAdjust
   object Label2: TLabel
     Left = 106
     Top = 381
-    Width = 41
+    Width = 114
     Height = 18
     Caption = #1063#1080#1089#1083#1086' '#1091#1088#1086#1074#1085#1077#1081
     Visible = False
@@ -47,7 +47,7 @@ object Form_DrillAdjust: TForm_DrillAdjust
     OnClick = Button_cancelClick
   end
   object Button_apply: TButton
-    Left = 360
+    Left = 368
     Top = 361
     Width = 129
     Height = 25
@@ -183,6 +183,7 @@ object Form_DrillAdjust: TForm_DrillAdjust
       Height = 17
       Caption = #1042#1082#1083#1102#1095#1080#1090#1100
       TabOrder = 0
+      OnClick = CheckBox_GeoOnClick
     end
     object Edit_Input_point: TEdit
       Left = 16
@@ -251,14 +252,16 @@ object Form_DrillAdjust: TForm_DrillAdjust
       Height = 26
       TabOrder = 0
       Text = '0'
+      OnChange = ComboBox_level_startChange
     end
     object ComboBox_level_end: TComboBox
       Left = 200
-      Top = 64
+      Top = 65
       Width = 73
       Height = 26
       TabOrder = 1
       Text = '10'
+      OnChange = ComboBox_level_endChange
     end
   end
   object GroupBox4: TGroupBox
