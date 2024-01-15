@@ -94,6 +94,8 @@ int UpdateMeas(void);
 
 bool MeasExistByTimeCreate(TDateTime t);
 
+double level_start;
+double level_end;
 
 };
 

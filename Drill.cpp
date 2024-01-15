@@ -19,6 +19,9 @@ TDrill::TDrill()
 	geo_data.output_point = 0.;
 
 	drill_asimut = 0.;
+	level_start = 0.;
+	level_end = 0.;
+
 }
 
 
@@ -55,6 +58,8 @@ TDrill::TDrill(WideString n)
 	geo_data.output_point = 0.;
 
 	drill_asimut = 0.;
+	level_start = 0.;
+	level_end = 0.;
 
 }
 

@@ -3,8 +3,8 @@ object Form_DrillAdjust: TForm_DrillAdjust
   Top = 0
   BorderStyle = bsDialog
   Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '#1089#1082#1074#1072#1078#1080#1085#1091
-  ClientHeight = 346
-  ClientWidth = 868
+  ClientHeight = 399
+  ClientWidth = 1004
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -13,37 +13,33 @@ object Form_DrillAdjust: TForm_DrillAdjust
   Font.Style = [fsBold]
   OnCreate = FormCreate
   TextHeight = 18
-  object Label1: TLabel
-    Left = 24
-    Top = 27
-    Width = 161
-    Height = 18
-    Caption = #1053#1072#1079#1074#1072#1085#1080#1077' '#1089#1082#1074#1072#1078#1080#1085#1099':'
-  end
   object Label2: TLabel
-    Left = 24
-    Top = 59
-    Width = 114
+    Left = 106
+    Top = 381
+    Width = 41
     Height = 18
     Caption = #1063#1080#1089#1083#1086' '#1091#1088#1086#1074#1085#1077#1081
+    Visible = False
   end
   object Label_asimut: TLabel
-    Left = 24
-    Top = 127
+    Left = 106
+    Top = 373
     Width = 56
     Height = 18
     Caption = #1040#1079#1080#1084#1091#1090
+    Visible = False
   end
   object Label4: TLabel
-    Left = 24
-    Top = 91
+    Left = 82
+    Top = 368
     Width = 94
     Height = 18
     Caption = #1054#1088#1080#1077#1085#1090#1072#1094#1080#1103
+    Visible = False
   end
   object Button_cancel: TButton
-    Left = 722
-    Top = 313
+    Left = 511
+    Top = 361
     Width = 138
     Height = 25
     Caption = #1054#1090#1084#1077#1085#1072
@@ -51,96 +47,100 @@ object Form_DrillAdjust: TForm_DrillAdjust
     OnClick = Button_cancelClick
   end
   object Button_apply: TButton
-    Left = 586
-    Top = 313
+    Left = 360
+    Top = 361
     Width = 129
     Height = 25
     Caption = #1044#1086#1073#1072#1074#1080#1090#1100
     TabOrder = 1
     OnClick = Button_applyClick
   end
-  object Edit_name: TEdit
-    Left = 208
-    Top = 24
-    Width = 648
+  object Edit_name_old: TEdit
+    Left = 95
+    Top = 365
+    Width = 81
     Height = 26
     TabOrder = 2
     Text = #1057#1082#1074#1072#1078#1080#1085#1072
+    Visible = False
   end
   object ComboBox_meas_cnt: TComboBox
-    Left = 208
-    Top = 56
-    Width = 176
+    Left = 72
+    Top = 370
+    Width = 81
     Height = 26
     TabOrder = 3
+    Visible = False
   end
-  object Edit_asimut: TEdit
-    Left = 208
-    Top = 124
-    Width = 176
+  object Edit_asimut_old: TEdit
+    Left = 72
+    Top = 370
+    Width = 39
     Height = 26
     TabOrder = 4
     Text = '0'
+    Visible = False
   end
-  object ComboBox_orient: TComboBox
-    Left = 208
-    Top = 88
+  object ComboBox_orient_old: TComboBox
+    Left = 72
+    Top = 365
     Width = 176
     Height = 26
     TabOrder = 5
     Text = #1043#1086#1088#1080#1079#1086#1085#1090#1072#1083#1100#1085#1072#1103
-    OnChange = ComboBox_orientChange
+    Visible = False
   end
   object CheckBox_single: TCheckBox
-    Left = 401
-    Top = 92
+    Left = 821
+    Top = 364
     Width = 129
     Height = 17
     Caption = #1054#1076#1080#1085'  '#1087#1088#1086#1093#1086#1076
     TabOrder = 6
+    Visible = False
   end
   object Edit_zshift: TEdit
-    Left = 401
-    Top = 147
-    Width = 176
+    Left = 72
+    Top = 365
+    Width = 41
     Height = 26
     TabOrder = 7
     Visible = False
   end
-  object RadioGroup1: TRadioGroup
-    Left = 390
-    Top = 51
+  object RadioGroup_calc_start: TRadioGroup
+    Left = 311
+    Top = 90
     Width = 225
-    Height = 122
+    Height = 106
     Caption = #1056#1072#1089#1095#1077#1090
     TabOrder = 8
   end
   object RadioButton_top: TRadioButton
-    Left = 424
-    Top = 92
+    Left = 328
+    Top = 119
     Width = 169
     Height = 17
     Caption = #1086#1090' '#1042#1045#1056#1061#1053#1045#1049' '#1090#1086#1095#1082#1080
     TabOrder = 9
   end
   object RadioButton_bot: TRadioButton
-    Left = 424
-    Top = 128
+    Left = 328
+    Top = 158
     Width = 169
     Height = 17
     Caption = #1086#1090' '#1053#1048#1046#1053#1045#1049' '#1090#1086#1095#1082#1080
     TabOrder = 10
   end
   object GroupBox_start_collect_data: TGroupBox
-    Left = 634
-    Top = 51
+    Left = 542
+    Top = 90
     Width = 225
-    Height = 122
-    Caption = #1057#1073#1086#1088' '#1076#1072#1085#1085#1099#1093
+    Height = 106
+    Caption = #1053#1072#1087#1088#1072#1074#1083#1077#1085#1080#1077' '#1080#1079#1084#1077#1088#1077#1085#1080#1081
     TabOrder = 11
     object RadioButton_start_first: TRadioButton
       Left = 16
-      Top = 36
+      Top = 32
       Width = 193
       Height = 17
       Caption = #1053#1072#1095#1080#1085#1072#1090#1100' '#1089' '#1087#1077#1088#1074#1086#1075#1086
@@ -155,10 +155,10 @@ object Form_DrillAdjust: TForm_DrillAdjust
       TabOrder = 1
     end
   end
-  object GroupBox2: TGroupBox
-    Left = 392
-    Top = 179
-    Width = 468
+  object GroupBox_geo: TGroupBox
+    Left = 8
+    Top = 202
+    Width = 528
     Height = 128
     Caption = #1043#1077#1086#1076#1077#1079#1080#1095#1077#1089#1082#1072#1103' '#1087#1088#1080#1074#1103#1079#1082#1072
     TabOrder = 12
@@ -170,15 +170,15 @@ object Form_DrillAdjust: TForm_DrillAdjust
       Caption = #1058#1086#1095#1082#1072' '#1074#1093#1086#1076#1072
     end
     object Label5: TLabel
-      Left = 264
+      Left = 303
       Top = 96
       Width = 109
       Height = 18
       Caption = #1058#1086#1095#1082#1072' '#1074#1099#1093#1086#1076#1072
     end
     object CheckBox_GeoOn: TCheckBox
-      Left = 16
-      Top = 24
+      Left = 15
+      Top = 32
       Width = 97
       Height = 17
       Caption = #1042#1082#1083#1102#1095#1080#1090#1100
@@ -192,18 +192,129 @@ object Form_DrillAdjust: TForm_DrillAdjust
       TabOrder = 1
     end
     object Edit_Output_point: TEdit
-      Left = 256
+      Left = 303
       Top = 64
       Width = 201
       Height = 26
       TabOrder = 2
     end
   end
+  object GroupBox_pass: TGroupBox
+    Left = 773
+    Top = 90
+    Width = 225
+    Height = 106
+    Caption = #1055#1088#1086#1093#1086#1076#1086#1074
+    TabOrder = 13
+    object RadioButton_pass_1: TRadioButton
+      Left = 16
+      Top = 36
+      Width = 169
+      Height = 17
+      Caption = #1054#1044#1048#1053' '#1087#1088#1086#1093#1086#1076
+      TabOrder = 0
+    end
+    object RadioButton_pass_2: TRadioButton
+      Left = 16
+      Top = 72
+      Width = 161
+      Height = 17
+      Caption = #1044#1042#1040' '#1087#1088#1086#1093#1086#1076#1072
+      TabOrder = 1
+    end
+  end
+  object GroupBox3: TGroupBox
+    Left = 8
+    Top = 90
+    Width = 297
+    Height = 106
+    Caption = #1059#1088#1086#1074#1085#1080
+    TabOrder = 14
+    object Label6: TLabel
+      Left = 16
+      Top = 32
+      Width = 125
+      Height = 18
+      Caption = #1055#1077#1088#1074#1072#1103' '#1090#1086#1095#1082#1072', '#1084
+    end
+    object Label7: TLabel
+      Left = 14
+      Top = 72
+      Width = 154
+      Height = 18
+      Caption = #1055#1086#1089#1083#1077#1076#1085#1103#1103' '#1090#1086#1095#1082#1072', '#1084
+    end
+    object ComboBox_level_start: TComboBox
+      Left = 200
+      Top = 25
+      Width = 73
+      Height = 26
+      TabOrder = 0
+      Text = '0'
+    end
+    object ComboBox_level_end: TComboBox
+      Left = 200
+      Top = 64
+      Width = 73
+      Height = 26
+      TabOrder = 1
+      Text = '10'
+    end
+  end
+  object GroupBox4: TGroupBox
+    Left = 8
+    Top = 8
+    Width = 528
+    Height = 65
+    Caption = #1053#1072#1079#1074#1072#1085#1080#1077
+    TabOrder = 15
+    object Edit_name: TEdit
+      Left = 16
+      Top = 25
+      Width = 495
+      Height = 26
+      TabOrder = 0
+      Text = #1057#1082#1074#1072#1078#1080#1085#1072
+    end
+  end
+  object GroupBox5: TGroupBox
+    Left = 542
+    Top = 8
+    Width = 225
+    Height = 65
+    Caption = #1054#1088#1080#1077#1085#1090#1072#1094#1080#1103
+    TabOrder = 16
+    object ComboBox_orient: TComboBox
+      Left = 16
+      Top = 25
+      Width = 185
+      Height = 26
+      TabOrder = 0
+      Text = #1043#1086#1088#1080#1079#1086#1085#1090#1072#1083#1100#1085#1072#1103
+      OnChange = ComboBox_orientChange
+    end
+  end
+  object GroupBox6: TGroupBox
+    Left = 773
+    Top = 8
+    Width = 225
+    Height = 65
+    Caption = #1040#1079#1080#1084#1091#1090
+    TabOrder = 17
+  end
+  object Edit_asimut: TEdit
+    Left = 789
+    Top = 33
+    Width = 196
+    Height = 26
+    TabOrder = 18
+    Text = 'Edit_asimut'
+  end
   object Timer_start: TTimer
     Enabled = False
     Interval = 10
     OnTimer = Timer_startTimer
-    Left = 32
-    Top = 184
+    Left = 864
+    Top = 248
   end
 end

@@ -1094,8 +1094,8 @@ void __fastcall TFMain::N_drill_addClick(TObject *Sender)
 
 	Form_DrillAdjust->OK = false;
 	Form_DrillAdjust->drill = d;
-	Form_DrillAdjust->Start();
-	Form_DrillAdjust->ShowModal();
+	Form_DrillAdjust->Start(d,0);
+	//!!!Form_DrillAdjust->ShowModal();
 
 	if (Form_DrillAdjust->OK == true )
 	{
@@ -1128,12 +1128,10 @@ void __fastcall TFMain::N_drill_adjustClick(TObject *Sender)
 	Form_DrillAdjust->drill = d;
 	Form_DrillAdjust->mode = 1;
 
-
-	Form_DrillAdjust->Start();
-
 	Form_DrillAdjust->OK = false;
-	Form_DrillAdjust->Start();
-	Form_DrillAdjust->ShowModal();
+	Form_DrillAdjust->Start(d,1);
+
+	//!!!Form_DrillAdjust->ShowModal();
 
 	if (Form_DrillAdjust->OK == true)
 	{
