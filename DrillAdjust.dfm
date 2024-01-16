@@ -47,7 +47,7 @@ object Form_DrillAdjust: TForm_DrillAdjust
     OnClick = Button_cancelClick
   end
   object Button_apply: TButton
-    Left = 368
+    Left = 376
     Top = 361
     Width = 129
     Height = 25

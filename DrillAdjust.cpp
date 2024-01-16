@@ -80,7 +80,7 @@ void __fastcall TForm_DrillAdjust::Timer_startTimer(TObject *Sender)
 	{
 		Button_apply->Caption = L"Добавить";
 		this->Caption = L"Добавить скважину";
-        FormToDrill();
+		DrillToForm();
 	}
 	else
 	{

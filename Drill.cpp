@@ -20,8 +20,12 @@ TDrill::TDrill()
 
 	drill_asimut = 0.;
 	level_start = 0.;
-	level_end = 0.;
+	level_end = 5.0;
 
+    meas_list_idx = 0;
+	name = L"Скважина";
+
+	single_way = 1;
 }
 
 
