@@ -143,9 +143,9 @@ int TDataFile::GetWord(void)
    memset(tword,0,sizeof(tword));
    tword_idx = 0;
 
-   while (tbuf_pars_idx<tbuf_idx)
+   while (tbuf_pars_idx < tbuf_idx)
    {
-	  tsym =tbuf [tbuf_pars_idx++];
+	  tsym = tbuf [tbuf_pars_idx++];
 
 	  if (tsym == (TCHAR)';')
 	  {
@@ -226,6 +226,8 @@ int TDataFile::GetWord(void)
  int TDataFile::GetSpar(void)
  {
 	if (pars_en == false) return -1; //the string is not meas
+	boolean start = false;
+
 
 	TCHAR tc[1024];
 	memset(tc,0,1024);
@@ -235,9 +237,29 @@ int TDataFile::GetWord(void)
 	//remove spaces
 	for (int i = 0; i < wcslen(tword); i++)
 	{
-		if (tword[i] != ' ')
+
+		if ((pars_pos == 1)||(pars_pos == 2))
 		{
-		   tc [j++] = tword [i];
+			if (start == true)
+			{
+			   tc [j++] = tword [i];
+			}
+			else
+			{
+				if (tword[i] != ' ')
+				{
+					start = true;
+					tc [j++] = tword [i];
+				}
+			}
+		}
+		else
+		{
+			if (tword[i] != ' ')
+			{
+			   tc [j++] = tword [i];
+			   start = true;
+			}
 		}
 	}
 

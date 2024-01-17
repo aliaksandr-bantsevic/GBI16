@@ -1103,13 +1103,40 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 				m->name_drill = d->name;
 				m->create_time = dfm->time;
 
+				int iback = 0;
+				int iforw = 0;
+
+				double level_start = 0.;
+				double level_end = 0;
 
 				for (int i =0; i < dfm->record_cnt; i++)
 				{
 
 				   dr = &dfm->record [i];
+
+				   if (dr->dir == L"back")
+				   {
+					  iback = 1;
+				   }
+
 				   if (dr->dir == L"Forward")
 				   {
+
+						iforw = 1;
+
+						if (dr->level != 0.)
+						{
+							if (level_start == 0.) level_start = dr->level;
+						}
+
+						if (i > 0)
+						{
+							if (level_start != 0.)
+							{
+								level_end = dr->level;
+							}
+						}
+
 						dir = 0;
 						dircnt = 1;
 						forward_cnt++;
@@ -1141,21 +1168,52 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 					max_cnt = back_cnt;
                 }
 
-				//if (max_cnt > d->records_cnt)
+				/*
+				if (max_cnt > d->records_cnt)
 				{
 					//d->records_cnt = max_cnt;
 					//m->records_cnt = max_cnt;
 					for (int i = 0; i < d->meas_list_idx; i++)
 					{
-						if (d->meas_list [i]->records_cnt > d->records_cnt)
+						if (d->meas_list [i]->records_cnt < d->records_cnt)
 						{
 						   d->records_cnt = d->meas_list [i]->records_cnt;
 						}
 					}
-
-
 				}
-				
+				*/
+
+				d->level_start = level_start;
+				d->level_end = level_end;
+
+				int calc_rec_cnt = 0;
+
+				if (level_end > level_start)
+				{
+					calc_rec_cnt = (int)(level_end / 0.5f);
+					d->start_point = DRILL_TOP_POINT;
+				}
+				else
+				{
+					calc_rec_cnt = (int)(level_start / 0.5f);
+					d->start_point = DRILL_BOT_POINT;
+				}
+
+				if (calc_rec_cnt > d->records_cnt)
+				{
+					d->records_cnt = calc_rec_cnt;
+				}
+
+
+				int isingle = (iback + iforw) - 1;
+
+				if (isingle <0)
+				{
+					isingle = 0;
+				}
+
+				d->single_way = isingle;
+
 				m->SaveData(0);
 				console(L"Система", msg);
 			 }
@@ -1180,9 +1238,9 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 		 res = -1; //can not find/create place
      }
 
-	 if (single_way == 0)
+	 if (single_way != 0)
 	 {
-	   d->single_way = 0;
+	   d->single_way = 1;
 	 }
 
 	 return res;

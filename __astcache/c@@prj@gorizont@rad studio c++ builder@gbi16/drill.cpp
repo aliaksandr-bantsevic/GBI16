@@ -26,6 +26,7 @@ TDrill::TDrill()
 	name = L"Скважина";
 
 	single_way = 1;
+    start_point = 0;
 }
 
 
