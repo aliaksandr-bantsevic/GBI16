@@ -109,7 +109,8 @@ int TPlace::AddDrill(WideString n, int cnt)
 
 	d->num = drill_list_idx+1;
 	d->pnum = this->num;
-	d->records_cnt = cnt;
+	//d->records_cnt = cnt;
+	d->records_cnt = 1;
 
 	drill_list[drill_list_idx] = d;
 	drill_list_idx++;
@@ -229,7 +230,6 @@ int TPlace::LoadDrillConfig(TIniFile* ini)
 				}
 
 				drill_list[drill_list_idx-1]->single_way =  ini->ReadInteger(section, L"SINGLEWAY", 0);
-				drill_list[drill_list_idx-1]->LoadMeasConfig(ini);
 				drill_list[drill_list_idx-1]->pname = this->name;
 
 				spar =  ini->ReadString(section, L"LEVEL_START", L"0.0");
@@ -253,6 +253,19 @@ int TPlace::LoadDrillConfig(TIniFile* ini)
 				{
 
 				}
+
+				spar =  ini->ReadString(section, L"RECCNT", L"1");
+
+				try
+				{
+					drill_list[drill_list_idx-1]->records_cnt = (int) spar.ToDouble();
+				}
+				catch (...)
+				{
+
+				}
+
+				drill_list[drill_list_idx-1]->LoadMeasConfig(ini);
 
 			}
 			else

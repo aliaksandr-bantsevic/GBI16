@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------
 
 #ifndef DrillAdjustH
 #define DrillAdjustH
@@ -66,6 +66,7 @@ __published:	// IDE-managed Components
 	void __fastcall CheckBox_GeoOnClick(TObject *Sender);
 	void __fastcall ComboBox_level_startChange(TObject *Sender);
 	void __fastcall ComboBox_level_endChange(TObject *Sender);
+	void __fastcall Edit_nameChange(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TForm_DrillAdjust(TComponent* Owner);

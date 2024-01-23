@@ -734,3 +734,69 @@ string UnicodeToUTF8( const wstring& ws )
 }
 
 */
+
+int CutSpaces(TCHAR* tstr, int len)
+{
+
+	TCHAR tbuf [1024];
+	bool start = false;
+	memset(tbuf, 0, 1024);
+
+	for (int i = wcslen(tstr); i > 0; i--)
+	{
+		//if (tstr[i] == ' ')
+		if (tstr[i] == 0x0020)
+		{
+			tstr[i] = 0;
+		}
+		else if (tstr[i] != 0)
+		{
+			break;
+		}
+	}
+
+
+	int j = 0;
+
+	for (int i = 0; i < 1024; i++)
+	{
+		if ((start == true)&&(tstr[i] == 0))
+		{
+			break;
+		}
+
+		if (((tstr[i] != ' ')&&(tstr[i] != 0))||(start == true))
+		{
+		   tbuf[j] = tstr[i]; j++;
+		   start = true;
+		}
+	}
+
+    wcscpy(tstr, tbuf);
+	
+	return 0;
+}
+
+int CutSpacesEdit(TEdit* edit)
+{
+	TCHAR tbuf [1024];
+	wcscpy(tbuf, edit->Text.c_str());
+	CutSpaces(tbuf, wcslen(tbuf));
+	//wcscpy(edit->Text.c_str(), tbuf);
+	
+	WideString ws(L"");
+
+	ws += tbuf;
+	edit->Text = ws;
+	
+	
+	
+	
+	
+	
+	//CutSpaces(edit->Text.c_str(), wcslen(edit->Text.c_str()));
+	
+	return 0;
+}
+
+

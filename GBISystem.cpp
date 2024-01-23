@@ -1076,6 +1076,13 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 
 	 if (p != NULL)
 	 {
+
+		TCHAR tbuf[1024];
+		wcscpy(tbuf,dfm->drill.c_bstr());
+		CutSpaces(tbuf, wcslen(tbuf));
+		dfm->drill = L"";
+        dfm->drill += tbuf;
+
 		d = GetDrillByName(p, dfm->drill, dfm->record_cnt);
 
 		if (d != NULL)
@@ -1083,7 +1090,7 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 			 d->pname = p->name;
 			 d->drill_orient = 1;
 
-			 if (dfm->record_cnt > d->records_cnt) d->records_cnt = dfm->record_cnt/2;
+			 //if (dfm->record_cnt > d->records_cnt) d->records_cnt = dfm->record_cnt/2;
 
 			 wtm = FormatDateTime(L" yyyy-mm-dd hh:nn:ss ", dfm->time);
 
@@ -1098,7 +1105,9 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 
 				d->AddMeas(NULL, L"new_meas");
 				m = d->meas_list[d->meas_list_idx-1];
-				if (m->records_cnt < d->records_cnt) m->records_cnt = d->records_cnt;
+
+				//!!!if (m->records_cnt < d->records_cnt) m->records_cnt = d->records_cnt;
+
 				m->name_place = p->name;
 				m->name_drill = d->name;
 				m->create_time = dfm->time;
@@ -1153,6 +1162,13 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 					if (m->AcceptDataFileRecord(dir, dr->level, dr->X, dr->Y) == 0)
 					{
 						record_cnt_accepted++;
+
+						int records_cnt_calc = (dr->level)/0.5f + 1;
+
+						if (d->records_cnt < records_cnt_calc)
+						{
+                            d->records_cnt = records_cnt_calc;
+						}
                     }
 				}
 
@@ -1183,6 +1199,14 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 				}
 				*/
 
+				if ((level_start == 0.)&&(level_end == 0.))
+				{
+
+					level_end = dfm->record_cnt*0.5 - 1;
+
+				}
+
+
 				d->level_start = level_start;
 				d->level_end = level_end;
 
@@ -1199,9 +1223,9 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 					d->start_point = DRILL_BOT_POINT;
 				}
 
-				if (calc_rec_cnt > d->records_cnt)
+				if ((calc_rec_cnt + 1) > d->records_cnt)
 				{
-					d->records_cnt = calc_rec_cnt;
+					//!!!d->records_cnt = (calc_rec_cnt + 1);
 				}
 
 
@@ -1383,7 +1407,6 @@ int TGBISystem::ExportConfTxt(TSaveDialog* dlg)
 
 	 fres = dlg->FileName;
 
-	 //ExportSysConfToTxtFileUnicode(fres.c_bstr());
 	 if (ExportSysConfToTxtFileUtf8(fres.c_bstr()) == 0)
 	 {
 			 console(L"Система", L" ... завершен успешно");
@@ -1437,7 +1460,8 @@ int TGBISystem::ExportSysConfToTxtFileUnicode(TCHAR* path)
 		for (int j = 0; j < p->drill_list_idx; j++)
 		{
 			TDrill* d = p->drill_list [j];
-			ws.printf(L"\t%s\r\n",d->name.c_bstr());
+			//ws.printf(L"\t%s\r\n",d->name.c_bstr());
+			ws.printf(L"\%s\r\n",d->name.c_bstr());
 			wcscpy(tstr, ws.c_bstr());
 			fwrite(tstr, 1, wcslen(tstr)*2, f);
 		}
@@ -1490,7 +1514,7 @@ int TGBISystem::ExportSysConfToTxtFileUtf8(TCHAR* path)
 		for (int j = 0; j < p->drill_list_idx; j++)
 		{
 			TDrill* d = p->drill_list [j];
-			ustr.printf(L"\r\n  %s",d->name.c_bstr());
+			ustr.printf(L"\r\n%s",d->name.c_bstr());
 			ConvertStrUnicodeToUtf8(ustr, utf8_str); fwrite(utf8_str, 1, strlen(utf8_str), f);
 
 			TCHAR cdt = ' ';
@@ -1512,7 +1536,8 @@ int TGBISystem::ExportSysConfToTxtFileUtf8(TCHAR* path)
 				}
 			}
 
-			ustr.printf(L" %C%.1f-%.1f", cdt, d->level_start, d->level_end);
+			//ustr.printf(L" %C%.1f-%.1f", cdt, d->level_start, d->level_end);
+			ustr.printf(L"%C%.1f-%.1f", cdt, d->level_start, d->level_end);
 			ConvertStrUnicodeToUtf8(ustr, utf8_str); fwrite(utf8_str, 1, strlen(utf8_str), f);
 		}
 

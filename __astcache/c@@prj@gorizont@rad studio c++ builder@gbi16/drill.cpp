@@ -46,7 +46,7 @@ TDrill::TDrill(WideString n)
 	}
 
 	meas_list_idx = 0;
-	int records_cnt = 21;
+	int records_cnt = 1;
 	drill_orient = DRILL_ORIENT_HORIZONT;
     drill_asimut = 0;
 	selected = false;
@@ -251,6 +251,7 @@ int TDrill::LoadMeasConfig(TIniFile* ini)
 				mmark = meas_list[meas_list_idx-1]->mark;
 				spar = ini->ReadString(section, L"MARK", mmark);
 				meas_list[meas_list_idx-1]->mark = spar;
+				meas_list[meas_list_idx-1]->records_cnt = this->records_cnt;
 
 				if (global_base_convert)
 				{
@@ -336,7 +337,7 @@ int TDrill::Excel(void)
 				return -1;
 			}
 
-    Form_excel_progress->StartShow(records_cnt*meas_list_idx);
+	Form_excel_progress->StartShow(records_cnt*meas_list_idx);
 
 	for (int i = 0; i < meas_list_idx; i++) {
 

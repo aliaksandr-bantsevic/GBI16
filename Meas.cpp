@@ -56,8 +56,8 @@ TMeas::TMeas (TStringGrid* t, WideString n)
 
 	finalize_time = (double)0;
 
-	records_cnt_def = 21;
-	records_cnt = 21;
+	records_cnt_def = 1;
+	records_cnt = 1;
 
 	SysConfMgr = scmgr;
 
@@ -1233,6 +1233,11 @@ int TMeas::AcceptDataFileRecord(int dir, double d, double x, double y)
 
     /* auto adjust the records cnt using step 0.5 */
 	int rec_num_calc = (d/0.5) + 1;
+
+	//if (this->records_cnt > rec_num_calc)
+	//{
+	//	this->records_cnt = rec_num_calc;
+	//}
 
 	if (this->records_cnt < rec_num_calc)
 	{

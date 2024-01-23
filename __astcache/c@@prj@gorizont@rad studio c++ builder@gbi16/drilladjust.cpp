@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------
 
 #include <vcl.h>
 #pragma hdrstop
@@ -18,6 +18,7 @@ void __fastcall TForm_DrillAdjust::Button_applyClick(TObject *Sender)
 {
 	 Update();
 
+		CutSpacesEdit(Edit_name);
 		FormToDrill();
 		OK = true;
         *OOK = true;
@@ -506,6 +507,12 @@ void __fastcall TForm_DrillAdjust::ComboBox_level_startChange(TObject *Sender)
 void __fastcall TForm_DrillAdjust::ComboBox_level_endChange(TObject *Sender)
 {
 	FormChange();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_DrillAdjust::Edit_nameChange(TObject *Sender)
+{
+     //CutSpacesEdit(Edit_name);
 }
 //---------------------------------------------------------------------------
 
