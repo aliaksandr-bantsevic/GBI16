@@ -130,6 +130,8 @@ int TPlace::AddDrill(TDrill* drill)
 		}
 	}
 
+    drill->pname = name;
+
 	drill_list[drill_list_idx] = drill;
 	drill_list_idx++;
 

@@ -323,6 +323,8 @@ int ConvertStrUTF8ToUtf16 (char* strU8, TCHAR* strU16, int U8_len)
 	unsigned long unicode [1024];
 	int uidx = 0;
 
+	memset(unicode, 0, sizeof(unicode));
+
 	while (i < U8_len)
 	{
 		ch = strU8[i++];
@@ -377,6 +379,8 @@ int ConvertStrUTF8ToUtf16 (char* strU8, TCHAR* strU16, int U8_len)
 
 	TCHAR utf16[1024];
 	int utf16_idx = 0;
+
+    memset(utf16, 0, sizeof(utf16));
 
 	for (int i = 0; i < uidx; ++i)
 	{
