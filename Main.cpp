@@ -265,7 +265,7 @@ void TFMain::SystemInit()
 
 	this->Timer_system_run->Interval = GBISystem->ask_sensor_period;
 
-	GBISystem->LoadData();
+	//GBISystem->LoadData();
 
 	WideString stitle(L"");
 	stitle.printf(L"GBI [%s]" ,GBISystem->SysConfMgr.GetCurIniPath());
@@ -287,6 +287,9 @@ void TFMain::SystemInit()
 #ifndef SET_DEBUG_MODE
 	ToolButton_test->Visible = false;
 #endif
+
+	GBISystem->LoadData();
+    GBISystem->Redraw();
 
 }
 

@@ -498,7 +498,7 @@ void TMeas::UpdateMark(WideString mark)
 		WideString s(L"");
 		WideString st(L"");
 
-		st = FormatDateTime("[yyyy-mm-dd hh:nn:ss]", this->create_time);
+		st = FormatDateTime("[dd-mm-yyyy hh:nn:ss]", this->create_time);
 		s.printf(L"%d.%d.%d %s [%s]",pnum, dnum, num, st.c_bstr(), this->mark.c_bstr());
 		this->node->Text = s;
 
@@ -516,7 +516,7 @@ TTreeNode* TMeas::Redraw(TTreeView* t, TTreeNode* n)
 	WideString s(L"");
 	WideString st(L"");
 
-	st = FormatDateTime("[yyyy-mm-dd hh:nn:ss]", this->create_time);
+	st = FormatDateTime("[dd-mm-yyyy hh:nn:ss]", this->create_time);
 	s.printf(L"%d.%d.%d %s [%s]",pnum, dnum, num, st.c_bstr(), this->mark.c_bstr());
 
 	node  =	t->Items->AddChild(n,s);
