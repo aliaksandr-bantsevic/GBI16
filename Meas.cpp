@@ -114,7 +114,7 @@ int PutDblCell(TStringGrid* table, int col, int row, double d)
 		}
 		else
 		{
-			s.printf(L"%.1f",d);
+			s.printf(L"%.2f",d);
 		}
 		table->Cells[col][row] = s;
 
@@ -264,6 +264,145 @@ int TMeas::TableToData(void)
 double xt = 10;
 double yt = 10;
 double rt = 0.5;
+
+/*
+	Вертикальная двухпроходная расчет от нижней точки
+*/
+int TMeas::Calc_Vert_Double_Bottom(void)
+{
+   const double PI = 3.14159265;
+
+   double x1 = 0;
+   double x2 = 0;
+
+   double y1 = 0;
+   double y2 = 0;
+
+   double xres = 0;
+   double yres = 0;
+
+   double lx = 0;
+   double ly = 0;
+
+   double depth = 0;
+
+   double d = 0;
+   double dd = 0;
+
+   double zshift = 0;
+
+   double xres_prev = 0.;
+   double xabs = 0.;
+
+   goto var2;
+
+   for (int i = records_cnt - 1; i >=0 ; i--)
+   {
+
+		x1 = records[i].X1;
+		x2 = records[i].X2;
+
+		y1 = records[i].Y1;
+		y2 = records[i].Y2;
+
+		d  = records[i].depth;
+
+		xabs = (x1 - x2)/2.;
+		/* =0,5*SIN(F45/3600*PI()/180)*1000+G46 */
+		xres = 0.5 * sin(xabs / 3600. * PI / 180 ) * 1000 + xres_prev;
+
+		xres_prev = xres;
+
+       	records[i].LX = xabs;
+		records[i].Xres = xres;
+
+		records[i].LR = sqrt((lx*lx)+(ly*ly));
+
+		if (abs(records[i].LX) > 0.0001)
+		{
+
+					records[i].AR = atan(records[i].LY/records[i].LX);
+					//gthtcxbnsdftv hflbfys d uhflecs
+					records[i].AR *= PI;
+					records[i].AR /= 180;
+					//переводим в секунды
+					records[i].AR *= 3600;
+		}
+
+   }
+
+
+   return 0;
+
+   var2:
+
+   for (int i = 0; i < records_cnt; i++)
+   {
+
+		x1 = records[i].X1;
+		x2 = records[i].X2;
+
+		y1 = records[i].Y1;
+		y2 = records[i].Y2;
+
+		d  = records[i].depth;
+
+		if (records[0].X2 == 0) {
+
+			x2 =  (records[0].X1)*(-1.);
+		}
+
+		xres = (x1-x2)/2;
+		yres = (y1-y2)/2;
+
+		records[i].Xres = xres;
+		records[i].Yres = yres;
+
+
+		int ii = records_cnt-i-1;
+
+		if ( ii == records_cnt-1 )
+		{
+
+			lx = 0;
+			ly = 0;
+		}
+		else
+		{
+			double dxcorrection = 0;
+
+			lx = (records[ii+1].depth - records[ii].depth) * sin((records[ii+1].Xres)/3600*PI/180) * 1000 + records[ii+1].LX;
+			ly = (records[ii+1].depth - records[ii].depth) * sin((records[ii+1].Yres)/3600*PI/180) * 1000 + records[ii+1].LY;
+
+			/*
+			if (ii == records_cnt-2)
+			{
+			  dxcorrection =  lx;
+			}
+            */
+
+			lx-=dxcorrection;
+		}
+
+		records[ii].LX = lx;
+		records[ii].LY = ly;
+
+		records[ii].LR = sqrt((lx*lx)+(ly*ly));
+
+		if (abs(records[ii].LX) > 0.0001)
+		{
+
+					records[ii].AR = atan(records[ii].LY/records[ii].LX);
+					records[ii].AR *= PI;
+					records[ii].AR /= 180;
+					//переводим в секунды
+					records[ii].AR *= 3600;
+		}
+
+	}
+
+	return 0;
+}
 
 int TMeas::Calculate(void)
 {
@@ -428,46 +567,55 @@ int TMeas::Calculate(void)
 			}
 			else
 			{
-				int ii = records_cnt-i-1;
+				/* Calculate for vertical double from bottom point*/
+				Calc_Vert_Double_Bottom();
 
-				if ( ii==records_cnt-1 ) {
+				/* this codfe is temporarily cut off*/
 
-					 lx = 0;
-					 ly = 0;
-				}
-				else
+				if (1 == 2)
 				{
-						double dxcorrection = 0;
 
-						lx = (records[ii+1].depth - records[ii].depth) * sin((records[ii+1].Xres)/3600*PI/180) * 1000 + records[ii+1].LX;
-						ly = (records[ii+1].depth - records[ii].depth) * sin((records[ii+1].Yres)/3600*PI/180) * 1000 + records[ii+1].LY;
+					int ii = records_cnt-i-1;
 
-						if (ii==records_cnt-2) {
+					if ( ii==records_cnt-1 ) {
 
-							  dxcorrection =  lx;
-						}
+						 lx = 0;
+						 ly = 0;
+					}
+					else
+					{
+							double dxcorrection = 0;
 
-						lx-=dxcorrection;
+							lx = (records[ii+1].depth - records[ii].depth) * sin((records[ii+1].Xres)/3600*PI/180) * 1000 + records[ii+1].LX;
+							ly = (records[ii+1].depth - records[ii].depth) * sin((records[ii+1].Yres)/3600*PI/180) * 1000 + records[ii+1].LY;
+
+							if (ii==records_cnt-2) {
+
+								  dxcorrection =  lx;
+							}
+
+							lx-=dxcorrection;
+					}
+
+
+					records[ii].LX = lx;
+					records[ii].LY = ly;
+
+					records[ii].LR = sqrt((lx*lx)+(ly*ly));
+
+					 if (abs(records[ii].LX) > 0.0001) {
+
+						records[ii].AR = atan(records[ii].LY/records[ii].LX);
+						//gthtcxbnsdftv hflbfys d uhflecs
+						records[ii].AR *= PI;
+						records[ii].AR /= 180;
+						//переводим в секунды
+						records[ii].AR *= 3600;
+
+					  }
+
 				}
-
-
-				records[ii].LX = lx;
-				records[ii].LY = ly;
-
-				records[ii].LR = sqrt((lx*lx)+(ly*ly));
-
-				 if (abs(records[ii].LX) > 0.0001) {
-
-					records[ii].AR = atan(records[ii].LY/records[ii].LX);
-					//gthtcxbnsdftv hflbfys d uhflecs
-					records[ii].AR *= PI;
-					records[ii].AR /= 180;
-					//переводим в секунды
-					records[ii].AR *= 3600;
-
-				  }
-
-            }
+			}
 
 
 
@@ -498,7 +646,8 @@ void TMeas::UpdateMark(WideString mark)
 		WideString s(L"");
 		WideString st(L"");
 
-		st = FormatDateTime("[dd-mm-yyyy hh:nn:ss]", this->create_time);
+		//st = FormatDateTime("[dd-mm-yyyy hh:nn:ss]", this->create_time);
+        st = FormatDateTime("[dd-mm-yy hh:nn]", this->create_time);
 		s.printf(L"%d.%d.%d %s [%s]",pnum, dnum, num, st.c_bstr(), this->mark.c_bstr());
 		this->node->Text = s;
 
@@ -516,7 +665,8 @@ TTreeNode* TMeas::Redraw(TTreeView* t, TTreeNode* n)
 	WideString s(L"");
 	WideString st(L"");
 
-	st = FormatDateTime("[dd-mm-yyyy hh:nn:ss]", this->create_time);
+	//st = FormatDateTime("[dd-mm-yyyy hh:nn:ss]", this->create_time);
+    st = FormatDateTime("[dd-mm-yy hh:nn]", this->create_time);
 	s.printf(L"%d.%d.%d %s [%s]",pnum, dnum, num, st.c_bstr(), this->mark.c_bstr());
 
 	node  =	t->Items->AddChild(n,s);
@@ -728,20 +878,23 @@ int TMeas::SaveData(int par)
 
 	//----------------------------------------------------
 
-	spar = FormatDateTime(L"Создано:\tdd-mm-yyyy hh:nn:ss\r\n",create_time);
+	//spar = FormatDateTime(L"Создано:\tdd-mm-yyyy hh:nn:ss\r\n",create_time);
+    spar = FormatDateTime(L"Создано:\tdd-mm-yy hh:nn\r\n",create_time);
 	wcscpy(cpar,spar.c_bstr());
 	fwrite(cpar,wcslen(cpar)*2,1,ft);
 
 	/* CSV */
 
-	spar_csv = FormatDateTime(L"Создано;dd-mm-yyyy hh:nn:ss\r\n",create_time);
+	//spar_csv = FormatDateTime(L"Создано;dd-mm-yyyy hh:nn:ss\r\n",create_time);
+    spar_csv = FormatDateTime(L"Создано;dd-mm-yy hh:nn\r\n",create_time);
 	wcscpy(cpar_csv,spar_csv.c_bstr());
 	fwrite(cpar_csv,wcslen(cpar_csv)*2,1,fc);
 
 	//------------------------------------------------------
 	if (finalized == true) {
 
-		spar = FormatDateTime(L"Завершено:\tdd-mm-yyyy hh:nn:ss\r\n\r\n",finalize_time);
+		//spar = FormatDateTime(L"Завершено:\tdd-mm-yyyy hh:nn:ss\r\n\r\n",finalize_time);
+        spar = FormatDateTime(L"Завершено:\tdd-mm-yy hh:nn\r\n\r\n",finalize_time);
 		wcscpy(cpar,spar.c_bstr());
 	}
 	else
@@ -756,7 +909,8 @@ int TMeas::SaveData(int par)
 
 	if (finalized == true) {
 
-		spar_csv = FormatDateTime(L"Завершено;dd-mm-yyyy hh:nn:ss\r\n\r\n",finalize_time);
+		//spar_csv = FormatDateTime(L"Завершено;dd-mm-yyyy hh:nn:ss\r\n\r\n",finalize_time);
+        spar_csv = FormatDateTime(L"Завершено;dd-mm-yy hh:nn\r\n\r\n",finalize_time);
 		wcscpy(cpar_csv,spar_csv.c_bstr());
 	}
 	else
@@ -1067,12 +1221,14 @@ int TMeas::Excel (int par)
 
 	WriteExcelReportCell(irow,1,L"Измерение:"); WriteExcelReportCell(irow,2,name); irow++;
 
-	s = FormatDateTime(L"dd-mm-yyyy hh:nn:ss",create_time);
+	//s = FormatDateTime(L"dd-mm-yyyy hh:nn:ss",create_time);
+    s = FormatDateTime(L"dd-mm-yy hh:nn",create_time);
 	WriteExcelReportCell(irow,1,L"Создано:"); WriteExcelReportCell(irow,2,s); irow++;
 
 	if ((double) finalize_time > 0.0)
 	{
-		s = FormatDateTime(L"dd-mm-yyyy hh:nn:ss",finalize_time);
+		//s = FormatDateTime(L"dd-mm-yyyy hh:nn:ss",finalize_time);
+		s = FormatDateTime(L"dd-mm-yy hh:nn",finalize_time);
 	}
 	else
 	{

@@ -189,6 +189,9 @@ void TForm_DrillAdjust::DrillToForm()
 	{
 		this->RadioGroup_calc_start->Visible = true;
 
+		/* вертикальная всегда от нижней точки */
+		drill->start_point = DRILL_BOT_POINT;
+
 		if (drill->start_point == DRILL_TOP_POINT)
 		{
 			this->RadioGroup_calc_start->Visible = true;
@@ -206,6 +209,8 @@ void TForm_DrillAdjust::DrillToForm()
 			this->RadioButton_bot->Checked = TRUE;
 		}
 
+		this->RadioButton_top->Enabled = FALSE;
+		this->RadioButton_bot->Enabled = FALSE;
 	}
 
 	//start collect data
@@ -227,6 +232,14 @@ void TForm_DrillAdjust::DrillToForm()
 			//RadioButton_start_first->Checked = FALSE;
 			//RadioButton_start_last->Checked = FALSE;
 			//utils_ShowMessage(L"Ошибка задания уровней скважины!");
+	}
+
+	/* для вертикальных всегда два прохода*/
+	if (drill->drill_orient == DRILL_ORIENT_VERTICAL)
+	{
+		drill->single_way = 0;
+		RadioButton_pass_1->Enabled = FALSE;
+		RadioButton_pass_2->Enabled = FALSE;
 	}
 
 	//pass 1/2

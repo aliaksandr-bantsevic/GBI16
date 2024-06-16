@@ -2,7 +2,7 @@ object FMain: TFMain
   Left = 0
   Top = 0
   Caption = 'GorizontMaster'
-  ClientHeight = 872
+  ClientHeight = 966
   ClientWidth = 1749
   Color = clBtnFace
   TransparentColorValue = clBlue
@@ -154,13 +154,13 @@ object FMain: TFMain
     Left = 401
     Top = 70
     Width = 4
-    Height = 776
+    Height = 870
     ResizeStyle = rsUpdate
     ExplicitHeight = 797
   end
   object MStatusBar: TStatusBar
     Left = 0
-    Top = 846
+    Top = 940
     Width = 1749
     Height = 26
     BorderWidth = 2
@@ -180,6 +180,8 @@ object FMain: TFMain
       item
         Width = 50
       end>
+    ExplicitTop = 845
+    ExplicitWidth = 1745
   end
   object MToolBar: TToolBar
     Left = 0
@@ -202,6 +204,7 @@ object FMain: TFMain
     ShowHint = True
     TabOrder = 1
     Transparent = True
+    ExplicitWidth = 1745
     object ToolButton_Start: TToolButton
       Left = 0
       Top = 0
@@ -285,6 +288,7 @@ object FMain: TFMain
       Top = 0
       Caption = #1050#1083#1072#1074'.'
       ImageIndex = 15
+      Visible = False
       OnClick = ToolButton_kbdClick
     end
     object ToolButton_baseres: TToolButton
@@ -299,6 +303,7 @@ object FMain: TFMain
       Top = 0
       Caption = #1057#1087#1088#1072#1074#1082#1072
       ImageIndex = 6
+      Visible = False
       OnClick = ToolButton_helpClick
     end
     object ToolButton_test: TToolButton
@@ -322,14 +327,15 @@ object FMain: TFMain
     Left = 0
     Top = 70
     Width = 401
-    Height = 776
+    Height = 870
     Align = alLeft
     TabOrder = 2
+    ExplicitHeight = 775
     object TreeView_system: TTreeView
       Left = 1
       Top = 1
       Width = 399
-      Height = 774
+      Height = 868
       Align = alClient
       BorderWidth = 1
       Color = clInfoBk
@@ -350,15 +356,18 @@ object FMain: TFMain
       OnClick = TreeView_systemClick
       OnDblClick = TreeView_systemDblClick
       OnMouseMove = TreeView_systemMouseMove
+      ExplicitHeight = 773
     end
   end
   object Panel2: TPanel
     Left = 405
     Top = 70
     Width = 1344
-    Height = 776
+    Height = 870
     Align = alClient
     TabOrder = 3
+    ExplicitWidth = 1340
+    ExplicitHeight = 775
     object Splitter2: TSplitter
       Left = 1
       Top = 529
@@ -376,6 +385,7 @@ object FMain: TFMain
       Height = 528
       Align = alTop
       TabOrder = 0
+      ExplicitWidth = 1338
       object MPageControl: TPageControl
         Left = 1
         Top = 1
@@ -384,6 +394,7 @@ object FMain: TFMain
         ActivePage = TabSheet_charts
         Align = alClient
         TabOrder = 0
+        ExplicitWidth = 1336
         object TabSheet_meas_table: TTabSheet
           Caption = #1044#1072#1085#1085#1099#1077
           ImageIndex = 1
@@ -396,6 +407,7 @@ object FMain: TFMain
             Align = alClient
             Caption = #1042#1067#1041#1045#1056#1048#1058#1045' '#1048#1047#1052#1045#1056#1045#1053#1048#1045' '#1042' '#1044#1045#1056#1045#1042#1045' '#1057#1048#1057#1058#1045#1052#1067
             TabOrder = 0
+            ExplicitWidth = 1328
             object StringGrid_meas: TStringGrid
               Left = 1
               Top = 1
@@ -411,6 +423,7 @@ object FMain: TFMain
               TabOrder = 0
               OnDblClick = StringGrid_measDblClick
               OnDrawCell = StringGrid_measDrawCell
+              ExplicitWidth = 1326
             end
           end
         end
@@ -426,6 +439,7 @@ object FMain: TFMain
             Align = alClient
             Caption = 'Panel_charts_v'
             TabOrder = 0
+            ExplicitWidth = 1328
             object Splitter4: TSplitter
               Left = 292
               Top = 1
@@ -596,6 +610,7 @@ object FMain: TFMain
             Align = alClient
             Caption = 'Panel_chats'
             TabOrder = 0
+            ExplicitWidth = 1328
             object Panel_chartx_h: TPanel
               Left = 1
               Top = 1
@@ -604,6 +619,7 @@ object FMain: TFMain
               Align = alTop
               Caption = 'Panel_chartx_h'
               TabOrder = 0
+              ExplicitWidth = 1326
               object Splitter6: TSplitter
                 Left = 1
                 Top = 245
@@ -655,6 +671,7 @@ object FMain: TFMain
                 TabOrder = 0
                 OnDblClick = Chart_x_hDblClick
                 OnMouseMove = Chart_x_hMouseMove
+                ExplicitWidth = 1324
                 DefaultCanvas = 'TGDIPlusCanvas'
                 PrintMargins = (
                   15
@@ -802,6 +819,7 @@ object FMain: TFMain
               Align = alClient
               Caption = 'Panel_charty_h'
               TabOrder = 1
+              ExplicitWidth = 1326
               object Chart_y_h: TChart
                 Left = 1
                 Top = 1
@@ -844,6 +862,7 @@ object FMain: TFMain
                 Color = clWhite
                 TabOrder = 0
                 OnDblClick = Chart_y_hDblClick
+                ExplicitWidth = 1324
                 DefaultCanvas = 'TGDIPlusCanvas'
                 PrintMargins = (
                   15
@@ -1015,17 +1034,21 @@ object FMain: TFMain
       Left = 1
       Top = 533
       Width = 1342
-      Height = 242
+      Height = 336
       Align = alClient
       TabOrder = 1
+      ExplicitWidth = 1338
+      ExplicitHeight = 241
       object LPageControl_console: TPageControl
         Left = 1
         Top = 1
         Width = 1340
-        Height = 240
+        Height = 334
         ActivePage = TabSheet_meas_control
         Align = alClient
         TabOrder = 0
+        ExplicitWidth = 1336
+        ExplicitHeight = 239
         object TabSheet_meas_control: TTabSheet
           Caption = #1048#1079#1084#1077#1088#1077#1085#1080#1077
           ImageIndex = 1
@@ -1033,11 +1056,13 @@ object FMain: TFMain
             Left = 0
             Top = 0
             Width = 1332
-            Height = 207
+            Height = 301
             Align = alClient
             Color = clInfoBk
             ParentBackground = False
             TabOrder = 0
+            ExplicitWidth = 1328
+            ExplicitHeight = 206
             object Label_X: TLabel
               Left = 480
               Top = 21
@@ -1117,7 +1142,7 @@ object FMain: TFMain
               ParentFont = False
             end
             object Button_record: TButton
-              Left = 0
+              Left = 15
               Top = 3
               Width = 430
               Height = 241
@@ -1311,11 +1336,13 @@ object FMain: TFMain
             Left = 0
             Top = 0
             Width = 1332
-            Height = 207
+            Height = 301
             Align = alClient
             Color = clInfoBk
             ItemHeight = 18
             TabOrder = 0
+            ExplicitWidth = 1328
+            ExplicitHeight = 206
           end
         end
       end

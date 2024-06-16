@@ -484,22 +484,22 @@ void __fastcall TFMain::StringGrid_measDrawCell(TObject *Sender, int ACol, int A
 			StringGrid_meas->Canvas->Font->Color = clBlack;
 
 			if (ACol == 0) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Номер");
-			if (ACol == 1) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Уровень");
+			if (ACol == 1) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Уровень, м");
 			if (ACol == 2) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Погр.трб.");
 
-			if (ACol == 3) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"X1");
-			if (ACol == 4) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Y1");
+			if (ACol == 3) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"X1, угл.сек.");
+			if (ACol == 4) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Y1, угл.сек.");
 
-			if (ACol == 5) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"X2");
-			if (ACol == 6) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Y2");
+			if (ACol == 5) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"X2, угл.сек.");
+			if (ACol == 6) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Y2, угл.сек.");
 
-			if (ACol == 7) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Xрез");
-			if (ACol == 8) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Yрез");
+			if (ACol == 7) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Xрез, угл.сек.");
+			if (ACol == 8) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Yрез, угл.сек.");
 
-			if (ACol == 9) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"LX");
-			if (ACol == 10) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"LY");
-			if (ACol == 11) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Рез.см.");
-			if (ACol == 12) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Рез.уг.");
+			if (ACol == 9) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"LX, мм");
+			if (ACol == 10) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"LY, мм");
+			if (ACol == 11) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Рез.см. мм");
+			if (ACol == 12) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Азимут, град.");
 
 		}
 
@@ -549,8 +549,6 @@ void __fastcall TFMain::StringGrid_measDrawCell(TObject *Sender, int ACol, int A
 	   StringGrid_meas->Canvas->FillRect(Rect);
 	   StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, sc);
 
-
-
 	}
 
 	if (selected_meas == NULL) {
@@ -575,7 +573,6 @@ void __fastcall TFMain::StringGrid_measDrawCell(TObject *Sender, int ACol, int A
 		b_table_cleared = false;
 	}
 
-
 	if (selected_meas !=NULL )
 	{
 
@@ -596,10 +593,7 @@ void __fastcall TFMain::StringGrid_measDrawCell(TObject *Sender, int ACol, int A
 				}
 
 			}
-
 		}
-
-
 	}
 
 }
@@ -1484,7 +1478,7 @@ void __fastcall TFMain::Button_finishClick(TObject *Sender)
 
 	current_meas->Calculate();
 
-	GBISystem->SysConfMgr.Backup(0,0);
+	//GBISystem->SysConfMgr.Backup(0,0);
 
 	ViewSelectedMeas();
 }
@@ -1878,114 +1872,76 @@ void __fastcall TFMain::Chart_y_hDblClick(TObject *Sender)
 void __fastcall TFMain::ToolButton_testClick(TObject *Sender)
 {
 
-return;//!!!
+typedef struct {
 
-GBISystem->ImportFromDataFile(L"c:\\Prj\\Gorizont\\RAD Studio C++ Builder\\GBI16\\Win32\\Debug\\Data\\IZDAT.CSV");
+	double x1;
+	double x2;
+} tstdata;
 
-return;
-
-TDataFile df;
-
-df.ParsDaTaFile(L"c:\\Prj\\Gorizont\\RAD Studio C++ Builder\\GBI16\\Win32\\Debug\\Data\\IZDAT.CSV");
-
-return;
-
-
-df.OpenFile(L"c:\\Prj\\Gorizont\\RAD Studio C++ Builder\\GBI16\\Win32\\Debug\\Data\\IZDAT.CSV");
-
-df.CheckFile();
-
-df.pars_en = true;
-
-	while (df.GetStr() == 0)
+	tstdata td [] =
 	{
-		while (df.GetWord() == 0);
 
-	}
+		{-3764, 163},
+		{-3132, -482},
+		{-2392, -1218},
+		{-2936, -637},
+		{-3302, -308},
+		{-3018, -669},
+		{-3583, 91},
+		{-3849, 267},
+		{-3933, 340},
+		{-4528, 935},
+		{-5716, 2116},
+		{-7080, 3467},
+		{-8056, 4521},
+		{-7976, 4373},
+		{-7075, 3492},
+		{-5755, 2190},
+		{-4798, 1206},
+		{-4744, 1262},
+		{-5320, 1677},
+		{-5719, 2107},
+		{-5572, 2009},
+		{-5056, 1461},
+		{-4539, 934},
+		{-4139, 550},
+		{-4189, 600},
+		{-3941, 359},
+		{-4014, 480},
+		{-3635, 16},
+		{-2879, -695},
+		{-2201, -1318},
+		{-2483, -1194},
+		{-2666, -908},
+		{-3029, -522},
+		{-3361, -268},
+		{-4001, 457},
+		{-4329, 852},
+		{-4317, 599},
+		{-3029, -516},
+		{-1833, -1741},
+		{-1411, -2193},
+		{-1059, -2512},
+		{-632,  -2847},
 
-return;
+	};
 
-this->GBISystem->place_list[0]->drill_list[0]->meas_list[0]->SaveData(0);
+	TPlace* p;
+	TDrill* d;
+	TMeas* m;
 
-return;
+	p = GBISystem->place_list[0];
+	d = p->drill_list[0];
+	m = d->meas_list[0];
 
- ConvertTextFile_UTF16LEBOM (L"c:\\Prj\\Gorizont\\RAD Studio C++ Builder\\GBI_U16\\Win32\\Debug\\utf8.txt");
-
-return;
-
-FILE* f = NULL;
-
-f = fopen("utf8.txt", "rb");
-
-char c[8448];
-
-
-int idxu8 = 0;
-
-while (1)  {
-
-if (!fread(&c[idxu8++],1,1,f)) break;
-
-}
-
-
-fclose(f);
-
-WideString sutf16(L"АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюя");
-
-TCHAR  tcutf16[65];
-
-wcscpy(tcutf16, sutf16.c_bstr());
-
-TCHAR tc[8448];
-
-int idx = 0;
-
-for (int i = 0; i < idxu8; i++) {
-
-	BYTE code = 0;
-
-	code = c[i];
-
-
-	if (code>191) {
-
-	   idx = code - 192;
-
-	   tc[i] = (TCHAR)tcutf16[idx];
-	}
-	else
+	for (int i = 0; i < m->records_cnt; i++)
 	{
-		tc[i] = (TCHAR) c[i];
+		m->records[i].X1 = td[i].x1;
+		m->records[i].X2 = td[i].x2;
 	}
 
-
-     tc[i+1] = '\0';
-
-}
-
-
-
-	ShowMessage(tc);
-
-return;
-
-	TPlace* p = this->GBISystem->place_list[0];
-	TDrill* d = p->drill_list[0];
-	TMeas* m = d->meas_list[0];
-
-	for (int i = 0; i < m->records_cnt; i++) {
-
-		m->records[i].X1 = test_dataset_h_s_3 [i];
-		m->records[i].depth = 0.5*(double)(i);
-
-	}
-
-	m->DataToTable();
-
-return;
-
-
+	//m->SaveData(0);
+    m->DataToTable();
 }
 
 //---------------------------------------------------------------------------
