@@ -1826,7 +1826,7 @@ void __fastcall TFMain::ToolButton12Click(TObject *Sender)
 		{
 			if (selected_meas != NULL)
 			{
-				this->MStatusBar->Panels->Items[2]->Text = "Экспорт в Excel ...";
+				this->MStatusBar->Panels->Items[2]->Text = L"Экспорт в Excel ...";
 				selected_meas->Excel(1);
 				this->MStatusBar->Panels->Items[2]->Text = "";
 				Form_excel_progress->StopShow();

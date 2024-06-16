@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------
 
 #include <vcl.h>
 #pragma hdrstop
@@ -23,43 +23,6 @@ void __fastcall TForm_DrillAdjust::Button_applyClick(TObject *Sender)
 		OK = true;
         *OOK = true;
 		Close();
-
-	 return;//!!!
-
-
-	 if (MAX_RECORDS_MEAS  < *records_cnt) {
-
-		utils_ShowMessage(L"Превышен лимит числа уровней!");
-		Close();
-	 }
-	 else
-	 {
-		 drill->name = this->Edit_name->Text;
-		 drill->single_way = (int) CheckBox_single->Checked;
-		 drill->drill_orient = this->ComboBox_orient->ItemIndex;
-		 drill->start_point = (this->RadioButton_top->Checked)?0:1;
-		 drill->i_first_request_point = (this->RadioButton_start_first->Checked)?0:1;
-
-		 drill->drill_asimut = this->Edit_asimut->Text.ToDouble();
-		 drill->own_zero_shift = this->Edit_zshift->Text.ToDouble();
-		 drill->records_cnt = this->ComboBox_meas_cnt->Text.ToDouble()+1;
-
-		 drill->geo_data.geo_on = (CheckBox_GeoOn->Checked)?true:false;
-
-		 try {
-
-			drill->geo_data.input_point = this->Edit_Input_point->Text.ToDouble();
-			drill->geo_data.output_point = this->Edit_Output_point->Text.ToDouble();
-
-		 }
-		 catch (...) {
-
-		 }
-
-	 }
-
-	 OK = true;
-	 Close();
 }
 
 void TForm_DrillAdjust::Start(TDrill* d, int m)
@@ -390,7 +353,7 @@ int TForm_DrillAdjust::FormToDrill()
 		double dlmax = dl1;
 		if (dl2>dl1)  dlmax = dl2;
 
-		drill->records_cnt = (int)(dlmax/0.5);
+		drill->records_cnt = (int)(dlmax/0.5) + 1;
 
 		if (dl2 > dl1)
 		{

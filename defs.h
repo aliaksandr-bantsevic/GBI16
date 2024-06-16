@@ -9,8 +9,8 @@
 extern bool b_MessageConfirmParamsetShow;
 
 #define BUILD           2
-#define VERSION         6
-#define SUBVERSION      9
+#define VERSION         7
+#define SUBVERSION      0
 
 /*
 	Forms control macro definitions
