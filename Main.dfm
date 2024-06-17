@@ -383,7 +383,7 @@ object FMain: TFMain
         Top = 1
         Width = 1336
         Height = 526
-        ActivePage = TabSheet_charts
+        ActivePage = TabSheet_meas_table
         Align = alClient
         TabOrder = 0
         object TabSheet_meas_table: TTabSheet
@@ -393,28 +393,26 @@ object FMain: TFMain
           object Panel_meas_table: TPanel
             Left = 0
             Top = 0
-            Width = 1332
+            Width = 1328
             Height = 493
             Align = alClient
             Caption = #1042#1067#1041#1045#1056#1048#1058#1045' '#1048#1047#1052#1045#1056#1045#1053#1048#1045' '#1042' '#1044#1045#1056#1045#1042#1045' '#1057#1048#1057#1058#1045#1052#1067
             TabOrder = 0
-            ExplicitWidth = 1328
             object StringGrid_meas: TStringGrid
               Left = 1
               Top = 1
-              Width = 1330
+              Width = 1326
               Height = 491
               Align = alClient
               Font.Charset = RUSSIAN_CHARSET
               Font.Color = clWindowText
-              Font.Height = -15
+              Font.Height = -12
               Font.Name = 'Tahoma'
               Font.Style = []
               ParentFont = False
               TabOrder = 0
               OnDblClick = StringGrid_measDblClick
               OnDrawCell = StringGrid_measDrawCell
-              ExplicitWidth = 1326
             end
           end
         end
@@ -425,12 +423,11 @@ object FMain: TFMain
           object Panel_charts_v: TPanel
             Left = 0
             Top = 0
-            Width = 1332
+            Width = 1328
             Height = 493
             Align = alClient
             Caption = 'Panel_charts_v'
             TabOrder = 0
-            ExplicitWidth = 1328
             object Splitter4: TSplitter
               Left = 292
               Top = 1

@@ -129,8 +129,6 @@ int TMeas::DataToTable(void)
 		return -1; //Нет указателя на таблицу
 	}
 
-
-
 /*
 Иициализация таблицы
 */
@@ -140,18 +138,16 @@ int TMeas::DataToTable(void)
 	for (int i = 0; i < records_cnt; i++) {
 
 		PutDblCell(table,1,i+1,this->records[i].depth);
-		PutDblCell(table,2,i+1,this->records[i].tuberr);
+		//PutDblCell(table,2,i+1,this->records[i].tuberr);
 
 		PutDblCell(table,3,i+1,this->records[i].X1);
-		PutDblCell(table,4,i+1,this->records[i].Y1);
+		PutDblCell(table,4,i+1,this->records[i].X2);
+		PutDblCell(table,5,i+1,this->records[i].Xres);
+		PutDblCell(table,6,i+1,this->records[i].LX);
 
-		PutDblCell(table,5,i+1,this->records[i].X2);
-		PutDblCell(table,6,i+1,this->records[i].Y2);
-
-		PutDblCell(table,7,i+1,this->records[i].Xres);
-		PutDblCell(table,8,i+1,this->records[i].Yres);
-
-		PutDblCell(table,9,i+1,this->records[i].LX);
+		PutDblCell(table,7,i+1,this->records[i].Y1);
+		PutDblCell(table,8,i+1,this->records[i].Y2);
+		PutDblCell(table,9,i+1,this->records[i].Yres);
 		PutDblCell(table,10,i+1,this->records[i].LY);
 
 		PutDblCell(table,11,i+1,this->records[i].LR);
@@ -239,18 +235,16 @@ int TMeas::TableToData(void)
 	for (int i = 0; i < records_cnt; i++) {
 
 		GetDblCell(table,1,i+1,&this->records[i].depth);
-		GetDblCell(table,2,i+1,&this->records[i].tuberr);
+		//GetDblCell(table,2,i+1,&this->records[i].tuberr);
 
 		GetDblCell(table,3,i+1,&this->records[i].X1);
-		GetDblCell(table,4,i+1,&this->records[i].Y1);
+		GetDblCell(table,4,i+1,&this->records[i].X2);
+		GetDblCell(table,5,i+1,&this->records[i].Xres);
+		GetDblCell(table,6,i+1,&this->records[i].LX);
 
-		GetDblCell(table,5,i+1,&this->records[i].X2);
-		GetDblCell(table,6,i+1,&this->records[i].Y2);
-
-		GetDblCell(table,7,i+1,&this->records[i].Xres);
-		GetDblCell(table,8,i+1,&this->records[i].Yres);
-
-		GetDblCell(table,9,i+1,&this->records[i].LX);
+		GetDblCell(table,7,i+1,&this->records[i].Y1);
+		GetDblCell(table,8,i+1,&this->records[i].Y2);
+		GetDblCell(table,9,i+1,&this->records[i].Yres);
 		GetDblCell(table,10,i+1,&this->records[i].LY);
 
 		GetDblCell(table,11,i+1,&this->records[i].LR);
@@ -293,52 +287,7 @@ int TMeas::Calc_Vert_Double_Bottom(void)
 
    double xres_prev = 0.;
    double yres_prev = 0.;
-   double xabs = 0.;
-   double yabs = 0.;
 
-   goto var2;
-
-   for (int i = records_cnt - 1; i >=0 ; i--)
-   {
-
-		x1 = records[i].X1;
-		x2 = records[i].X2;
-
-		y1 = records[i].Y1;
-		y2 = records[i].Y2;
-
-		d  = records[i].depth;
-
-		xabs = (x1 - x2)/2.;
-		/* =0,5*SIN(F45/3600*PI()/180)*1000+G46 */
-		xres = 0.5 * sin(xabs / 3600. * PI / 180 ) * 1000 + xres_prev;
-
-		xres_prev = xres;
-
-       	records[i].LX = xabs;
-		records[i].Xres = xres;
-
-		records[i].LR = sqrt((lx*lx)+(ly*ly));
-
-		if (abs(records[i].LX) > 0.0001)
-		{
-
-					records[i].AR = atan(records[i].LY/records[i].LX);
-					//gthtcxbnsdftv hflbfys d uhflecs
-					records[i].AR *= PI;
-					records[i].AR /= 180;
-					//переводим в секунды
-					records[i].AR *= 3600;
-		}
-
-   }
-
-
-   return 0;
-
-   var2:
-
-//------------------------------------------------------------------------------
    for (int i = records_cnt - 1; i >=0 ; i--)
    {
 		/* Выбрать отсчет начиная с последнего */
@@ -357,46 +306,34 @@ int TMeas::Calc_Vert_Double_Bottom(void)
 			records[i+1].depth = records[i].depth + 0.5;
 		}
 
-		/* Усли для нулевого отсчета X2 = 0 умножить X1 на -1 */
-		//if (records[0].X2 == 0)
-		//{
-		//	x2 =  (records[0].X1)*(-1.);
-		//}
-
 		/* Xres = (x1-x2)/2) */
 		xres = (x1-x2)/2;
 		/* Yres = (y1-y2)/2) */
 		yres = (y1-y2)/2;
 
+		/* пишем в базу */
 		records[i].Xres = xres;
 		records[i].Yres = yres;
 
-
-		/* Lx = (depth[i+1] - depth) * sin(Xres[i+]))/3600*PI/180) * 1000 + Lx[i+1]; */
+		/* Lx = (depth[i+1] - depth) * sin(Xres[i]))/3600*PI/180) * 1000 + Lx[предыдущее]  */
 		lx = (records[i+1].depth - records[i].depth) * sin((records[i].Xres)/3600*PI/180) * 1000 + xres_prev;
 		xres_prev = lx;
 
-		/* Ly = (depth[i+1] - depth) * sin(Yres[i+]))/3600*PI/180) * 1000 + Ly[i+1]; */
+		/* Ly = (depth[i+1] - depth) * sin(Yres[i]))/3600*PI/180) * 1000 + Ly[предыдущее]; */
 		ly = (records[i+1].depth - records[i].depth) * sin((records[i].Yres)/3600*PI/180) * 1000 + yres_prev;
 		yres_prev = ly;
 
-		/* Для предпоследнего отсчета применить поправку -Дч*/
-		//if (i == records_cnt-2)
-		//{
-		//  dxcorrection =  lx;
-		//}
-
-		//lx-=dxcorrection;
-
+		/* пишем в базу */
 		records[i].LX = lx;
 		records[i].LY = ly;
 
+		/* Результирующее перемещение */
 		/* Lr = sqrt(lx^2 + Ly2) */
 		records[i].LR = sqrt((lx*lx)+(ly*ly));
 
+		/* Результирующий угол */
 		if (abs(records[i].LX) > 0.0001)
 		{
-
 					records[i].AR = atan(records[i].LY/records[i].LX);
 					records[i].AR *= PI;
 					records[i].AR /= 180;
@@ -405,7 +342,6 @@ int TMeas::Calc_Vert_Double_Bottom(void)
 		}
 
 	}
-//------------------------------------------------------------------------------
 
 	return 0;
 }
