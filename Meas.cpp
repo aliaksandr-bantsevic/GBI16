@@ -292,7 +292,9 @@ int TMeas::Calc_Vert_Double_Bottom(void)
    double zshift = 0;
 
    double xres_prev = 0.;
+   double yres_prev = 0.;
    double xabs = 0.;
+   double yabs = 0.;
 
    goto var2;
 
@@ -336,8 +338,10 @@ int TMeas::Calc_Vert_Double_Bottom(void)
 
    var2:
 
-   for (int i = 0; i < records_cnt; i++)
+//------------------------------------------------------------------------------
+   for (int i = records_cnt - 1; i >=0 ; i--)
    {
+		/* Выбрать отсчет начиная с последнего */
 
 		x1 = records[i].X1;
 		x2 = records[i].X2;
@@ -347,59 +351,61 @@ int TMeas::Calc_Vert_Double_Bottom(void)
 
 		d  = records[i].depth;
 
-		if (records[0].X2 == 0) {
-
-			x2 =  (records[0].X1)*(-1.);
+		/* Для последней точки принимает что следующая будет через 0.5 м*/
+		if (i == records_cnt - 1)
+		{
+			records[i+1].depth = records[i].depth + 0.5;
 		}
 
+		/* Усли для нулевого отсчета X2 = 0 умножить X1 на -1 */
+		//if (records[0].X2 == 0)
+		//{
+		//	x2 =  (records[0].X1)*(-1.);
+		//}
+
+		/* Xres = (x1-x2)/2) */
 		xres = (x1-x2)/2;
+		/* Yres = (y1-y2)/2) */
 		yres = (y1-y2)/2;
 
 		records[i].Xres = xres;
 		records[i].Yres = yres;
 
 
-		int ii = records_cnt-i-1;
+		/* Lx = (depth[i+1] - depth) * sin(Xres[i+]))/3600*PI/180) * 1000 + Lx[i+1]; */
+		lx = (records[i+1].depth - records[i].depth) * sin((records[i].Xres)/3600*PI/180) * 1000 + xres_prev;
+		xres_prev = lx;
 
-		if ( ii == records_cnt-1 )
+		/* Ly = (depth[i+1] - depth) * sin(Yres[i+]))/3600*PI/180) * 1000 + Ly[i+1]; */
+		ly = (records[i+1].depth - records[i].depth) * sin((records[i].Yres)/3600*PI/180) * 1000 + yres_prev;
+		yres_prev = ly;
+
+		/* Для предпоследнего отсчета применить поправку -Дч*/
+		//if (i == records_cnt-2)
+		//{
+		//  dxcorrection =  lx;
+		//}
+
+		//lx-=dxcorrection;
+
+		records[i].LX = lx;
+		records[i].LY = ly;
+
+		/* Lr = sqrt(lx^2 + Ly2) */
+		records[i].LR = sqrt((lx*lx)+(ly*ly));
+
+		if (abs(records[i].LX) > 0.0001)
 		{
 
-			lx = 0;
-			ly = 0;
-		}
-		else
-		{
-			double dxcorrection = 0;
-
-			lx = (records[ii+1].depth - records[ii].depth) * sin((records[ii+1].Xres)/3600*PI/180) * 1000 + records[ii+1].LX;
-			ly = (records[ii+1].depth - records[ii].depth) * sin((records[ii+1].Yres)/3600*PI/180) * 1000 + records[ii+1].LY;
-
-			/*
-			if (ii == records_cnt-2)
-			{
-			  dxcorrection =  lx;
-			}
-            */
-
-			lx-=dxcorrection;
-		}
-
-		records[ii].LX = lx;
-		records[ii].LY = ly;
-
-		records[ii].LR = sqrt((lx*lx)+(ly*ly));
-
-		if (abs(records[ii].LX) > 0.0001)
-		{
-
-					records[ii].AR = atan(records[ii].LY/records[ii].LX);
-					records[ii].AR *= PI;
-					records[ii].AR /= 180;
+					records[i].AR = atan(records[i].LY/records[i].LX);
+					records[i].AR *= PI;
+					records[i].AR /= 180;
 					//переводим в секунды
-					records[ii].AR *= 3600;
+					records[i].AR *= 3600;
 		}
 
 	}
+//------------------------------------------------------------------------------
 
 	return 0;
 }

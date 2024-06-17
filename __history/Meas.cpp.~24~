@@ -56,8 +56,8 @@ TMeas::TMeas (TStringGrid* t, WideString n)
 
 	finalize_time = (double)0;
 
-	records_cnt_def = 21;
-	records_cnt = 21;
+	records_cnt_def = 1;
+	records_cnt = 1;
 
 	SysConfMgr = scmgr;
 
@@ -114,7 +114,7 @@ int PutDblCell(TStringGrid* table, int col, int row, double d)
 		}
 		else
 		{
-			s.printf(L"%.1f",d);
+			s.printf(L"%.2f",d);
 		}
 		table->Cells[col][row] = s;
 
@@ -265,6 +265,151 @@ double xt = 10;
 double yt = 10;
 double rt = 0.5;
 
+/*
+	Вертикальная двухпроходная расчет от нижней точки
+*/
+int TMeas::Calc_Vert_Double_Bottom(void)
+{
+   const double PI = 3.14159265;
+
+   double x1 = 0;
+   double x2 = 0;
+
+   double y1 = 0;
+   double y2 = 0;
+
+   double xres = 0;
+   double yres = 0;
+
+   double lx = 0;
+   double ly = 0;
+
+   double depth = 0;
+
+   double d = 0;
+   double dd = 0;
+
+   double zshift = 0;
+
+   double xres_prev = 0.;
+   double xabs = 0.;
+
+   goto var2;
+
+   for (int i = records_cnt - 1; i >=0 ; i--)
+   {
+
+		x1 = records[i].X1;
+		x2 = records[i].X2;
+
+		y1 = records[i].Y1;
+		y2 = records[i].Y2;
+
+		d  = records[i].depth;
+
+		xabs = (x1 - x2)/2.;
+		/* =0,5*SIN(F45/3600*PI()/180)*1000+G46 */
+		xres = 0.5 * sin(xabs / 3600. * PI / 180 ) * 1000 + xres_prev;
+
+		xres_prev = xres;
+
+       	records[i].LX = xabs;
+		records[i].Xres = xres;
+
+		records[i].LR = sqrt((lx*lx)+(ly*ly));
+
+		if (abs(records[i].LX) > 0.0001)
+		{
+
+					records[i].AR = atan(records[i].LY/records[i].LX);
+					//gthtcxbnsdftv hflbfys d uhflecs
+					records[i].AR *= PI;
+					records[i].AR /= 180;
+					//переводим в секунды
+					records[i].AR *= 3600;
+		}
+
+   }
+
+
+   return 0;
+
+   var2:
+
+//------------------------------------------------------------------------------
+   for (int i = records_cnt - 1; i >=0 ; i--)
+   {
+		/* Выбрать отсчет начиная с последнего */
+
+		x1 = records[i].X1;
+		x2 = records[i].X2;
+
+		y1 = records[i].Y1;
+		y2 = records[i].Y2;
+
+		d  = records[i].depth;
+
+		/* Усли для нулевого отсчета X2 = 0 умножить X1 на -1 */
+		if (records[0].X2 == 0)
+		{
+			x2 =  (records[0].X1)*(-1.);
+		}
+
+		/* Xres = (x1-x2)/2) */
+		xres = (x1-x2)/2;
+		/* Yres = (y1-y2)/2) */
+		yres = (y1-y2)/2;
+
+		records[i].Xres = xres;
+		records[i].Yres = yres;
+
+		/* Для последнего отсчеета принимаем Lx = 0 Ly = 0*/
+		if ( i == records_cnt-1 )
+		{
+
+			lx = 0;
+			ly = 0;
+		}
+		else
+		{
+			double dxcorrection = 0;
+
+			/* Lx = (depth[i+1] - depth) * sin(Xres[i+]))/3600*PI/180) * 1000 + Lx[i+1]; */
+			lx = (records[i+1].depth - records[i].depth) * sin((records[i+1].Xres)/3600*PI/180) * 1000 + records[i+1].LX;
+			/* Ly = (depth[i+1] - depth) * sin(Yres[i+]))/3600*PI/180) * 1000 + Yx[i+1]; */
+			ly = (records[i+1].depth - records[i].depth) * sin((records[i+1].Yres)/3600*PI/180) * 1000 + records[i+1].LY;
+
+			/* Для предпоследнего отсчета применить поправку -Дч*/
+			//if (i == records_cnt-2)
+			//{
+			//  dxcorrection =  lx;
+			//}
+
+			//lx-=dxcorrection;
+		}
+
+		records[i].LX = lx;
+		records[i].LY = ly;
+
+		/* Lr = sqrt(lx^2 + Ly2) */
+		records[i].LR = sqrt((lx*lx)+(ly*ly));
+
+		if (abs(records[i].LX) > 0.0001)
+		{
+
+					records[i].AR = atan(records[i].LY/records[i].LX);
+					records[i].AR *= PI;
+					records[i].AR /= 180;
+					//переводим в секунды
+					records[i].AR *= 3600;
+		}
+
+	}
+//------------------------------------------------------------------------------
+
+	return 0;
+}
+
 int TMeas::Calculate(void)
 {
 
@@ -346,9 +491,7 @@ int TMeas::Calculate(void)
 
 					if (single_way == 1) {
 
-					   //lx = (records[i].depth - records[i-1].depth) * sin(records[i-1].Xres/3600*PI/180) * 1000 + records[i-1].LX;
-					   //ly = (records[i].depth - records[i-1].depth) * sin(records[i-1].Yres/3600*PI/180) * 1000 + records[i-1].LY;
-                        						/* в таблице заказчика расчет делается не по предыдущей точке а по текущей */
+					   /* в таблице заказчика расчет делается не по предыдущей точке а по текущей */
 					   lx = (records[i].depth - records[i-1].depth) * sin(records[i].Xres/3600*PI/180) * 1000 + records[i-1].LX;
 					   /* для горизонтальной однопроходной применяется гео поправка */
 					   if (geo_on == true) {
@@ -416,14 +559,6 @@ int TMeas::Calculate(void)
 
 				records[i].LR = sqrt((lx*lx)+(ly*ly));
 
-				/*
-				records[i].LR = rt; rt+=0.05; //!!!test
-				records[i].LX = i*rt;//!!!
-				records[i].LY = 2*i*rt;//!!!
-				records[i].Xres = i*rt;//!!!
-				records[i].Yres = 2*i*rt;//!!!
-				  */
-
 				if (abs(records[i].LX) > 0.0001) {
 
 					records[i].AR = atan(records[i].LY/records[i].LX);
@@ -438,46 +573,55 @@ int TMeas::Calculate(void)
 			}
 			else
 			{
-				int ii = records_cnt-i-1;
+				/* Calculate for vertical double from bottom point*/
+				Calc_Vert_Double_Bottom();
 
-				if ( ii==records_cnt-1 ) {
+				/* this codfe is temporarily cut off*/
 
-					 lx = 0;
-					 ly = 0;
-				}
-				else
+				if (1 == 2)
 				{
-						double dxcorrection = 0;
 
-						lx = (records[ii+1].depth - records[ii].depth) * sin((records[ii+1].Xres)/3600*PI/180) * 1000 + records[ii+1].LX;
-						ly = (records[ii+1].depth - records[ii].depth) * sin((records[ii+1].Yres)/3600*PI/180) * 1000 + records[ii+1].LY;
+					int ii = records_cnt-i-1;
 
-						if (ii==records_cnt-2) {
+					if ( ii==records_cnt-1 ) {
 
-							  dxcorrection =  lx;
-						}
+						 lx = 0;
+						 ly = 0;
+					}
+					else
+					{
+							double dxcorrection = 0;
 
-						lx-=dxcorrection;
+							lx = (records[ii+1].depth - records[ii].depth) * sin((records[ii+1].Xres)/3600*PI/180) * 1000 + records[ii+1].LX;
+							ly = (records[ii+1].depth - records[ii].depth) * sin((records[ii+1].Yres)/3600*PI/180) * 1000 + records[ii+1].LY;
+
+							if (ii==records_cnt-2) {
+
+								  dxcorrection =  lx;
+							}
+
+							lx-=dxcorrection;
+					}
+
+
+					records[ii].LX = lx;
+					records[ii].LY = ly;
+
+					records[ii].LR = sqrt((lx*lx)+(ly*ly));
+
+					 if (abs(records[ii].LX) > 0.0001) {
+
+						records[ii].AR = atan(records[ii].LY/records[ii].LX);
+						//gthtcxbnsdftv hflbfys d uhflecs
+						records[ii].AR *= PI;
+						records[ii].AR /= 180;
+						//переводим в секунды
+						records[ii].AR *= 3600;
+
+					  }
+
 				}
-
-
-				records[ii].LX = lx;
-				records[ii].LY = ly;
-
-				records[ii].LR = sqrt((lx*lx)+(ly*ly));
-
-				 if (abs(records[ii].LX) > 0.0001) {
-
-					records[ii].AR = atan(records[ii].LY/records[ii].LX);
-					//gthtcxbnsdftv hflbfys d uhflecs
-					records[ii].AR *= PI;
-					records[ii].AR /= 180;
-					//переводим в секунды
-					records[ii].AR *= 3600;
-
-				  }
-
-            }
+			}
 
 
 
@@ -499,6 +643,24 @@ int TMeas::Calculate(void)
 	return 0;
 }
 
+void TMeas::UpdateMark(WideString mark)
+{
+	if (this->node != NULL)
+	{
+
+		this->mark = mark;
+		WideString s(L"");
+		WideString st(L"");
+
+		//st = FormatDateTime("[dd-mm-yyyy hh:nn:ss]", this->create_time);
+        st = FormatDateTime("[dd-mm-yy hh:nn]", this->create_time);
+		s.printf(L"%d.%d.%d %s [%s]",pnum, dnum, num, st.c_bstr(), this->mark.c_bstr());
+		this->node->Text = s;
+
+	}
+
+}
+
 TTreeNode* TMeas::Redraw(TTreeView* t, TTreeNode* n)
 {
 	if (n == NULL) {
@@ -507,8 +669,11 @@ TTreeNode* TMeas::Redraw(TTreeView* t, TTreeNode* n)
 	}
 
 	WideString s(L"");
+	WideString st(L"");
 
-	s.printf(L"%d.%d.%d [%s]",  pnum, dnum, num, name.c_bstr());
+	//st = FormatDateTime("[dd-mm-yyyy hh:nn:ss]", this->create_time);
+    st = FormatDateTime("[dd-mm-yy hh:nn]", this->create_time);
+	s.printf(L"%d.%d.%d %s [%s]",pnum, dnum, num, st.c_bstr(), this->mark.c_bstr());
 
 	node  =	t->Items->AddChild(n,s);
 
@@ -719,20 +884,23 @@ int TMeas::SaveData(int par)
 
 	//----------------------------------------------------
 
-	spar = FormatDateTime(L"Создано:\tdd-mm-yyyy hh:nn:ss\r\n",create_time);
+	//spar = FormatDateTime(L"Создано:\tdd-mm-yyyy hh:nn:ss\r\n",create_time);
+    spar = FormatDateTime(L"Создано:\tdd-mm-yy hh:nn\r\n",create_time);
 	wcscpy(cpar,spar.c_bstr());
 	fwrite(cpar,wcslen(cpar)*2,1,ft);
 
 	/* CSV */
 
-	spar_csv = FormatDateTime(L"Создано;dd-mm-yyyy hh:nn:ss\r\n",create_time);
+	//spar_csv = FormatDateTime(L"Создано;dd-mm-yyyy hh:nn:ss\r\n",create_time);
+    spar_csv = FormatDateTime(L"Создано;dd-mm-yy hh:nn\r\n",create_time);
 	wcscpy(cpar_csv,spar_csv.c_bstr());
 	fwrite(cpar_csv,wcslen(cpar_csv)*2,1,fc);
 
 	//------------------------------------------------------
 	if (finalized == true) {
 
-		spar = FormatDateTime(L"Завершено:\tdd-mm-yyyy hh:nn:ss\r\n\r\n",finalize_time);
+		//spar = FormatDateTime(L"Завершено:\tdd-mm-yyyy hh:nn:ss\r\n\r\n",finalize_time);
+        spar = FormatDateTime(L"Завершено:\tdd-mm-yy hh:nn\r\n\r\n",finalize_time);
 		wcscpy(cpar,spar.c_bstr());
 	}
 	else
@@ -747,7 +915,8 @@ int TMeas::SaveData(int par)
 
 	if (finalized == true) {
 
-		spar_csv = FormatDateTime(L"Завершено;dd-mm-yyyy hh:nn:ss\r\n\r\n",finalize_time);
+		//spar_csv = FormatDateTime(L"Завершено;dd-mm-yyyy hh:nn:ss\r\n\r\n",finalize_time);
+        spar_csv = FormatDateTime(L"Завершено;dd-mm-yy hh:nn\r\n\r\n",finalize_time);
 		wcscpy(cpar_csv,spar_csv.c_bstr());
 	}
 	else
@@ -1058,12 +1227,14 @@ int TMeas::Excel (int par)
 
 	WriteExcelReportCell(irow,1,L"Измерение:"); WriteExcelReportCell(irow,2,name); irow++;
 
-	s = FormatDateTime(L"dd-mm-yyyy hh:nn:ss",create_time);
+	//s = FormatDateTime(L"dd-mm-yyyy hh:nn:ss",create_time);
+    s = FormatDateTime(L"dd-mm-yy hh:nn",create_time);
 	WriteExcelReportCell(irow,1,L"Создано:"); WriteExcelReportCell(irow,2,s); irow++;
 
 	if ((double) finalize_time > 0.0)
 	{
-		s = FormatDateTime(L"dd-mm-yyyy hh:nn:ss",finalize_time);
+		//s = FormatDateTime(L"dd-mm-yyyy hh:nn:ss",finalize_time);
+		s = FormatDateTime(L"dd-mm-yy hh:nn",finalize_time);
 	}
 	else
 	{
@@ -1202,7 +1373,7 @@ int TMeas::isMeasTxtUTF8(TCHAR* path)
 
 	if (fread(buf,10,1,f))
 	{
-		 if (buf[0]!=0xCC) {
+		 if (buf[0] != 0xCC) {
 
 			res = -1;
 
@@ -1220,7 +1391,30 @@ int TMeas::isMeasTxtUTF8(TCHAR* path)
 
 int TMeas::AcceptDataFileRecord(int dir, double d, double x, double y)
 {
-	int res = -1;
+	 int res = -1;
+
+    /* auto adjust the records cnt using step 0.5 */
+	int rec_num_calc = (d/0.5) + 1;
+
+	//if (this->records_cnt > rec_num_calc)
+	//{
+	//	this->records_cnt = rec_num_calc;
+	//}
+
+	if (this->records_cnt < rec_num_calc)
+	{
+		records_cnt = rec_num_calc;
+
+		for (int i = 1; i < records_cnt; i++)
+		{
+			if (records[i].depth != (records[i-1].depth + 0.5))
+			{
+				records[i].depth = (records[i-1].depth + 0.5);
+			}
+		}
+	}
+	/* end of records cnt auto adjust */
+
 
 	 for (int i =0; i < records_cnt; i++)
 	 {
