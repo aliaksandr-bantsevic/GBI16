@@ -1185,9 +1185,9 @@ int TMeas::Excel (int par)
 	WriteExcelReportCell(irow,icol,L"Погр. тр."); icol++;
 	WriteExcelReportCell(irow,icol,L"X1"); icol++;
 	WriteExcelReportCell(irow,icol,L"X2"); icol++;
+	WriteExcelReportCell(irow,icol,L"LX"); icol++;
 	WriteExcelReportCell(irow,icol,L"Y1"); icol++;
 	WriteExcelReportCell(irow,icol,L"Y2"); icol++;
-	WriteExcelReportCell(irow,icol,L"LX"); icol++;
 	WriteExcelReportCell(irow,icol,L"LY"); icol++;
 	WriteExcelReportCell(irow,icol,L"LR"); icol++;
 	WriteExcelReportCell(irow,icol,L"AR"); icol++;
@@ -1206,9 +1206,9 @@ int TMeas::Excel (int par)
 		WriteExcelReportCell(irow,icol,dts(r->tuberr)); icol++;
 		WriteExcelReportCell(irow,icol,dts(r->X1)); icol++;
 		WriteExcelReportCell(irow,icol,dts(r->X2)); icol++;
+		WriteExcelReportCell(irow,icol,dts(r->LX)); icol++;
 		WriteExcelReportCell(irow,icol,dts(r->Y1)); icol++;
 		WriteExcelReportCell(irow,icol,dts(r->Y2)); icol++;
-		WriteExcelReportCell(irow,icol,dts(r->LX)); icol++;
 		WriteExcelReportCell(irow,icol,dts(r->LY)); icol++;
 		WriteExcelReportCell(irow,icol,dts(r->LR)); icol++;
 		WriteExcelReportCell(irow,icol,dts(r->AR)); icol++;

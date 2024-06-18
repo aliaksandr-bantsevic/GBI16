@@ -41,6 +41,7 @@
 #include "Diagram.h"
 #include "DataEnter.h"
 #include "ExcelWait.h"
+#include "ShowHint.h"
 
 //---------------------------------------------------------------------------
 class TFMain : public TForm

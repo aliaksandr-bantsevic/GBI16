@@ -17,6 +17,7 @@ USEFORM("DepthAdjust.cpp", Form_DepthAdjust);
 USEFORM("ExcelWait.cpp", Form_excel_progress);
 USEFORM("Diagram.cpp", Form_diagram);
 USEFORM("DrillAdjust.cpp", Form_DrillAdjust);
+USEFORM("ShowHint.cpp", Form_show_hint);
 //---------------------------------------------------------------------------
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 {
@@ -65,6 +66,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 		Application->CreateForm(__classid(TForm_diagram), &Form_diagram);
 		Application->CreateForm(__classid(TForm_excel_progress), &Form_excel_progress);
 		Application->CreateForm(__classid(TForm_data_enter), &Form_data_enter);
+		Application->CreateForm(__classid(TForm_show_hint), &Form_show_hint);
 		Application->Run();
 	}
 	catch (Exception &exception)

@@ -343,7 +343,7 @@ int TDrill::Excel(void)
 
 			if (meas_list[i]->Excel(0) != 0)
 			{
-					Application->MessageBoxW(L"Не удалось экспортировать измерение!",L"ОШИБКА",0);
+				Application->MessageBoxW(L"Не удалось экспортировать измерение!",L"ОШИБКА",0);
 				return -2;
 			}
 	}

@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------
 
 #pragma hdrstop
 
@@ -129,8 +129,6 @@ int TMeas::DataToTable(void)
 		return -1; //Нет указателя на таблицу
 	}
 
-
-
 /*
 Иициализация таблицы
 */
@@ -140,18 +138,16 @@ int TMeas::DataToTable(void)
 	for (int i = 0; i < records_cnt; i++) {
 
 		PutDblCell(table,1,i+1,this->records[i].depth);
-		PutDblCell(table,2,i+1,this->records[i].tuberr);
+		//PutDblCell(table,2,i+1,this->records[i].tuberr);
 
 		PutDblCell(table,3,i+1,this->records[i].X1);
-		PutDblCell(table,4,i+1,this->records[i].Y1);
+		PutDblCell(table,4,i+1,this->records[i].X2);
+		PutDblCell(table,5,i+1,this->records[i].Xres);
+		PutDblCell(table,6,i+1,this->records[i].LX);
 
-		PutDblCell(table,5,i+1,this->records[i].X2);
-		PutDblCell(table,6,i+1,this->records[i].Y2);
-
-		PutDblCell(table,7,i+1,this->records[i].Xres);
-		PutDblCell(table,8,i+1,this->records[i].Yres);
-
-		PutDblCell(table,9,i+1,this->records[i].LX);
+		PutDblCell(table,7,i+1,this->records[i].Y1);
+		PutDblCell(table,8,i+1,this->records[i].Y2);
+		PutDblCell(table,9,i+1,this->records[i].Yres);
 		PutDblCell(table,10,i+1,this->records[i].LY);
 
 		PutDblCell(table,11,i+1,this->records[i].LR);
@@ -239,18 +235,16 @@ int TMeas::TableToData(void)
 	for (int i = 0; i < records_cnt; i++) {
 
 		GetDblCell(table,1,i+1,&this->records[i].depth);
-		GetDblCell(table,2,i+1,&this->records[i].tuberr);
+		//GetDblCell(table,2,i+1,&this->records[i].tuberr);
 
 		GetDblCell(table,3,i+1,&this->records[i].X1);
-		GetDblCell(table,4,i+1,&this->records[i].Y1);
+		GetDblCell(table,4,i+1,&this->records[i].X2);
+		GetDblCell(table,5,i+1,&this->records[i].Xres);
+		GetDblCell(table,6,i+1,&this->records[i].LX);
 
-		GetDblCell(table,5,i+1,&this->records[i].X2);
-		GetDblCell(table,6,i+1,&this->records[i].Y2);
-
-		GetDblCell(table,7,i+1,&this->records[i].Xres);
-		GetDblCell(table,8,i+1,&this->records[i].Yres);
-
-		GetDblCell(table,9,i+1,&this->records[i].LX);
+		GetDblCell(table,7,i+1,&this->records[i].Y1);
+		GetDblCell(table,8,i+1,&this->records[i].Y2);
+		GetDblCell(table,9,i+1,&this->records[i].Yres);
 		GetDblCell(table,10,i+1,&this->records[i].LY);
 
 		GetDblCell(table,11,i+1,&this->records[i].LR);
@@ -292,12 +286,11 @@ int TMeas::Calc_Vert_Double_Bottom(void)
    double zshift = 0;
 
    double xres_prev = 0.;
-   double xabs = 0.;
-
-   goto var2;
+   double yres_prev = 0.;
 
    for (int i = records_cnt - 1; i >=0 ; i--)
    {
+		/* Выбрать отсчет начиная с последнего */
 
 		x1 = records[i].X1;
 		x2 = records[i].X2;
@@ -307,96 +300,45 @@ int TMeas::Calc_Vert_Double_Bottom(void)
 
 		d  = records[i].depth;
 
-		xabs = (x1 - x2)/2.;
-		/* =0,5*SIN(F45/3600*PI()/180)*1000+G46 */
-		xres = 0.5 * sin(xabs / 3600. * PI / 180 ) * 1000 + xres_prev;
+		/* Для последней точки принимает что следующая будет через 0.5 м*/
+		if (i == records_cnt - 1)
+		{
+			records[i+1].depth = records[i].depth + 0.5;
+		}
 
-		xres_prev = xres;
+		/* Xres = (x1-x2)/2) */
+		xres = (x1-x2)/2;
+		/* Yres = (y1-y2)/2) */
+		yres = (y1-y2)/2;
 
-       	records[i].LX = xabs;
+		/* пишем в базу */
 		records[i].Xres = xres;
+		records[i].Yres = yres;
 
+		/* Lx = (depth[i+1] - depth) * sin(Xres[i]))/3600*PI/180) * 1000 + Lx[предыдущее]  */
+		lx = (records[i+1].depth - records[i].depth) * sin((records[i].Xres)/3600*PI/180) * 1000 + xres_prev;
+		xres_prev = lx;
+
+		/* Ly = (depth[i+1] - depth) * sin(Yres[i]))/3600*PI/180) * 1000 + Ly[предыдущее]; */
+		ly = (records[i+1].depth - records[i].depth) * sin((records[i].Yres)/3600*PI/180) * 1000 + yres_prev;
+		yres_prev = ly;
+
+		/* пишем в базу */
+		records[i].LX = lx;
+		records[i].LY = ly;
+
+		/* Результирующее перемещение */
+		/* Lr = sqrt(lx^2 + Ly2) */
 		records[i].LR = sqrt((lx*lx)+(ly*ly));
 
+		/* Результирующий угол */
 		if (abs(records[i].LX) > 0.0001)
 		{
-
 					records[i].AR = atan(records[i].LY/records[i].LX);
-					//gthtcxbnsdftv hflbfys d uhflecs
 					records[i].AR *= PI;
 					records[i].AR /= 180;
 					//переводим в секунды
 					records[i].AR *= 3600;
-		}
-
-   }
-
-
-   return 0;
-
-   var2:
-
-   for (int i = 0; i < records_cnt; i++)
-   {
-
-		x1 = records[i].X1;
-		x2 = records[i].X2;
-
-		y1 = records[i].Y1;
-		y2 = records[i].Y2;
-
-		d  = records[i].depth;
-
-		if (records[0].X2 == 0) {
-
-			x2 =  (records[0].X1)*(-1.);
-		}
-
-		xres = (x1-x2)/2;
-		yres = (y1-y2)/2;
-
-		records[i].Xres = xres;
-		records[i].Yres = yres;
-
-
-		int ii = records_cnt-i-1;
-
-		if ( ii == records_cnt-1 )
-		{
-
-			lx = 0;
-			ly = 0;
-		}
-		else
-		{
-			double dxcorrection = 0;
-
-			lx = (records[ii+1].depth - records[ii].depth) * sin((records[ii+1].Xres)/3600*PI/180) * 1000 + records[ii+1].LX;
-			ly = (records[ii+1].depth - records[ii].depth) * sin((records[ii+1].Yres)/3600*PI/180) * 1000 + records[ii+1].LY;
-
-			/*
-			if (ii == records_cnt-2)
-			{
-			  dxcorrection =  lx;
-			}
-            */
-
-			lx-=dxcorrection;
-		}
-
-		records[ii].LX = lx;
-		records[ii].LY = ly;
-
-		records[ii].LR = sqrt((lx*lx)+(ly*ly));
-
-		if (abs(records[ii].LX) > 0.0001)
-		{
-
-					records[ii].AR = atan(records[ii].LY/records[ii].LX);
-					records[ii].AR *= PI;
-					records[ii].AR /= 180;
-					//переводим в секунды
-					records[ii].AR *= 3600;
 		}
 
 	}
@@ -1243,9 +1185,9 @@ int TMeas::Excel (int par)
 	WriteExcelReportCell(irow,icol,L"Погр. тр."); icol++;
 	WriteExcelReportCell(irow,icol,L"X1"); icol++;
 	WriteExcelReportCell(irow,icol,L"X2"); icol++;
+	WriteExcelReportCell(irow,icol,L"LX"); icol++;
 	WriteExcelReportCell(irow,icol,L"Y1"); icol++;
 	WriteExcelReportCell(irow,icol,L"Y2"); icol++;
-	WriteExcelReportCell(irow,icol,L"LX"); icol++;
 	WriteExcelReportCell(irow,icol,L"LY"); icol++;
 	WriteExcelReportCell(irow,icol,L"LR"); icol++;
 	WriteExcelReportCell(irow,icol,L"AR"); icol++;
@@ -1264,9 +1206,9 @@ int TMeas::Excel (int par)
 		WriteExcelReportCell(irow,icol,dts(r->tuberr)); icol++;
 		WriteExcelReportCell(irow,icol,dts(r->X1)); icol++;
 		WriteExcelReportCell(irow,icol,dts(r->X2)); icol++;
+		WriteExcelReportCell(irow,icol,dts(r->LX)); icol++;
 		WriteExcelReportCell(irow,icol,dts(r->Y1)); icol++;
 		WriteExcelReportCell(irow,icol,dts(r->Y2)); icol++;
-		WriteExcelReportCell(irow,icol,dts(r->LX)); icol++;
 		WriteExcelReportCell(irow,icol,dts(r->LY)); icol++;
 		WriteExcelReportCell(irow,icol,dts(r->LR)); icol++;
 		WriteExcelReportCell(irow,icol,dts(r->AR)); icol++;

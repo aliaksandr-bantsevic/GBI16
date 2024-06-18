@@ -47,6 +47,7 @@ __fastcall TChartThread::TChartThread(bool CreateSuspended, TChart* c, int ds, i
 		TLineSeries * Ser = new TLineSeries(chart);
 
 		Ser->Pointer->Style = psRectangle;
+		Ser->Pointer->Size = 3;
 
 		Ser->DrawStyle = dsSegments;
 		Ser->Active = true;
@@ -159,7 +160,7 @@ void __fastcall TChartThread::StartRedraw(void)
 
 			if (i<drill->meas_list_idx)
 			{
-				chart->Series[i]->Legend->Visible = true;
+				chart->Series[i]->Legend->Visible = false;//true;
 				TMeas* m = drill->meas_list[i];
 
 				if (m->finalized == true)

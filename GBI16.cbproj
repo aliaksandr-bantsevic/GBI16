@@ -252,6 +252,12 @@
             <DependentOn>SensorAdjust.h</DependentOn>
             <BuildOrder>18</BuildOrder>
         </CppCompile>
+        <CppCompile Include="ShowHint.cpp">
+            <Form>Form_show_hint</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>ShowHint.h</DependentOn>
+            <BuildOrder>30</BuildOrder>
+        </CppCompile>
         <CppCompile Include="SysConfMgr.cpp">
             <DependentOn>SysConfMgr.h</DependentOn>
             <BuildOrder>24</BuildOrder>
@@ -278,6 +284,7 @@
         <FormResources Include="ExcelWait.dfm"/>
         <FormResources Include="Diagram.dfm"/>
         <FormResources Include="DrillAdjust.dfm"/>
+        <FormResources Include="ShowHint.dfm"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
