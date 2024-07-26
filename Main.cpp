@@ -1945,6 +1945,10 @@ typedef struct {
 	{
 		m->records[i].X1 = td[i].x1;
 		m->records[i].X2 = td[i].x2;
+
+		m->records[i].Y1 = td[i].x1;
+		m->records[i].Y2 = td[i].x2;
+
 	}
 
 	//m->SaveData(0);

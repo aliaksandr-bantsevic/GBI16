@@ -303,7 +303,7 @@ object Form_DrillAdjust: TForm_DrillAdjust
     Top = 8
     Width = 225
     Height = 65
-    Caption = #1040#1079#1080#1084#1091#1090
+    Caption = #1040#1079#1080#1084#1091#1090' '#1086#1089#1080' X ('#1087#1086' '#1089#1082#1083#1086#1085#1091')'
     TabOrder = 17
   end
   object Edit_asimut: TEdit

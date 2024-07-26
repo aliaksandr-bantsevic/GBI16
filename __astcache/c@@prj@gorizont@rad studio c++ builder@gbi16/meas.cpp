@@ -288,6 +288,8 @@ int TMeas::Calc_Vert_Double_Bottom(void)
    double xres_prev = 0.;
    double yres_prev = 0.;
 
+#define   TEST_DRILL_ASIMUT 350
+
    for (int i = records_cnt - 1; i >=0 ; i--)
    {
 		/* Выбрать отсчет начиная с последнего */
@@ -335,10 +337,28 @@ int TMeas::Calc_Vert_Double_Bottom(void)
 		if (abs(records[i].LX) > 0.0001)
 		{
 					records[i].AR = atan(records[i].LY/records[i].LX);
-					records[i].AR *= PI;
-					records[i].AR /= 180;
+
+					//records[i].AR *= PI;
+					//records[i].AR /= 180;
+
+					records[i].AR /= PI;
+					records[i].AR *= 180;
+
+					//Применяем азимут скважины - задается в градусах, просто прибавить
+					records[i].AR += TEST_DRILL_ASIMUT;
+
+					if (records[i].AR > 360)
+					{
+						records[i].AR -= 360;
+					}
+
+					if (records[i].AR < 0)
+					{
+						records[i].AR = 0;
+					}
+
 					//переводим в секунды
-					records[i].AR *= 3600;
+					//!!!records[i].AR *= 3600;
 		}
 
 	}
