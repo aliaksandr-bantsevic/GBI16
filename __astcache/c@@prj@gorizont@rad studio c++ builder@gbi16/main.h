@@ -177,6 +177,9 @@ __published:	// IDE-managed Components
 	TToolButton *ToolButton_kbd;
 	TToolButton *ToolButton2;
 	TToolButton *ToolButton_export;
+	TSplitter *Splitter3;
+	TPanel *Panel_chart_asimut;
+	TChart *Chart_asimut;
 	void __fastcall MMFileDrawItem(TObject *Sender, TCanvas *ACanvas, TRect &ARect,
 		  bool Selected);
 	void __fastcall MMPropDrawItem(TObject *Sender, TCanvas *ACanvas, TRect &ARect,
@@ -253,6 +256,8 @@ __published:	// IDE-managed Components
 	void __fastcall ToolButton2Click(TObject *Sender);
 	void __fastcall ToolButton_save_asClick(TObject *Sender);
 	void __fastcall ToolButton_exportClick(TObject *Sender);
+	void __fastcall Chart_asimutMouseMove(TObject *Sender, TShiftState Shift, int X,
+          int Y);
 
 private:	// User declarations
 	void Test1();
@@ -276,6 +281,8 @@ public:		// User declarations
 	TGBISystem* GBISystem;
 
 	void ShowChartHint_v(TChart* chart, int X, int Y);
+	void ShowChartHint_a(TChart* chart, int X, int Y);
+
 	void VirtKey_TouchIn_On(void);
 	void VirtKey_TouchIn_Off(void);
 

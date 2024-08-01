@@ -428,6 +428,7 @@ object FMain: TFMain
             Align = alClient
             Caption = 'Panel_charts_v'
             TabOrder = 0
+            ExplicitTop = -1
             object Splitter4: TSplitter
               Left = 292
               Top = 1
@@ -439,6 +440,14 @@ object FMain: TFMain
               Top = 1
               Width = 4
               Height = 491
+            end
+            object Splitter3: TSplitter
+              Left = 706
+              Top = 1
+              Height = 491
+              ExplicitLeft = 752
+              ExplicitTop = 224
+              ExplicitHeight = 100
             end
             object Panel_chart_x_v: TPanel
               Left = 1
@@ -488,6 +497,7 @@ object FMain: TFMain
                 TabOrder = 0
                 OnDblClick = Chart_x_vDblClick
                 OnMouseMove = Chart_x_vMouseMove
+                ExplicitTop = 2
                 DefaultCanvas = 'TGDIPlusCanvas'
                 ColorPaletteIndex = 13
               end
@@ -581,6 +591,49 @@ object FMain: TFMain
                 TabOrder = 0
                 OnDblClick = Chart_rDblClick
                 OnMouseMove = Chart_rMouseMove
+                ExplicitWidth = 80
+                DefaultCanvas = 'TGDIPlusCanvas'
+                ColorPaletteIndex = 13
+              end
+            end
+            object Panel_chart_asimut: TPanel
+              Left = 709
+              Top = 1
+              Width = 185
+              Height = 491
+              Align = alLeft
+              Caption = 'Panel_chart_asimut'
+              TabOrder = 3
+              ExplicitLeft = 712
+              object Chart_asimut: TChart
+                Left = 1
+                Top = 1
+                Width = 183
+                Height = 489
+                Title.Text.Strings = (
+                  'TChart')
+                BottomAxis.Automatic = False
+                BottomAxis.AutomaticMaximum = False
+                BottomAxis.AutomaticMinimum = False
+                BottomAxis.Grid.Style = psDot
+                BottomAxis.Title.Caption = #1075#1088#1072#1076#1091#1089#1099
+                BottomAxis.Title.Position = tpEnd
+                LeftAxis.Automatic = False
+                LeftAxis.AutomaticMaximum = False
+                LeftAxis.AutomaticMinimum = False
+                LeftAxis.Grid.Style = psDot
+                LeftAxis.Inverted = True
+                LeftAxis.Title.Angle = 360
+                LeftAxis.Title.Caption = #1084#1077#1090#1088
+                LeftAxis.Title.Position = tpStart
+                View3D = False
+                Align = alClient
+                Color = clWhite
+                TabOrder = 0
+                OnMouseMove = Chart_asimutMouseMove
+                ExplicitLeft = 3
+                ExplicitTop = 2
+                ExplicitWidth = 86
                 DefaultCanvas = 'TGDIPlusCanvas'
                 ColorPaletteIndex = 13
               end

@@ -59,6 +59,7 @@ TChartThread* Tc_Y_h = NULL;
 TChartThread* Tc_X_v = NULL;
 TChartThread* Tc_Y_v = NULL;
 TChartThread* Tc_R_v = NULL;
+TChartThread* Tc_A_v = NULL;
 
 int screen_mode = 0;
 int i_table_col_width = 40;
@@ -340,6 +341,7 @@ void TFMain::ApplicationInit()
 	Tc_X_v = new TChartThread (false, this->Chart_x_v, 0, 2);
 	Tc_Y_v = new TChartThread (false, this->Chart_y_v, 1, 3);
 	Tc_R_v = new TChartThread (false, this->Chart_r, 2, 4);
+	Tc_A_v = new TChartThread (false, this->Chart_asimut, 3, 5);
 
 	this->TabSheet_charts->TabVisible = false;
 	this->TabSheet_charts_v->TabVisible = false;
@@ -1520,13 +1522,19 @@ void TFMain::SetWindowSize(int par)
 
 	unsigned int chars_panel_v_width = this->Panel_charts_v->Width;
 
-	this->Panel_chart_x_v->Width = chars_panel_v_width*330/1000;
-	this->Panel_chart_y_v->Width = chars_panel_v_width*330/1000;
-	this->Panel_chart_r->Width = chars_panel_v_width*330/1000;
+	//this->Panel_chart_x_v->Width = chars_panel_v_width*330/1000;
+	//this->Panel_chart_y_v->Width = chars_panel_v_width*330/1000;
+	//this->Panel_chart_r->Width = chars_panel_v_width*330/1000;
+
+	this->Panel_chart_x_v->Width = chars_panel_v_width*240/1000;
+	this->Panel_chart_y_v->Width = chars_panel_v_width*240/1000;
+	this->Panel_chart_r->Width = chars_panel_v_width*240/1000;
+	this->Panel_chart_asimut->Width = chars_panel_v_width*240/1000;
 
 	this->Panel_chart_x_v->Height = chars_panel_height*950/1000;
 	this->Panel_chart_y_v->Height = chars_panel_height*950/1000;
 	this->Panel_chart_r->Height = chars_panel_height*950/1000;
+	this->Panel_chart_asimut->Height = chars_panel_height*950/1000;
 }
 
 //---------------------------------------------------------------------------
@@ -1726,10 +1734,12 @@ void TFMain::ViewSelectedDrill(void)
 		Tc_X_v->drill = selected_drill;
 		Tc_Y_v->drill = selected_drill;
 		Tc_R_v->drill = selected_drill;
+		Tc_A_v->drill = selected_drill;
 
 		Tc_X_v->Redraw();
 		Tc_Y_v->Redraw();
 		Tc_R_v->Redraw();
+		Tc_A_v->Redraw();
 
 	}
 
@@ -2078,7 +2088,7 @@ void TFMain::ShowChartHint_v(TChart* chart, int X, int Y)
 				   Screen->Cursor=crDrag;	//crCross;
 
 					WideString s(L"");
-					double x,y=0;
+					double x,y,a,ax=0;
 					double& xx=x; double& yy=y;
 					chart->Series[i]->GetCursorValues(xx,yy);
 					WideString st(L"");
@@ -2111,24 +2121,11 @@ void TFMain::ShowChartHint_v(TChart* chart, int X, int Y)
 						px -= 200 + 25;
 					}
 
-
-					//if (chart == Chart_x_h) {
-					//
-					//	st.printf(L"%.1f м",xx);
-					//	s.printf(L"[%.1f мм]\r\n",yy);
-
-					//}
-					//else
-					//{
-					//	st.printf(L"%.1f м",yy);
-					//	s.printf(L"[%.1f мм]\r\n",xx);
-					//}
-
 					int id = 0;
 
 					id = chart->Series[i]->GetCursorValueIndex();
 
-                    Sleep(1);
+					Sleep(1);
 
 					chart->Hint="";
 					chart->ShowHint=false;
@@ -2150,6 +2147,99 @@ void TFMain::ShowChartHint_v(TChart* chart, int X, int Y)
 			 }
 
 }
+
+void TFMain::ShowChartHint_a(TChart* chart, int X, int Y)
+{
+			 bool sel = false;
+
+			 for (int i = 0; i < 10; i++)
+			 {
+
+				 if (chart->Series[i]->Clicked(X,Y)!=-1)
+				 {
+
+				   WideString pname;
+				   WideString dname;
+				   WideString tmeas;
+
+				   TMeas* m;
+				   TPlace* p;
+				   TDrill* d;
+
+				   d = selected_drill;
+				   p = GBISystem->place_list[d->pnum-1];
+				   m = d->meas_list[i];
+
+				   pname = p->name;
+				   dname = d->name;
+				   tmeas = FormatDateTime(L"dd.mm.yy hh:mm",m->create_time);
+
+				   Application->HintHidePause=10000;
+				   Screen->Cursor=crDrag;	//crCross;
+
+					WideString s(L"");
+					double x,y,a,ax=0;
+					double& xx=x; double& yy=y;
+					chart->Series[i]->GetCursorValues(xx,yy);
+					WideString st(L"");
+
+					st.printf(L"[%s]\r\n[%s]\r\n[%s]", pname.c_bstr(), dname.c_bstr(), tmeas.c_bstr());
+					s += st;
+
+					st.printf(L"\r\n%.2f° [%.1f м]", xx, yy);
+					s += st;
+
+					int px = FMain->Left + Panel_tree->Width + 35;
+					int py = FMain->Top + 140;
+
+					if (chart == Chart_y_v)
+					{
+						px += Panel_chart_x_v->Width + 5;
+					}
+
+					if (chart == Chart_asimut)
+					{
+						px += Panel_chart_x_v->Width + 5;
+						px += Panel_chart_y_v->Width + 5;
+						px += Panel_chart_r->Width + 5;
+					}
+
+					px+=X;
+					py+=Y;
+
+					if ((px + 200) > i_screen_Width)
+					{
+						px -= 200 + 25;
+					}
+
+					int id = 0;
+
+					id = chart->Series[i]->GetCursorValueIndex();
+
+					Sleep(1);
+
+					chart->Hint="";
+					chart->ShowHint=false;
+
+					Form_show_hint->Show(s);
+					Form_show_hint->Move(px,py);
+
+					sel = true;
+					break;
+				 }
+			 }
+
+			 if (sel == false) {
+
+				chart->ShowHint=false;
+				Screen->Cursor=(TCursor)0;
+				Application->HintHidePause=1;
+				Form_show_hint->Hide();
+			 }
+
+}
+
+
 void __fastcall TFMain::Chart_x_vMouseMove(TObject *Sender, TShiftState Shift, int X,
 		  int Y)
 {
@@ -2158,7 +2248,7 @@ void __fastcall TFMain::Chart_x_vMouseMove(TObject *Sender, TShiftState Shift, i
 //---------------------------------------------------------------------------
 
 void __fastcall TFMain::Chart_y_vMouseMove(TObject *Sender, TShiftState Shift, int X,
-          int Y)
+		  int Y)
 {
 	ShowChartHint_v(Chart_y_v, X, Y);
 }
@@ -2291,6 +2381,13 @@ void __fastcall TFMain::ToolButton_exportClick(TObject *Sender)
 {
 	LPageControl_console->ActivePage = TabSheet_console;
 	GBISystem->ExportConfTxt(SaveDialog);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFMain::Chart_asimutMouseMove(TObject *Sender, TShiftState Shift,
+          int X, int Y)
+{
+		ShowChartHint_a(Chart_asimut, X, Y);
 }
 //---------------------------------------------------------------------------
 

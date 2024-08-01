@@ -18,6 +18,7 @@
 #define DATA_SOURCE_X 		0
 #define DATA_SOURCE_Y 		1
 #define DATA_SOURCE_R       2
+#define DATA_SOURCE_A       3
 
 extern int g_xmax;
 extern int g_xmin;

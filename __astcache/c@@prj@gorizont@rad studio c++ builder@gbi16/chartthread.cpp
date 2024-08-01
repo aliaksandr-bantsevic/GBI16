@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------
 
 #include <System.hpp>
 #pragma hdrstop
@@ -47,7 +47,7 @@ __fastcall TChartThread::TChartThread(bool CreateSuspended, TChart* c, int ds, i
 		TLineSeries * Ser = new TLineSeries(chart);
 
 		Ser->Pointer->Style = psRectangle;
-		Ser->Pointer->Size = 3;
+		Ser->Pointer->Size = 2;
 
 		Ser->DrawStyle = dsSegments;
 		Ser->Active = true;
@@ -139,6 +139,11 @@ void __fastcall TChartThread::StartRedraw(void)
 		if (data_source == DATA_SOURCE_R)
 		{
 		 ss.printf(L"Смещение Res, мм [%s][%s]", drill->pname.c_bstr(), drill->name.c_bstr());
+		}
+
+		if (data_source == DATA_SOURCE_A)
+		{
+		 ss.printf(L"Азимут, град. [%s][%s]", drill->pname.c_bstr(), drill->name.c_bstr());
 		}
 
 		chart->Title->Caption = ss.c_bstr();
@@ -253,6 +258,8 @@ void __fastcall TChartThread::StartRedraw(void)
 				if (data_source == DATA_SOURCE_Y) d = m->records[j].LY;
 				//Если отрисовываем Res
 				if (data_source == DATA_SOURCE_R) d = m->records[j].LR;
+				//Если отрисовываем Asimut
+				if (data_source == DATA_SOURCE_A) d = m->records[j].AR;
 
 				//Макс по оси Y
 				if (d>ymax) ymax = d;
@@ -349,7 +356,13 @@ void __fastcall TChartThread::StartRedraw(void)
 				//Если отрисовываем Res
 				if (data_source == DATA_SOURCE_R)
 				{
-					datay = m->records_sort[j].LR;//!!!sqrt(((m->records_sort[j].LY)*(m->records_sort[j].LY))+((m->records_sort[j].LX)*(m->records_sort[j].LX)));
+					datay = m->records_sort[j].LR;
+				}
+
+				//Если отрисовываем Asimut
+				if (data_source == DATA_SOURCE_A)
+				{
+					datay = m->records_sort[j].AR;
 				}
 
 				if (drill -> drill_orient == DRILL_ORIENT_HORIZONT)

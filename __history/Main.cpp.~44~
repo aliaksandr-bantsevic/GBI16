@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------
 //#define SET_DEBUG_MODE
 
 #include <vcl.h>
@@ -1520,19 +1520,13 @@ void TFMain::SetWindowSize(int par)
 
 	unsigned int chars_panel_v_width = this->Panel_charts_v->Width;
 
-	//this->Panel_chart_x_v->Width = chars_panel_v_width*330/1000;
-	//this->Panel_chart_y_v->Width = chars_panel_v_width*330/1000;
-	//this->Panel_chart_r->Width = chars_panel_v_width*330/1000;
-
-	this->Panel_chart_x_v->Width = chars_panel_v_width*240/1000;
-	this->Panel_chart_y_v->Width = chars_panel_v_width*240/1000;
-	this->Panel_chart_r->Width = chars_panel_v_width*240/1000;
-	this->Panel_chart_asimut->Width = chars_panel_v_width*240/1000;
+	this->Panel_chart_x_v->Width = chars_panel_v_width*330/1000;
+	this->Panel_chart_y_v->Width = chars_panel_v_width*330/1000;
+	this->Panel_chart_r->Width = chars_panel_v_width*330/1000;
 
 	this->Panel_chart_x_v->Height = chars_panel_height*950/1000;
 	this->Panel_chart_y_v->Height = chars_panel_height*950/1000;
 	this->Panel_chart_r->Height = chars_panel_height*950/1000;
-	this->Panel_chart_asimut->Height = chars_panel_height*950/1000;
 }
 
 //---------------------------------------------------------------------------

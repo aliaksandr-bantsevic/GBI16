@@ -177,9 +177,6 @@ __published:	// IDE-managed Components
 	TToolButton *ToolButton_kbd;
 	TToolButton *ToolButton2;
 	TToolButton *ToolButton_export;
-	TSplitter *Splitter3;
-	TPanel *Panel_chart_asimut;
-	TChart *Chart1;
 	void __fastcall MMFileDrawItem(TObject *Sender, TCanvas *ACanvas, TRect &ARect,
 		  bool Selected);
 	void __fastcall MMPropDrawItem(TObject *Sender, TCanvas *ACanvas, TRect &ARect,

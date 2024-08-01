@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------
 
 #include <System.hpp>
 #pragma hdrstop
@@ -141,11 +141,6 @@ void __fastcall TChartThread::StartRedraw(void)
 		 ss.printf(L"Смещение Res, мм [%s][%s]", drill->pname.c_bstr(), drill->name.c_bstr());
 		}
 
-		if (data_source == DATA_SOURCE_A)
-		{
-		 ss.printf(L"Азимут, град. [%s][%s]", drill->pname.c_bstr(), drill->name.c_bstr());
-		}
-
 		chart->Title->Caption = ss.c_bstr();
 
 	}
@@ -258,8 +253,6 @@ void __fastcall TChartThread::StartRedraw(void)
 				if (data_source == DATA_SOURCE_Y) d = m->records[j].LY;
 				//Если отрисовываем Res
 				if (data_source == DATA_SOURCE_R) d = m->records[j].LR;
-				//Если отрисовываем Asimut
-				if (data_source == DATA_SOURCE_R) d = m->records[j].A;
 
 				//Макс по оси Y
 				if (d>ymax) ymax = d;
