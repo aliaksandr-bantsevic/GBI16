@@ -66,7 +66,9 @@ TMeas::TMeas (TStringGrid* t, WideString n)
 	drill_start_point = 0;
 	type_drill = 0;
 
-    mark = "Маркировка измерения";
+	mark = "Маркировка измерения";
+
+    drill_asimut = 0.;
 }
 
 
@@ -140,14 +142,16 @@ int TMeas::DataToTable(void)
 		PutDblCell(table,1,i+1,this->records[i].depth);
 		//PutDblCell(table,2,i+1,this->records[i].tuberr);
 
-		PutDblCell(table,3,i+1,this->records[i].X1);
-		PutDblCell(table,4,i+1,this->records[i].X2);
-		PutDblCell(table,5,i+1,this->records[i].Xres);
+		//PutDblCell(table,3,i+1,this->records[i].X1);
+		//PutDblCell(table,4,i+1,this->records[i].X2);
+		//PutDblCell(table,5,i+1,this->records[i].Xres);
+
 		PutDblCell(table,6,i+1,this->records[i].LX);
 
-		PutDblCell(table,7,i+1,this->records[i].Y1);
-		PutDblCell(table,8,i+1,this->records[i].Y2);
-		PutDblCell(table,9,i+1,this->records[i].Yres);
+		//PutDblCell(table,7,i+1,this->records[i].Y1);
+		//PutDblCell(table,8,i+1,this->records[i].Y2);
+		//PutDblCell(table,9,i+1,this->records[i].Yres);
+
 		PutDblCell(table,10,i+1,this->records[i].LY);
 
 		PutDblCell(table,11,i+1,this->records[i].LR);
@@ -345,7 +349,8 @@ int TMeas::Calc_Vert_Double_Bottom(void)
 					records[i].AR *= 180;
 
 					//Применяем азимут скважины - задается в градусах, просто прибавить
-					records[i].AR += TEST_DRILL_ASIMUT;
+					//records[i].AR += TEST_DRILL_ASIMUT;
+					records[i].AR += drill_asimut;
 
 					if (records[i].AR > 360)
 					{

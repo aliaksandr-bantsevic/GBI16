@@ -54,3 +54,4 @@ extern int ConvertStrUTF8ToUtf16 (TCHAR* strU16, char* strU8, int U16_len);
 extern int ConvertStrUnicodeToUtf8(WideString& ws, char* cstr);
 extern int CutSpaces(TCHAR* tstr, int len);
 extern int CutSpacesEdit(TEdit* edit);
+extern int ArrangeToDigitFloatEdit(TEdit* edit);

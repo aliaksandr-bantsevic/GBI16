@@ -313,6 +313,7 @@ object Form_DrillAdjust: TForm_DrillAdjust
     Height = 26
     TabOrder = 18
     Text = 'Edit_asimut'
+    OnChange = Edit_asimutChange
   end
   object Timer_start: TTimer
     Enabled = False

@@ -322,7 +322,7 @@ int TForm_DrillAdjust::FormToDrill()
 	}
 
 	//asimut only for vertical
-	if (drill->drill_orient == DRILL_ORIENT_HORIZONT)
+	if (drill->drill_orient == DRILL_ORIENT_VERTICAL)
 	{
 		double das = 0.;
 
@@ -330,13 +330,19 @@ int TForm_DrillAdjust::FormToDrill()
 
 			das = this->Edit_asimut->Text.ToDouble();
 
+			drill->drill_asimut = das;
+
+			for (int i = 0; i < drill->meas_list_idx; i++)
+			{
+				drill->meas_list[i]->drill_asimut = das;
+			}
+
 		}
 		 catch (...) {
 
 		   utils_ShowMessage(L"Ошибка задания азимута скважины!");
 		}
 
-		drill->drill_asimut = das;
 	}
 
 	//levels
@@ -489,6 +495,12 @@ void __fastcall TForm_DrillAdjust::ComboBox_level_endChange(TObject *Sender)
 void __fastcall TForm_DrillAdjust::Edit_nameChange(TObject *Sender)
 {
      //CutSpacesEdit(Edit_name);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_DrillAdjust::Edit_asimutChange(TObject *Sender)
+{
+     ArrangeToDigitFloatEdit(Edit_asimut);
 }
 //---------------------------------------------------------------------------
 

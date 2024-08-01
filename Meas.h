@@ -117,6 +117,8 @@ WideString dts(double d);
 void dtc(TCHAR* str);
 void UpdateMark(WideString mark);
 int Calc_Vert_Double_Bottom(void);
+double drill_asimut;
+
 
 };
 

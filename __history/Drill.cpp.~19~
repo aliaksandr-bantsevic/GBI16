@@ -20,8 +20,13 @@ TDrill::TDrill()
 
 	drill_asimut = 0.;
 	level_start = 0.;
-	level_end = 0.;
+	level_end = 5.0;
 
+    meas_list_idx = 0;
+	name = L"Скважина";
+
+	single_way = 1;
+    start_point = 0;
 }
 
 
@@ -41,7 +46,7 @@ TDrill::TDrill(WideString n)
 	}
 
 	meas_list_idx = 0;
-	int records_cnt = 21;
+	int records_cnt = 1;
 	drill_orient = DRILL_ORIENT_HORIZONT;
     drill_asimut = 0;
 	selected = false;
@@ -134,6 +139,12 @@ int TDrill::SaveConfig (TIniFile* ini)
 	ini->WriteInteger(section,L"GEO_DATA_ON", geo_data.geo_on);
 
 	ini->WriteInteger(section,L"SINGLEWAY", single_way);
+
+	s.printf(L"%.1f",this->level_start);
+	ini->WriteString(section, L"LEVEL_START", s);
+
+	s.printf(L"%.1f",this->level_end);
+	ini->WriteString(section, L"LEVEL_END", s);
 
 		for (int i = 0; i < meas_list_idx; i++) {
 
@@ -240,6 +251,7 @@ int TDrill::LoadMeasConfig(TIniFile* ini)
 				mmark = meas_list[meas_list_idx-1]->mark;
 				spar = ini->ReadString(section, L"MARK", mmark);
 				meas_list[meas_list_idx-1]->mark = spar;
+				meas_list[meas_list_idx-1]->records_cnt = this->records_cnt;
 
 				if (global_base_convert)
 				{
@@ -325,13 +337,13 @@ int TDrill::Excel(void)
 				return -1;
 			}
 
-    Form_excel_progress->StartShow(records_cnt*meas_list_idx);
+	Form_excel_progress->StartShow(records_cnt*meas_list_idx);
 
 	for (int i = 0; i < meas_list_idx; i++) {
 
 			if (meas_list[i]->Excel(0) != 0)
 			{
-					Application->MessageBoxW(L"Не удалось экспортировать измерение!",L"ОШИБКА",0);
+				Application->MessageBoxW(L"Не удалось экспортировать измерение!",L"ОШИБКА",0);
 				return -2;
 			}
 	}

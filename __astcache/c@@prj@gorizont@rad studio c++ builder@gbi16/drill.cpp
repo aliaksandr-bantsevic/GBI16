@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------
 
 #pragma hdrstop
 
@@ -187,6 +187,8 @@ int TDrill::AddMeas(TStringGrid* t, WideString n)
 	m->geo_on = this->geo_data.geo_on;
 	m->input_point = this->geo_data.input_point;
     m->output_point = this->geo_data.output_point;
+
+	m->drill_asimut = this->drill_asimut;
 
 	meas_list[meas_list_idx] = m;
 

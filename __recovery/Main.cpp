@@ -1,4 +1,4 @@
-﻿//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 //#define SET_DEBUG_MODE
 
 #include <vcl.h>
@@ -53,7 +53,6 @@ int			selected_meas_idx = 0;
 TStringGrid* global_meas_table = NULL;
 bool 		b_system_start = true;
 
-
 TChartThread* Tc_X_h = NULL;
 TChartThread* Tc_Y_h = NULL;
 
@@ -62,7 +61,9 @@ TChartThread* Tc_Y_v = NULL;
 TChartThread* Tc_R_v = NULL;
 
 int screen_mode = 0;
-int i_table_col_width = 80;
+int i_table_col_width = 40;
+
+int i_screen_Width = 1920;
 
 TSysConfMgr* scmgr = NULL;
 TStatusBar* main_status_bar = NULL;
@@ -265,7 +266,7 @@ void TFMain::SystemInit()
 
 	this->Timer_system_run->Interval = GBISystem->ask_sensor_period;
 
-	GBISystem->LoadData();
+	//GBISystem->LoadData();
 
 	WideString stitle(L"");
 	stitle.printf(L"GBI [%s]" ,GBISystem->SysConfMgr.GetCurIniPath());
@@ -287,6 +288,9 @@ void TFMain::SystemInit()
 #ifndef SET_DEBUG_MODE
 	ToolButton_test->Visible = false;
 #endif
+
+	GBISystem->LoadData();
+    GBISystem->Redraw();
 
 }
 
@@ -345,21 +349,27 @@ void TFMain::ApplicationInit()
 
 	table->RowCount = MAX_RECORDS_MEAS+1; table->ColCount = 13;
 
-   	table->ColWidths[0]= i_table_col_width/2;
+	table->ColWidths[0]= i_table_col_width;
+	table->ColWidths[1]= i_table_col_width;
 
-	for (int i = 1; i<13; i++) {
+	for (int i = 2; i<13; i++) {
 
-
-	table->ColWidths[i]= i_table_col_width;
-
-
+		table->ColWidths[i] = 200;//i_table_col_width;
 	}
 
+	table->ColWidths[2] = 5;
+
+	table->ColWidths[3] = 5;
+	table->ColWidths[4] = 5;
+	table->ColWidths[5] = 5;
+
+	table->ColWidths[7] = 5;
+	table->ColWidths[8] = 5;
+	table->ColWidths[9] = 5;
 
 	for (int i = 0; i<MAX_RECORDS_MEAS; i++) {
 
-	table->RowHeights[i]= 20;
-
+		table->RowHeights[i]= 20;
 	}
 
 	table->FixedCols = 1;
@@ -460,7 +470,7 @@ void __fastcall TFMain::StringGrid_measDrawCell(TObject *Sender, int ACol, int A
 
 	WideString s(L"");
 
-	if(ACol==0||((ARow==0)&&(ACol<13))){
+	if((ACol==2)||(ACol==0)||((ARow==0)&&(ACol<13))){
 
 	   StringGrid_meas->Canvas->Brush->Color=clSilver;
 	   StringGrid_meas->Canvas->FillRect(Rect);
@@ -481,22 +491,31 @@ void __fastcall TFMain::StringGrid_measDrawCell(TObject *Sender, int ACol, int A
 			StringGrid_meas->Canvas->Font->Color = clBlack;
 
 			if (ACol == 0) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Номер");
-			if (ACol == 1) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Уровень");
-			if (ACol == 2) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Погр.трб.");
+			if (ACol == 1) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Уровень, м");
+			if (ACol == 2) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"");
 
-			if (ACol == 3) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"X1");
-			if (ACol == 4) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Y1");
+			//if (ACol == 3) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"X1, угл.сек.");
+			//if (ACol == 4) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"X2, угл.сек.");
+			//if (ACol == 5) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Xрез, угл.сек.");
 
-			if (ACol == 5) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"X2");
-			if (ACol == 6) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Y2");
+			if (ACol == 3) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"");
+			if (ACol == 4) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"");
+			if (ACol == 5) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"");
 
-			if (ACol == 7) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Xрез");
-			if (ACol == 8) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Yрез");
+			if (ACol == 6) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Lx, мм");
 
-			if (ACol == 9) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"LX");
-			if (ACol == 10) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"LY");
-			if (ACol == 11) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Рез.см.");
-			if (ACol == 12) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Рез.уг.");
+			//if (ACol == 7) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Y1, угл.сек.");
+			//if (ACol == 8) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Y2, угл.сек.");
+			//if (ACol == 9) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Yрез, угл.сек.");
+
+			if (ACol == 7) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"");
+			if (ACol == 8) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"");
+			if (ACol == 9) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"");
+
+			if (ACol == 10) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Ly, мм");
+
+			if (ACol == 11) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Рез.см. мм");
+			if (ACol == 12) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Азимут, град.");
 
 		}
 
@@ -546,8 +565,6 @@ void __fastcall TFMain::StringGrid_measDrawCell(TObject *Sender, int ACol, int A
 	   StringGrid_meas->Canvas->FillRect(Rect);
 	   StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, sc);
 
-
-
 	}
 
 	if (selected_meas == NULL) {
@@ -572,7 +589,6 @@ void __fastcall TFMain::StringGrid_measDrawCell(TObject *Sender, int ACol, int A
 		b_table_cleared = false;
 	}
 
-
 	if (selected_meas !=NULL )
 	{
 
@@ -593,11 +609,15 @@ void __fastcall TFMain::StringGrid_measDrawCell(TObject *Sender, int ACol, int A
 				}
 
 			}
-
 		}
-
-
 	}
+
+	//if (ACol==2)
+	//{
+	//   StringGrid_meas->Canvas->Brush->Color=clSilver;
+	//   StringGrid_meas->Canvas->FillRect(Rect);
+	//}
+
 
 }
 //---------------------------------------------------------------------------
@@ -1087,17 +1107,16 @@ void __fastcall TFMain::N_drill_addClick(TObject *Sender)
 {
 	TPlace* p = current_place;
 	TDrill* d = new TDrill();
-	int cnt = 21;
+	bool OOK = false;
 
-	Form_DrillAdjust->records_cnt = &cnt;
+
+	Form_DrillAdjust->OOK = &OOK;
 	Form_DrillAdjust->mode = 0;
-
 	Form_DrillAdjust->OK = false;
-	Form_DrillAdjust->drill = d;
 	Form_DrillAdjust->Start(d,0);
-	//!!!Form_DrillAdjust->ShowModal();
+	Form_DrillAdjust->ShowModal();
 
-	if (Form_DrillAdjust->OK == true )
+	if (OOK == true )
 	{
 		if (p->AddDrill(d) != 0)
 		{
@@ -1121,30 +1140,16 @@ void __fastcall TFMain::N_drill_adjustClick(TObject *Sender)
 		return;
 	}
 
-	/*
-	TDrill* d = new TDrill();
-	WideString s(L"");
-	int records_cnt = 0;
-
-	int init_start = current_drill->start_point;
-
-	current_place->UpdateDrill(d, current_drill);
-
-	records_cnt = d->records_cnt;
-	Form_DrillAdjust->records_cnt = &records_cnt;
-
-	Form_DrillAdjust->drill = d;
-	Form_DrillAdjust->mode = 1;
-	*/
 
 	TDrill* d = current_drill;
+	bool OOK = false;
 
 	Form_DrillAdjust->OK = false;
+	Form_DrillAdjust->OOK = &OOK;
 	Form_DrillAdjust->Start(d,1);
+	Form_DrillAdjust->ShowModal();
 
-	//!!!Form_DrillAdjust->ShowModal();
-
-	if (Form_DrillAdjust->OK == true)
+	if (OOK == true)
 	{
 
 		current_place->UpdateDrill(current_drill, d);
@@ -1496,7 +1501,7 @@ void __fastcall TFMain::Button_finishClick(TObject *Sender)
 
 	current_meas->Calculate();
 
-	GBISystem->SysConfMgr.Backup(0,0);
+	//GBISystem->SysConfMgr.Backup(0,0);
 
 	ViewSelectedMeas();
 }
@@ -1515,13 +1520,19 @@ void TFMain::SetWindowSize(int par)
 
 	unsigned int chars_panel_v_width = this->Panel_charts_v->Width;
 
-	this->Panel_chart_x_v->Width = chars_panel_v_width*330/1000;
-	this->Panel_chart_y_v->Width = chars_panel_v_width*330/1000;
-	this->Panel_chart_r->Width = chars_panel_v_width*330/1000;
+	//this->Panel_chart_x_v->Width = chars_panel_v_width*330/1000;
+	//this->Panel_chart_y_v->Width = chars_panel_v_width*330/1000;
+	//this->Panel_chart_r->Width = chars_panel_v_width*330/1000;
+
+	this->Panel_chart_x_v->Width = chars_panel_v_width*240/1000;
+	this->Panel_chart_y_v->Width = chars_panel_v_width*240/1000;
+	this->Panel_chart_r->Width = chars_panel_v_width*240/1000;
+	this->Panel_chart_asimut->Width = chars_panel_v_width*240/1000;
 
 	this->Panel_chart_x_v->Height = chars_panel_height*950/1000;
 	this->Panel_chart_y_v->Height = chars_panel_height*950/1000;
 	this->Panel_chart_r->Height = chars_panel_height*950/1000;
+	this->Panel_chart_asimut->Height = chars_panel_height*950/1000;
 }
 
 //---------------------------------------------------------------------------
@@ -1540,6 +1551,8 @@ void TFMain::DevideScreen(int par)
 		unsigned int Horres = GetDeviceCaps(hDCScreen, HORZRES);
 		unsigned int Vertres = GetDeviceCaps(hDCScreen, VERTRES);
 		ReleaseDC(NULL, hDCScreen);
+
+		i_screen_Width = Horres;
 
 		this->Panel_tree->Width = Horres/4;
 		this->Panel_meas_table->Width = Horres - this->Panel_tree->Width - 10;
@@ -1838,7 +1851,7 @@ void __fastcall TFMain::ToolButton12Click(TObject *Sender)
 		{
 			if (selected_meas != NULL)
 			{
-				this->MStatusBar->Panels->Items[2]->Text = "Экспорт в Excel ...";
+				this->MStatusBar->Panels->Items[2]->Text = L"Экспорт в Excel ...";
 				selected_meas->Excel(1);
 				this->MStatusBar->Panels->Items[2]->Text = "";
 				Form_excel_progress->StopShow();
@@ -1890,114 +1903,80 @@ void __fastcall TFMain::Chart_y_hDblClick(TObject *Sender)
 void __fastcall TFMain::ToolButton_testClick(TObject *Sender)
 {
 
-return;//!!!
+typedef struct {
 
-GBISystem->ImportFromDataFile(L"c:\\Prj\\Gorizont\\RAD Studio C++ Builder\\GBI16\\Win32\\Debug\\Data\\IZDAT.CSV");
+	double x1;
+	double x2;
+} tstdata;
 
-return;
-
-TDataFile df;
-
-df.ParsDaTaFile(L"c:\\Prj\\Gorizont\\RAD Studio C++ Builder\\GBI16\\Win32\\Debug\\Data\\IZDAT.CSV");
-
-return;
-
-
-df.OpenFile(L"c:\\Prj\\Gorizont\\RAD Studio C++ Builder\\GBI16\\Win32\\Debug\\Data\\IZDAT.CSV");
-
-df.CheckFile();
-
-df.pars_en = true;
-
-	while (df.GetStr() == 0)
+	tstdata td [] =
 	{
-		while (df.GetWord() == 0);
 
-	}
+		{-3764, 163},
+		{-3132, -482},
+		{-2392, -1218},
+		{-2936, -637},
+		{-3302, -308},
+		{-3018, -669},
+		{-3583, 91},
+		{-3849, 267},
+		{-3933, 340},
+		{-4528, 935},
+		{-5716, 2116},
+		{-7080, 3467},
+		{-8056, 4521},
+		{-7976, 4373},
+		{-7075, 3492},
+		{-5755, 2190},
+		{-4798, 1206},
+		{-4744, 1262},
+		{-5320, 1677},
+		{-5719, 2107},
+		{-5572, 2009},
+		{-5056, 1461},
+		{-4539, 934},
+		{-4139, 550},
+		{-4189, 600},
+		{-3941, 359},
+		{-4014, 480},
+		{-3635, 16},
+		{-2879, -695},
+		{-2201, -1318},
+		{-2483, -1194},
+		{-2666, -908},
+		{-3029, -522},
+		{-3361, -268},
+		{-4001, 457},
+		{-4329, 852},
+		{-4317, 599},
+		{-3029, -516},
+		{-1833, -1741},
+		{-1411, -2193},
+		{-1059, -2512},
+		{-632,  -2847},
 
-return;
+	};
 
-this->GBISystem->place_list[0]->drill_list[0]->meas_list[0]->SaveData(0);
+	TPlace* p;
+	TDrill* d;
+	TMeas* m;
 
-return;
+	p = GBISystem->place_list[0];
+	d = p->drill_list[0];
+	m = d->meas_list[0];
 
- ConvertTextFile_UTF16LEBOM (L"c:\\Prj\\Gorizont\\RAD Studio C++ Builder\\GBI_U16\\Win32\\Debug\\utf8.txt");
-
-return;
-
-FILE* f = NULL;
-
-f = fopen("utf8.txt", "rb");
-
-char c[8448];
-
-
-int idxu8 = 0;
-
-while (1)  {
-
-if (!fread(&c[idxu8++],1,1,f)) break;
-
-}
-
-
-fclose(f);
-
-WideString sutf16(L"АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюя");
-
-TCHAR  tcutf16[65];
-
-wcscpy(tcutf16, sutf16.c_bstr());
-
-TCHAR tc[8448];
-
-int idx = 0;
-
-for (int i = 0; i < idxu8; i++) {
-
-	BYTE code = 0;
-
-	code = c[i];
-
-
-	if (code>191) {
-
-	   idx = code - 192;
-
-	   tc[i] = (TCHAR)tcutf16[idx];
-	}
-	else
+	for (int i = 0; i < m->records_cnt; i++)
 	{
-		tc[i] = (TCHAR) c[i];
-	}
+		m->records[i].X1 = td[i].x1;
+		m->records[i].X2 = td[i].x2;
 
-
-     tc[i+1] = '\0';
-
-}
-
-
-
-	ShowMessage(tc);
-
-return;
-
-	TPlace* p = this->GBISystem->place_list[0];
-	TDrill* d = p->drill_list[0];
-	TMeas* m = d->meas_list[0];
-
-	for (int i = 0; i < m->records_cnt; i++) {
-
-		m->records[i].X1 = test_dataset_h_s_3 [i];
-		m->records[i].depth = 0.5*(double)(i);
+		m->records[i].Y1 = td[i].x1;
+		m->records[i].Y2 = td[i].x2;
 
 	}
 
-	m->DataToTable();
-
-return;
-
-
+	//m->SaveData(0);
+    m->DataToTable();
 }
 
 //---------------------------------------------------------------------------
@@ -2079,6 +2058,28 @@ void TFMain::ShowChartHint_v(TChart* chart, int X, int Y)
 				 if (chart->Series[i]->Clicked(X,Y)!=-1)
 				 {
 
+				   WideString pname;
+				   WideString dname;
+				   WideString tmeas;
+
+				   TMeas* m;
+				   TPlace* p;
+				   TDrill* d;
+
+				   //m = this->GBISystem->selected_meas_list [i];
+
+				   d = selected_drill;
+				   p = GBISystem->place_list[d->pnum-1];
+				   m = d->meas_list[i];
+
+
+				   //p = this->GBISystem->place_list[m->pnum-1];
+				   //d = p->drill_list[m->dnum-1];
+
+				   pname = p->name;
+				   dname = d->name;
+				   tmeas = FormatDateTime(L"dd.mm.yy hh:mm",m->create_time);
+
 				   Application->HintHidePause=10000;
 				   Screen->Cursor=crDrag;	//crCross;
 
@@ -2088,18 +2089,46 @@ void TFMain::ShowChartHint_v(TChart* chart, int X, int Y)
 					chart->Series[i]->GetCursorValues(xx,yy);
 					WideString st(L"");
 
-					if (chart == Chart_x_h) {
+					st.printf(L"[%s]\r\n[%s]\r\n[%s]", pname.c_bstr(), dname.c_bstr(), tmeas.c_bstr());
+					s += st;
 
-						st.printf(L"%.1f ì",xx);
-						s.printf(L"[%.1f ìì]\r\n",yy);
+					st.printf(L"\r\n%.2f мм [%.1f м]", xx, yy);
+					s += st;
 
-					}
-					else
+					int px = FMain->Left + Panel_tree->Width + 35;
+					int py = FMain->Top + 140;
+
+					if (chart == Chart_y_v)
 					{
-						st.printf(L"%.1f ì",yy);
-						s.printf(L"[%.1f ìì]\r\n",xx);
+						px += Panel_chart_x_v->Width + 5;
 					}
 
+					if (chart == Chart_r)
+					{
+						px += Panel_chart_x_v->Width + 5;
+						px += Panel_chart_y_v->Width + 5;
+					}
+
+					px+=X;
+					py+=Y;
+
+					if ((px + 200) > i_screen_Width)
+					{
+						px -= 200 + 25;
+					}
+
+
+					//if (chart == Chart_x_h) {
+					//
+					//	st.printf(L"%.1f м",xx);
+					//	s.printf(L"[%.1f мм]\r\n",yy);
+
+					//}
+					//else
+					//{
+					//	st.printf(L"%.1f м",yy);
+					//	s.printf(L"[%.1f мм]\r\n",xx);
+					//}
 
 					int id = 0;
 
@@ -2107,9 +2136,12 @@ void TFMain::ShowChartHint_v(TChart* chart, int X, int Y)
 
                     Sleep(1);
 
-					s+=st;
-					chart->Hint=s;
-					chart->ShowHint=true;
+					chart->Hint="";
+					chart->ShowHint=false;
+
+					Form_show_hint->Show(s);
+					Form_show_hint->Move(px,py);
+
 					sel = true;
 					break;
 				 }
@@ -2120,6 +2152,7 @@ void TFMain::ShowChartHint_v(TChart* chart, int X, int Y)
 				chart->ShowHint=false;
 				Screen->Cursor=(TCursor)0;
 				Application->HintHidePause=1;
+				Form_show_hint->Hide();
 			 }
 
 }

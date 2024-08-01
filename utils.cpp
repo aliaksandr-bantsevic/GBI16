@@ -803,4 +803,58 @@ int CutSpacesEdit(TEdit* edit)
 	return 0;
 }
 
+bool is_double_digit_smb(TCHAR smb)
+{
+	if (
+			(smb == '.')||
+			(smb == '1')||
+			(smb == '2')||
+			(smb == '3')||
+			(smb == '4')||
+			(smb == '5')||
+			(smb == '6')||
+			(smb == '7')||
+			(smb == '8')||
+			(smb == '9')||
+			(smb == '0')
+	   )
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+    }
+}
+
+
+int ArrangeToDigitFloatEdit(TEdit* edit)
+{
+	TCHAR tbuf [1024];
+	TCHAR tbuf_done [1024];
+
+	wcscpy(tbuf, edit->Text.c_str());
+
+	for (int i = 0; i < 1024; i++)
+	{
+		tbuf_done [i] = 0;
+	}
+
+	int j = 0;
+
+	for (int i = 0; i < wcslen(tbuf); i++)
+	{
+		if (is_double_digit_smb(tbuf[i]))
+		{
+			tbuf_done[j] = tbuf[i]; j++;
+		}
+	}
+
+	WideString ws(L"");
+	ws += tbuf_done;
+	edit->Text = ws;
+	edit->SelStart = j;
+
+	return 0;
+}
 
