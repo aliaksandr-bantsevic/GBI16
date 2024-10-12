@@ -10,7 +10,7 @@ extern bool b_MessageConfirmParamsetShow;
 
 #define BUILD           2
 #define VERSION         8
-#define SUBVERSION      2
+#define SUBVERSION      3
 
 /*
 	Forms control macro definitions
@@ -39,6 +39,6 @@ extern bool b_MessageConfirmParamsetShow;
 	For debuf development mode
 */
 
-#define DEBUG_DEVELOPMENT_MODE
+//#define DEBUG_DEVELOPMENT_MODE
 
 
