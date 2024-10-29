@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------
 
 #pragma hdrstop
 
@@ -7,8 +7,11 @@
 #pragma package(smart_init)
 
 
+bool is_finish_discovered = false;
+
 TDataFile::TDataFile()
 {
+
 	file = NULL;
 	cbuf_idx = 0;
 	memset(cbuf,0,1024);
@@ -308,7 +311,7 @@ int TDataFile::GetDpar(void)
 			(tword[i] == '0')||(tword[i] == '1')||(tword[i] == '2')||
 			(tword[i] == '3')||(tword[i] == '4')||(tword[i] == '5')||
 			(tword[i] == '6')||(tword[i] == '7')||(tword[i] == '8')||
-			(tword[i] == '9')||(tword[i] == '.')
+			(tword[i] == '9')||(tword[i] == '.')||(tword[i] == '-')
 		)
 		{
 		   tc [j++] = tword [i];
@@ -349,12 +352,49 @@ Find the meas in the meas set with the presented place, drill, time
 return if the operatin is success  0 / not success -1
 set the  data_file_meas_set_idx_cur if the meas is found/created
 */
+
+data_file_meas_type* last_proceeded_dm = NULL;
+
 int TDataFile::GetDaTaFileMeasIdx(void)
 {
 	int res = -1; //if the meas is not found/created
 	data_file_meas_type* m;
 	bool exist = false;
 
+	bool started_f = false;
+	bool started_b = false;
+
+	if (data_file_record.dir == L"Finish")
+	{
+		/* The finish mark is empty record with only mark MEAS FINISHED */
+		if (last_proceeded_dm)
+		{
+			last_proceeded_dm -> is_finished = true;
+			last_proceeded_dm = NULL;
+		}
+
+		return -1;
+	}
+
+	if (data_file_record.place == "")
+	{
+		return -1;
+	}
+
+	if (data_file_record.drill == "")
+	{
+		return -1;
+	}
+
+	if (data_file_record.dir == L"BackStart")
+	{
+		started_b = true;
+	}
+
+	if (data_file_record.dir == L"ForwardStart")
+	{
+		started_f = true;
+	}
 
 	for (int i = 0; i < data_file_meas_set_idx; i++)
 	{
@@ -385,12 +425,19 @@ int TDataFile::GetDaTaFileMeasIdx(void)
 		m->drill = data_file_record.drill;
 		m->time = data_file_record.time;
 
+		m->is_finished = false;
+
 		data_file_meas_set [data_file_meas_set_idx] = m;
 		data_file_meas_set_idx_cur = data_file_meas_set_idx;
 		data_file_meas_set_idx++;
 
 		res = 0;
 	}
+
+	last_proceeded_dm = m;
+
+	if (started_f) m->is_started_f = true;
+	if (started_b) m->is_started_b = true;
 
 	return res;
 }
@@ -423,7 +470,7 @@ int TDataFile::AcceptDaTaFileMeasRecord(void)
 		}
 		else
 		{
-            res = -1; //bad meas ptr
+			res = -1; //bad meas ptr
         }
 
 	}
@@ -466,9 +513,169 @@ int TDataFile::ParsDaTaFile(TCHAR* tdir)
    while (data_file_meas_set[i] != NULL)
    {
 	  m = data_file_meas_set[i];
-      i++;
+	  ProcessDataFilemeas(m);
+	  i++;
    }
 
-
    return res;
+}
+
+int TDataFile::ProcessDataFilemeas(data_file_meas_type* dm)
+{
+	int res = 0;
+
+	boolean record_is_started_f = false;
+	boolean record_is_started_b = false;
+
+	data_file_record_type* dfr = NULL;
+
+	dm->is_valued = false;
+
+	/* -------------------Forward------------------------------ */
+
+	record_is_started_f = false;
+
+	/* No start no finish */
+	if ((dm->is_started_f == false)&&(dm->is_finished == false))
+	{
+
+		for (int i = 0; i < dm->record_cnt ; i++)
+		{
+			dfr = &dm->record [i];
+
+			if ((dfr->dir == L"Forward")||(dfr->dir == L"ForwardStart"))
+			{
+			   dm->record [i].is_sign_value = true; dm->is_valued = true;
+			}
+		}
+	}
+
+	/* Is start & finish */
+
+	else if ((dm->is_started_f == true)&&(dm->is_finished == true))
+	{
+
+		for (int i = 0; i < dm->record_cnt ; i++)
+		{
+			dfr = &dm->record [i];
+
+			if ((dfr->dir == L"Forward")||(dfr->dir == L"ForwardStart"))
+			{
+			   record_is_started_f = true;
+			}
+
+			if (((dfr->dir == L"Forward")||(dfr->dir == L"ForwardStart"))&&(record_is_started_f))
+			{
+			   dm->record [i].is_sign_value = true; dm->is_valued = true;
+			}
+		}
+
+	}
+
+	/* Is start & NO finish */
+	else if ((dm->is_started_f == true)&&(dm->is_finished == false))
+	{
+
+		for (int i = 0; i < dm->record_cnt ; i++)
+		{
+			dfr = &dm->record [i];
+
+			if (dfr->dir == L"Forward")
+			{
+			   dm->record [i].is_sign_value = false; dm->is_valued = false;
+			}
+		}
+
+	}
+
+	/* No start & is finish */
+	else if ((dm->is_started_f == false)&&(dm->is_finished == true))
+	{
+
+		for (int i = 0; i < dm->record_cnt ; i++)
+		{
+			dfr = &dm->record [i];
+
+			if (dfr->dir == L"Forward")
+			{
+			   dm->record [i].is_sign_value = true; dm->is_valued = true;
+			}
+		}
+
+	}
+
+	/* -------------------Backward------------------------------ */
+
+	record_is_started_b = false;
+
+	/* No start no finish */
+	if ((dm->is_started_b == false)&&(dm->is_finished == false))
+	{
+
+		for (int i = 0; i < dm->record_cnt ; i++)
+		{
+			dfr = &dm->record [i];
+
+			if ((dfr->dir == L"Back")||(dfr->dir == L"BackStart"))
+			{
+			   dm->record [i].is_sign_value = true; dm->is_valued = true;
+			}
+		}
+	}
+
+	/* Is start & finish */
+
+	else if ((dm->is_started_b == true)&&(dm->is_finished == true))
+	{
+
+		for (int i = 0; i < dm->record_cnt ; i++)
+		{
+			dfr = &dm->record [i];
+
+			if ((dfr->dir == L"Back")||(dfr->dir == L"BackStart"))
+			{
+			   record_is_started_b = true;
+			}
+
+			if (((dfr->dir == L"Back")||(dfr->dir == L"BackStart"))&&(record_is_started_b))
+			{
+			   dm->record [i].is_sign_value = true; dm->is_valued = true;
+			}
+		}
+
+	}
+
+	/* Is start & NO finish */
+	else if ((dm->is_started_b == true)&&(dm->is_finished == false))
+	{
+
+		for (int i = 0; i < dm->record_cnt ; i++)
+		{
+			dfr = &dm->record [i];
+
+			if (dfr->dir == L"Back")
+			{
+			   dm->record [i].is_sign_value = false; dm->is_valued = false;
+			}
+		}
+
+	}
+
+	/* No start & is finish */
+	else if ((dm->is_started_b == false)&&(dm->is_finished == true))
+	{
+
+		for (int i = 0; i < dm->record_cnt ; i++)
+		{
+			dfr = &dm->record [i];
+
+			if (dfr->dir == L"back")
+			{
+			   dm->record [i].is_sign_value = true; dm->is_valued = true;
+			}
+		}
+
+	}
+
+	return res;
 }

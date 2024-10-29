@@ -10,9 +10,15 @@
 #define DATA_FILE_RECORD_CNT_MAX 	1000
 #define DATA_FILE_MEAS_CNT_MAX 		100
 
+#define RECORD_DIR_NONE    			0
+#define RECORD_DIR_FORWARD_SIMPL    1
+#define RECORD_DIR_FORWARD_START    2
+#define RECORD_DIR_BACWARD_SIMPL    3
+#define RECORD_DIR_BACWARD_START    4
+
 typedef struct {
 
-    int         idx;
+	int         idx;
 	WideString 	place;
 	WideString 	drill;
 	TDateTime   time;
@@ -20,6 +26,8 @@ typedef struct {
 	double      level;
 	double      X;
 	double      Y;
+
+	boolean     is_sign_value;
 
 } data_file_record_type;
 
@@ -31,6 +39,12 @@ typedef struct {
 	TDateTime   					time;
 	int         					record_cnt;
 	data_file_record_type record 	[DATA_FILE_RECORD_CNT_MAX];
+
+	boolean is_started_f;
+	boolean is_started_b;
+	boolean is_finished;
+
+	boolean is_valued;
 
 } data_file_meas_type;
 
@@ -90,6 +104,7 @@ public:
 	int GetDaTaFileMeasIdx(void);
     int AcceptDaTaFileMeasRecord(void);
 	int ParsDaTaFile(TCHAR* tdir);
+	int ProcessDataFilemeas(data_file_meas_type* dm);
 
 	double d_par;
 	TDateTime t_par;

@@ -272,19 +272,19 @@
             <DependentOn>utils.h</DependentOn>
             <BuildOrder>14</BuildOrder>
         </CppCompile>
-        <FormResources Include="PlaceAdjust.dfm"/>
         <FormResources Include="PortAdjust.dfm"/>
-        <FormResources Include="Main.dfm"/>
+        <FormResources Include="PlaceAdjust.dfm"/>
         <FormResources Include="MeasAdjust.dfm"/>
         <FormResources Include="SystemAdjust.dfm"/>
+        <FormResources Include="ShowHint.dfm"/>
         <FormResources Include="SensorAdjust.dfm"/>
+        <FormResources Include="Main.dfm"/>
         <FormResources Include="DataEnter.dfm"/>
         <FormResources Include="About.dfm"/>
         <FormResources Include="DepthAdjust.dfm"/>
         <FormResources Include="ExcelWait.dfm"/>
         <FormResources Include="Diagram.dfm"/>
         <FormResources Include="DrillAdjust.dfm"/>
-        <FormResources Include="ShowHint.dfm"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

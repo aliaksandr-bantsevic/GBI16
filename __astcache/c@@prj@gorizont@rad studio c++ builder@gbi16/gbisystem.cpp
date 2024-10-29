@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------
 
 #pragma hdrstop
 
@@ -44,7 +44,7 @@
 	   system_ini=new TIniFile(ChangeFileExt(Application->ExeName,L".ini"));
 
 	   edit_SKO = NULL;
-	   sko_limit = 1;
+	   sko_limit = 500;
 
 	   max_records_meas = 100;
 	   def_records_meas = 20;
@@ -147,7 +147,7 @@ void TGBISystem::LoadSysConf()
 
 	//b_MessageConfirmParamsetShow = ask_save_conf;
 
-	sko_limit = ini->ReadInteger(L"SYSTEM",L"SKOLIMIT",1);
+	sko_limit = ini->ReadInteger(L"SYSTEM",L"SKOLIMIT",500);
 
 	ask_sensor_period = ini->ReadInteger(L"SYSTEM",L"askperiod",100);
 
@@ -708,6 +708,10 @@ int TGBISystem::LoadData()
 
 				m  = d->meas_list[k];
 				m->LoadData();
+
+				m->pnum = p->num;
+				m->dnum = d->num;
+				m->num = k + 1;
 			}
 		}
 
@@ -1050,6 +1054,18 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 	return 0;
  }
 
+ /*
+ * This function gets already folled in structure from data file with
+ *
+ * place name;
+ * drill name;
+ * time stamp;
+ * record_cnt count;
+ * record set;
+ * is_started = false;
+ * is_finished = false;
+ *
+ */
  int TGBISystem::AcceptDataFileMeas(data_file_meas_type* dfm)
  {
 	 int res = 0;
@@ -1073,6 +1089,12 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 	 WideString msg("");
 	 WideString wtm("");
 	 WideString ws("");
+
+
+	 if (dfm->is_valued == false)
+	 {
+		return -1; //meas is not valued
+	 }
 
 	 if (p != NULL)
 	 {
@@ -1118,19 +1140,24 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 				double level_start = 0.;
 				double level_end = 0;
 
+				bool start = false;
+
 				for (int i =0; i < dfm->record_cnt; i++)
 				{
 
 				   dr = &dfm->record [i];
 
-				   if (dr->dir == L"back")
+
+				   if ((dr->dir == L"Forward")||(dr->dir == L"Forward Start"))
 				   {
-					  iback = 1;
+					   dir = 0;
 				   }
-
-				   if (dr->dir == L"Forward")
+				   else
 				   {
-
+					   dir = 1;
+                   }
+				   //if (dr->is_sign_value)
+				   {
 						iforw = 1;
 
 						if (dr->level != 0.)
@@ -1146,30 +1173,34 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 							}
 						}
 
-						dir = 0;
+						//dir = 0;
 						dircnt = 1;
 						forward_cnt++;
 					}
-					else
-					{
-						dir = 1;
-						dircnt = 2;
-						single_way = 0;
-						back_cnt++;
-					}
+					//else if (start == true)
+					//{
+					//	dir = 1;
+					//	dircnt = 2;
+					//	single_way = 0;
+					//	back_cnt++;
+					//}
 
 					r = &m->records[i];
-					if (m->AcceptDataFileRecord(dir, dr->level, dr->X, dr->Y) == 0)
+
+					if (dr->is_sign_value == true)
 					{
-						record_cnt_accepted++;
-
-						int records_cnt_calc = (dr->level)/0.5f + 1;
-
-						if (d->records_cnt < records_cnt_calc)
+						if (m->AcceptDataFileRecord(dir, dr->level, dr->X, dr->Y) == 0)
 						{
-                            d->records_cnt = records_cnt_calc;
+							record_cnt_accepted++;
+
+							int records_cnt_calc = (dr->level)/0.5f + 1;
+
+							if (d->records_cnt < records_cnt_calc)
+							{
+								d->records_cnt = records_cnt_calc;
+							}
 						}
-                    }
+					}
 				}
 
 				ws.printf(L" [%d записей]", record_cnt_accepted);
@@ -1184,28 +1215,12 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 					max_cnt = back_cnt;
                 }
 
-				/*
-				if (max_cnt > d->records_cnt)
-				{
-					//d->records_cnt = max_cnt;
-					//m->records_cnt = max_cnt;
-					for (int i = 0; i < d->meas_list_idx; i++)
-					{
-						if (d->meas_list [i]->records_cnt < d->records_cnt)
-						{
-						   d->records_cnt = d->meas_list [i]->records_cnt;
-						}
-					}
-				}
-				*/
-
 				if ((level_start == 0.)&&(level_end == 0.))
 				{
 
 					level_end = dfm->record_cnt*0.5 - 1;
 
 				}
-
 
 				d->level_start = level_start;
 				d->level_end = level_end;
@@ -1275,6 +1290,11 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 	 TPlace* p = NULL;
 	 TPlace* ptmp = NULL;
 
+	 if (n == "")
+	 {
+		return NULL; //empty place
+	 }
+
 	 for (int i = 0; i < place_list_idx; i++)
 	 {
 		ptmp = place_list[i];
@@ -1299,6 +1319,11 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
  {
 	 TDrill* d = NULL;
 
+	 if (n == "")
+	 {
+		return NULL; //empty place
+	 }
+
 	 for (int i =0; i < p->drill_list_idx; i++)
 	 {
 		if (p->drill_list[i]->name == n)
@@ -1322,7 +1347,7 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 	 int res = 0;
 	 int total = 0;
 	 data_file_meas_type* dfm = NULL;
-	 WideString msg("");
+	 WideString msg ("");
 
 	 if (this->DataFile.ParsDaTaFile(path) == 0)
 	 {
@@ -1337,6 +1362,10 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 			if (AcceptDataFileMeas(dfm) == 0)
 			{
 				total++;
+			}
+			else
+			{
+				continue;
             }
 		 }
 
@@ -1346,7 +1375,7 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 	 }
 	 else
 	 {
-		console(L"Система", L"Ошибка распознаваниф файла CSV");
+		console(L"Система", L"Ошибка распознавания файла CSV");
      }
 	 return res;
  }

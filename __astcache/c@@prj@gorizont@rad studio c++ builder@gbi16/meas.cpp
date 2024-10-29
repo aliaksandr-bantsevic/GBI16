@@ -142,15 +142,15 @@ int TMeas::DataToTable(void)
 		PutDblCell(table,1,i+1,this->records[i].depth);
 		//PutDblCell(table,2,i+1,this->records[i].tuberr);
 
-		//PutDblCell(table,3,i+1,this->records[i].X1);
-		//PutDblCell(table,4,i+1,this->records[i].X2);
-		//PutDblCell(table,5,i+1,this->records[i].Xres);
+		PutDblCell(table,3,i+1,this->records[i].X1);
+		PutDblCell(table,4,i+1,this->records[i].X2);
+		PutDblCell(table,5,i+1,this->records[i].Xres);
 
 		PutDblCell(table,6,i+1,this->records[i].LX);
 
-		//PutDblCell(table,7,i+1,this->records[i].Y1);
-		//PutDblCell(table,8,i+1,this->records[i].Y2);
-		//PutDblCell(table,9,i+1,this->records[i].Yres);
+		PutDblCell(table,7,i+1,this->records[i].Y1);
+		PutDblCell(table,8,i+1,this->records[i].Y2);
+		PutDblCell(table,9,i+1,this->records[i].Yres);
 
 		PutDblCell(table,10,i+1,this->records[i].LY);
 
@@ -997,6 +997,7 @@ int TMeas::LoadData()
 	fread(&pnum, sizeof(pnum),1,f);
 	fread(&dnum, sizeof(dnum),1,f);
 	fread(&num, sizeof(num),1,f);
+
 	fread(&create_time, sizeof(create_time),1,f);
 	fread(&finalize_time, sizeof(finalize_time),1,f);
 	fread(&finalized, sizeof(finalized),1,f);

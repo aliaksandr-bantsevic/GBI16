@@ -356,11 +356,12 @@ void TFMain::ApplicationInit()
 
 	for (int i = 2; i<13; i++) {
 
-		table->ColWidths[i] = 200;//i_table_col_width;
+		table->ColWidths[i] = i_table_col_width;
 	}
 
 	table->ColWidths[2] = 5;
 
+	/*
 	table->ColWidths[3] = 5;
 	table->ColWidths[4] = 5;
 	table->ColWidths[5] = 5;
@@ -368,6 +369,7 @@ void TFMain::ApplicationInit()
 	table->ColWidths[7] = 5;
 	table->ColWidths[8] = 5;
 	table->ColWidths[9] = 5;
+    */
 
 	for (int i = 0; i<MAX_RECORDS_MEAS; i++) {
 
@@ -496,23 +498,23 @@ void __fastcall TFMain::StringGrid_measDrawCell(TObject *Sender, int ACol, int A
 			if (ACol == 1) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Уровень, м");
 			if (ACol == 2) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"");
 
-			//if (ACol == 3) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"X1, угл.сек.");
-			//if (ACol == 4) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"X2, угл.сек.");
-			//if (ACol == 5) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Xрез, угл.сек.");
+			if (ACol == 3) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"X1, угл.сек.");
+			if (ACol == 4) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"X2, угл.сек.");
+			if (ACol == 5) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Xрез, угл.сек.");
 
-			if (ACol == 3) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"");
-			if (ACol == 4) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"");
-			if (ACol == 5) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"");
+			//if (ACol == 3) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"");
+			//if (ACol == 4) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"");
+			//if (ACol == 5) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"");
 
 			if (ACol == 6) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Lx, мм");
 
-			//if (ACol == 7) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Y1, угл.сек.");
-			//if (ACol == 8) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Y2, угл.сек.");
-			//if (ACol == 9) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Yрез, угл.сек.");
+			if (ACol == 7) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Y1, угл.сек.");
+			if (ACol == 8) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Y2, угл.сек.");
+			if (ACol == 9) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Yрез, угл.сек.");
 
-			if (ACol == 7) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"");
-			if (ACol == 8) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"");
-			if (ACol == 9) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"");
+			//if (ACol == 7) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"");
+			//if (ACol == 8) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"");
+			//if (ACol == 9) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"");
 
 			if (ACol == 10) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Ly, мм");
 
