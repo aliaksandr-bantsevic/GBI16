@@ -750,7 +750,7 @@ void __fastcall TFMain::StringGrid_measDblClick(TObject *Sender)
 		return;
 	}
 
-	if ((StringGrid_meas->Col >= 3)&&(StringGrid_meas->Col <= 6)) {
+	if ((StringGrid_meas->Col >= 3)&&(StringGrid_meas->Col <= 10)) {
 
 		WideString s(L"nodata");
 		Form_data_enter->s = s.c_bstr();
@@ -779,7 +779,7 @@ void __fastcall TFMain::StringGrid_measDblClick(TObject *Sender)
 		return;
 	}
 
-	if (StringGrid_meas->Col >2) {
+	if (StringGrid_meas->Col >10) {
 
 
 		return;
