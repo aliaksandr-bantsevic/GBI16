@@ -1055,7 +1055,7 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
  }
 
  /*
- * This function gets already folled in structure from data file with
+ * This function gets already filled in structure from data file with
  *
  * place name;
  * drill name;
@@ -1073,10 +1073,143 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 	 TDrill* d = NULL;
 	 TMeas* m = NULL;
 
-	 meas_record* r = NULL;
-	 data_file_record_type* dr;
+	 TCHAR tbuf[1024];
+
+	 WideString msg("");
+	 WideString wtm("");
+	 WideString ws("");
+
+	 meas_record* meas_record = NULL;
+	 data_file_record_type* data_file_record;
 
 	 int dir = 0;
+
+	 if (dfm->is_valued == false)
+	 {
+		console(L"Система", L"Не валидное измерение пропущено");
+		return -1; //meas is not valued
+	 }
+
+	 /* obtain Place */
+	 p = GetPlaceByName(dfm->place);
+	 if ( p == NULL)
+	 {
+		 console(L"Система", L"Не удалось найти/создать Площадку");
+		 return -2; //place is not obtained
+	 }
+
+	 /* obtain drill */
+	 wcscpy(tbuf,dfm->drill.c_bstr());
+	 CutSpaces(tbuf, wcslen(tbuf));
+	 dfm->drill = L"";
+	 dfm->drill += tbuf;
+	 d = GetDrillByName(p, dfm->drill, dfm->record_cnt);
+	 if (d == NULL)
+	 {
+		 console(L"Система", L"Не удалось найти/создать Скважину");
+		 return -3; //drill is not obtained
+	 }
+
+	 /* obtain meas */
+	 d->pname = p->name;
+	 d->drill_orient = DRILL_ORIENT_VERTICAL; //consider the droll as vertical
+	 wtm = FormatDateTime(L" yyyy-mm-dd hh:nn:ss ", dfm->time);
+	 msg =  p->name + L"-" + d->name + L"-" + wtm;
+	 if (d->MeasExistByTimeCreate(dfm->time) == true)
+	 {
+		 console(L"Система", L"Измерение уже существует");
+		 return -4; //meas already exist
+	 }
+
+	 int record_cnt_accepted = 0;
+	 msg = msg + L"добавлено";
+	 ws.printf(L" [%d записей]", dfm->record_cnt);
+
+	 d->AddMeas(NULL, L"new_meas");
+	 m = d->meas_list[d->meas_list_idx-1];
+
+	 m->name_place = p->name;
+	 m->name_drill = d->name;
+	 m->create_time = dfm->time;
+
+	 int total_accepted_meas_records = 0;
+	 double level_min = 100000.;
+	 double level_max = 0.;
+	 bool b_forw = false;
+	 bool b_back = false;
+
+	 for (int i =0; i < dfm->record_cnt; i++)
+	 {
+
+		data_file_record = &dfm->record [i];
+
+		if (data_file_record->is_sign_value == false)
+		{
+			console(L"Система", L"Не валидная запись пропущена");
+			continue; //miss not valid recore
+		}
+
+		if ((data_file_record->dir == L"Forward")||(data_file_record->dir == L"Forward Start"))
+		{
+			dir = 0; b_forw = true;
+		}
+		else
+		{
+		   dir = 1; b_back = true;
+		}
+
+		if (m->AcceptDataFileRecord(dir, data_file_record->level, data_file_record->X, data_file_record->Y) == 0)
+		{
+			 total_accepted_meas_records++;
+
+			 if (data_file_record->level > level_max) level_max = data_file_record->level;
+			 if (data_file_record->level < level_min) level_min = data_file_record->level;
+
+		}
+	 }
+
+	 if ((b_forw == true) && (b_back == true))
+	 {
+		d->single_way = 0;
+	 }
+	 else
+	 {
+		d->single_way = 1;
+	 }
+
+	 double level_start = dfm->record [0].level;
+	 double level_end = dfm->record [dfm->record_cnt - 1].level;
+	 int calc_records_cnt = 0;
+
+	 if (level_start > level_end)
+	 {
+		d->start_point = DRILL_BOT_POINT; //start from bottom
+		calc_records_cnt = (int)(level_start / 0.5f);
+	 }
+	 else
+	 {
+		d->start_point = DRILL_TOP_POINT; //start from top
+		calc_records_cnt = (int)(level_end / 0.5f);
+	 }
+
+	 d->records_cnt = calc_records_cnt + 1;
+	 d->level_start = level_start;
+	 d->level_end = level_end;
+
+	 ws.printf(L" [%d записей]", total_accepted_meas_records);
+	 msg = msg + ws;
+	 console(L"Система", msg);
+
+	 m->SaveData(0); //Save accepted Data
+
+	 return 0;
+
+/*
+//////////////////////////////////////////////////////////////////////////////////////////
+//!!!	 meas_record* r = NULL;
+	 data_file_record_type* dr;
+
+
 	 int dircnt = 0;
 	 int single_way = 1;
 
@@ -1086,9 +1219,6 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 
 	 p = GetPlaceByName(dfm->place);
 
-	 WideString msg("");
-	 WideString wtm("");
-	 WideString ws("");
 
 
 	 if (dfm->is_valued == false)
@@ -1099,11 +1229,11 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 	 if (p != NULL)
 	 {
 
-		TCHAR tbuf[1024];
+
 		wcscpy(tbuf,dfm->drill.c_bstr());
 		CutSpaces(tbuf, wcslen(tbuf));
 		dfm->drill = L"";
-        dfm->drill += tbuf;
+		dfm->drill += tbuf;
 
 		d = GetDrillByName(p, dfm->drill, dfm->record_cnt);
 
@@ -1155,8 +1285,9 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 				   else
 				   {
 					   dir = 1;
-                   }
-				   //if (dr->is_sign_value)
+				   }
+
+				   if (dr->is_sign_value)
 				   {
 						iforw = 1;
 
@@ -1185,7 +1316,7 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 					//	back_cnt++;
 					//}
 
-					r = &m->records[i];
+					//!!!r = &m->records[i];
 
 					if (dr->is_sign_value == true)
 					{
@@ -1283,6 +1414,7 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 	 }
 
 	 return res;
+*/
  }
 
  TPlace* TGBISystem::GetPlaceByName(WideString n)

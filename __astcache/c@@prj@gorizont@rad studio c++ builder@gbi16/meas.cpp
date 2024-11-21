@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------
 
 #pragma hdrstop
 
@@ -338,7 +338,7 @@ int TMeas::Calc_Vert_Double_Bottom(void)
 		records[i].LR = sqrt((lx*lx)+(ly*ly));
 
 		/* Результирующий угол */
-		if (abs(records[i].LX) > 0.0001)
+		//if (abs(records[i].LX) > 0.0001)
 		{
 					records[i].AR = atan(records[i].LY/records[i].LX);
 
@@ -357,10 +357,10 @@ int TMeas::Calc_Vert_Double_Bottom(void)
 						records[i].AR -= 360;
 					}
 
-					if (records[i].AR < 0)
-					{
-						records[i].AR = 0;
-					}
+					//if (records[i].AR < 0)
+					//{
+					//	records[i].AR = 0;
+					//}
 
 					//переводим в секунды
 					//!!!records[i].AR *= 3600;
@@ -1358,11 +1358,6 @@ int TMeas::AcceptDataFileRecord(int dir, double d, double x, double y)
     /* auto adjust the records cnt using step 0.5 */
 	int rec_num_calc = (d/0.5) + 1;
 
-	//if (this->records_cnt > rec_num_calc)
-	//{
-	//	this->records_cnt = rec_num_calc;
-	//}
-
 	if (this->records_cnt < rec_num_calc)
 	{
 		records_cnt = rec_num_calc;
@@ -1376,7 +1371,6 @@ int TMeas::AcceptDataFileRecord(int dir, double d, double x, double y)
 		}
 	}
 	/* end of records cnt auto adjust */
-
 
 	 for (int i =0; i < records_cnt; i++)
 	 {

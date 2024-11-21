@@ -8,7 +8,7 @@
 #include "defs.h"
 
 #define DATA_FILE_RECORD_CNT_MAX 	1000
-#define DATA_FILE_MEAS_CNT_MAX 		100
+#define DATA_FILE_MEAS_CNT_MAX 		1000
 
 #define RECORD_DIR_NONE    			0
 #define RECORD_DIR_FORWARD_SIMPL    1
