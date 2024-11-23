@@ -314,6 +314,9 @@ void TDrill::Unselect()
 	selected = false;
 }
 
+TMeas* g_prev_meas = NULL;
+Double g_drill_asimut = 0.;
+
 int TDrill::Excel(void)
 {
 	TCHAR dir[1024];
@@ -333,6 +336,8 @@ int TDrill::Excel(void)
 	wcscat(cmd,L"\"");
 	system((char*)cmd);
 
+
+
 			if (OpenExcelReportTable(this->meas_list_idx) == false)
 			{
 				Application->MessageBoxW(L"Не удалось создать таблицу! Проверьте наличие установленного MS Excell.",L"ОШИБКА",0);
@@ -341,7 +346,15 @@ int TDrill::Excel(void)
 
 	Form_excel_progress->StartShow(records_cnt*meas_list_idx);
 
+	g_prev_meas = NULL;
+	g_drill_asimut = this->drill_asimut;
+
 	for (int i = 0; i < meas_list_idx; i++) {
+
+			if (i > 0)
+			{
+				g_prev_meas = meas_list[i - 1];
+			}
 
 			if (meas_list[i]->Excel(0) != 0)
 			{
