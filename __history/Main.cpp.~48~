@@ -53,16 +53,18 @@ int			selected_meas_idx = 0;
 TStringGrid* global_meas_table = NULL;
 bool 		b_system_start = true;
 
-
 TChartThread* Tc_X_h = NULL;
 TChartThread* Tc_Y_h = NULL;
 
 TChartThread* Tc_X_v = NULL;
 TChartThread* Tc_Y_v = NULL;
 TChartThread* Tc_R_v = NULL;
+TChartThread* Tc_A_v = NULL;
 
 int screen_mode = 0;
-int i_table_col_width = 80;
+int i_table_col_width = 40;
+
+int i_screen_Width = 1920;
 
 TSysConfMgr* scmgr = NULL;
 TStatusBar* main_status_bar = NULL;
@@ -339,6 +341,7 @@ void TFMain::ApplicationInit()
 	Tc_X_v = new TChartThread (false, this->Chart_x_v, 0, 2);
 	Tc_Y_v = new TChartThread (false, this->Chart_y_v, 1, 3);
 	Tc_R_v = new TChartThread (false, this->Chart_r, 2, 4);
+	Tc_A_v = new TChartThread (false, this->Chart_asimut, 3, 5);
 
 	this->TabSheet_charts->TabVisible = false;
 	this->TabSheet_charts_v->TabVisible = false;
@@ -348,21 +351,29 @@ void TFMain::ApplicationInit()
 
 	table->RowCount = MAX_RECORDS_MEAS+1; table->ColCount = 13;
 
-   	table->ColWidths[0]= i_table_col_width/2;
+	table->ColWidths[0]= i_table_col_width;
+	table->ColWidths[1]= i_table_col_width;
 
-	for (int i = 1; i<13; i++) {
+	for (int i = 2; i<13; i++) {
 
-
-	table->ColWidths[i]= i_table_col_width;
-
-
+		table->ColWidths[i] = i_table_col_width;
 	}
 
+	table->ColWidths[2] = 5;
+
+	/*
+	table->ColWidths[3] = 5;
+	table->ColWidths[4] = 5;
+	table->ColWidths[5] = 5;
+
+	table->ColWidths[7] = 5;
+	table->ColWidths[8] = 5;
+	table->ColWidths[9] = 5;
+    */
 
 	for (int i = 0; i<MAX_RECORDS_MEAS; i++) {
 
-	table->RowHeights[i]= 20;
-
+		table->RowHeights[i]= 20;
 	}
 
 	table->FixedCols = 1;
@@ -463,7 +474,7 @@ void __fastcall TFMain::StringGrid_measDrawCell(TObject *Sender, int ACol, int A
 
 	WideString s(L"");
 
-	if(ACol==0||((ARow==0)&&(ACol<13))){
+	if((ACol==2)||(ACol==0)||((ARow==0)&&(ACol<13))){
 
 	   StringGrid_meas->Canvas->Brush->Color=clSilver;
 	   StringGrid_meas->Canvas->FillRect(Rect);
@@ -485,19 +496,28 @@ void __fastcall TFMain::StringGrid_measDrawCell(TObject *Sender, int ACol, int A
 
 			if (ACol == 0) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Номер");
 			if (ACol == 1) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Уровень, м");
-			if (ACol == 2) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Погр.трб.");
+			if (ACol == 2) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"");
 
 			if (ACol == 3) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"X1, угл.сек.");
-			if (ACol == 4) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Y1, угл.сек.");
+			if (ACol == 4) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"X2, угл.сек.");
+			if (ACol == 5) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Xрез, угл.сек.");
 
-			if (ACol == 5) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"X2, угл.сек.");
-			if (ACol == 6) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Y2, угл.сек.");
+			//if (ACol == 3) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"");
+			//if (ACol == 4) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"");
+			//if (ACol == 5) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"");
 
-			if (ACol == 7) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Xрез, угл.сек.");
-			if (ACol == 8) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Yрез, угл.сек.");
+			if (ACol == 6) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Lx, мм");
 
-			if (ACol == 9) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"LX, мм");
-			if (ACol == 10) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"LY, мм");
+			if (ACol == 7) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Y1, угл.сек.");
+			if (ACol == 8) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Y2, угл.сек.");
+			if (ACol == 9) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Yрез, угл.сек.");
+
+			//if (ACol == 7) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"");
+			//if (ACol == 8) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"");
+			//if (ACol == 9) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"");
+
+			if (ACol == 10) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Ly, мм");
+
 			if (ACol == 11) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Рез.см. мм");
 			if (ACol == 12) StringGrid_meas->Canvas->TextOut(Rect.Left, Rect.Top, L"Азимут, град.");
 
@@ -595,6 +615,13 @@ void __fastcall TFMain::StringGrid_measDrawCell(TObject *Sender, int ACol, int A
 			}
 		}
 	}
+
+	//if (ACol==2)
+	//{
+	//   StringGrid_meas->Canvas->Brush->Color=clSilver;
+	//   StringGrid_meas->Canvas->FillRect(Rect);
+	//}
+
 
 }
 //---------------------------------------------------------------------------
@@ -723,7 +750,7 @@ void __fastcall TFMain::StringGrid_measDblClick(TObject *Sender)
 		return;
 	}
 
-	if ((StringGrid_meas->Col >= 3)&&(StringGrid_meas->Col <= 6)) {
+	if ((StringGrid_meas->Col >= 3)&&(StringGrid_meas->Col <= 10)) {
 
 		WideString s(L"nodata");
 		Form_data_enter->s = s.c_bstr();
@@ -752,7 +779,7 @@ void __fastcall TFMain::StringGrid_measDblClick(TObject *Sender)
 		return;
 	}
 
-	if (StringGrid_meas->Col >2) {
+	if (StringGrid_meas->Col >10) {
 
 
 		return;
@@ -1497,13 +1524,19 @@ void TFMain::SetWindowSize(int par)
 
 	unsigned int chars_panel_v_width = this->Panel_charts_v->Width;
 
-	this->Panel_chart_x_v->Width = chars_panel_v_width*330/1000;
-	this->Panel_chart_y_v->Width = chars_panel_v_width*330/1000;
-	this->Panel_chart_r->Width = chars_panel_v_width*330/1000;
+	//this->Panel_chart_x_v->Width = chars_panel_v_width*330/1000;
+	//this->Panel_chart_y_v->Width = chars_panel_v_width*330/1000;
+	//this->Panel_chart_r->Width = chars_panel_v_width*330/1000;
+
+	this->Panel_chart_x_v->Width = chars_panel_v_width*240/1000;
+	this->Panel_chart_y_v->Width = chars_panel_v_width*240/1000;
+	this->Panel_chart_r->Width = chars_panel_v_width*240/1000;
+	this->Panel_chart_asimut->Width = chars_panel_v_width*240/1000;
 
 	this->Panel_chart_x_v->Height = chars_panel_height*950/1000;
 	this->Panel_chart_y_v->Height = chars_panel_height*950/1000;
 	this->Panel_chart_r->Height = chars_panel_height*950/1000;
+	this->Panel_chart_asimut->Height = chars_panel_height*950/1000;
 }
 
 //---------------------------------------------------------------------------
@@ -1522,6 +1555,8 @@ void TFMain::DevideScreen(int par)
 		unsigned int Horres = GetDeviceCaps(hDCScreen, HORZRES);
 		unsigned int Vertres = GetDeviceCaps(hDCScreen, VERTRES);
 		ReleaseDC(NULL, hDCScreen);
+
+		i_screen_Width = Horres;
 
 		this->Panel_tree->Width = Horres/4;
 		this->Panel_meas_table->Width = Horres - this->Panel_tree->Width - 10;
@@ -1701,10 +1736,12 @@ void TFMain::ViewSelectedDrill(void)
 		Tc_X_v->drill = selected_drill;
 		Tc_Y_v->drill = selected_drill;
 		Tc_R_v->drill = selected_drill;
+		Tc_A_v->drill = selected_drill;
 
 		Tc_X_v->Redraw();
 		Tc_Y_v->Redraw();
 		Tc_R_v->Redraw();
+		Tc_A_v->Redraw();
 
 	}
 
@@ -1876,8 +1913,10 @@ typedef struct {
 
 	double x1;
 	double x2;
+
 } tstdata;
 
+/*
 	tstdata td [] =
 	{
 
@@ -1925,6 +1964,123 @@ typedef struct {
 		{-632,  -2847},
 
 	};
+ */
+
+tstdata td_f [] =
+{
+{-1018,	-1688},
+{-1640,	-1274},
+{-2178,	-756},
+{-2228,	-907},
+{-2147,	-868},
+{-1848,	-1254},
+{-1059,	-2008},
+{-643,	-2429},
+{-177,	-2882},
+{532,	-3493},
+{569,	-3695},
+{304,	-3299},
+{-24,	-2911},
+{231,	-3254},
+{188,	-3281},
+{810,	-3762},
+{1383,	-4441},
+{318,	-3323},
+{-1087,	-1940},
+{-2531,	-428},
+{-4091,	990},
+{-4117,	1192},
+{-2976,	-204},
+{-3582,	459},
+{-3867,	881},
+{-4199,	1111},
+{-4710,	1797},
+{-5076,	2082},
+{-4528,	1386},
+{-3690,	638},
+{-2790,	-268},
+{-2094,	-932},
+{-1339,	-1656},
+{-676,	-2399},
+{-251,	-2706},
+{-130,	-2896},
+{-139,	-2910},
+{-615,	-2579},
+{-1235,	-1765},
+{-2224,	-1107},
+{-1571,	-1277},
+{-2137,	-783},
+{-2698,	-351},
+{-2647,	-397},
+{-2118,	-840},
+{-2691,	-242},
+{-3158,	221},
+{-3418,	334},
+{-3495,	469},
+{-3958,	1026},
+{-4256,	1249},
+{-4296,	1279},
+{0,0},
+};
+
+
+tstdata td_b [] =
+{
+{1544,	6104},
+{2010,	5904},
+{2498,	5402},
+{2584,	5361},
+{2174,	5756},
+{1398,	6567},
+{993,	6872},
+{959,	7001},
+{647,	7254},
+{609,	7170},
+{1013,	6884},
+{1563,	6323},
+{2287,	5576},
+{2656,	5254},
+{2831,	5062},
+{2220,	5307},
+{1512,	6451},
+{1718,	6182},
+{1949,	5928},
+{2075,	5932},
+{2419,	5511},
+{2276,	5316},
+{1926,	6005},
+{2665,	5290},
+{3310,	4666},
+{3414,	4450},
+{3573,	4367},
+{3289,	4132},
+{3439,	4478},
+{3320,	4621},
+{3537,	4367},
+{4005,	3971},
+{4086,	3776},
+{3940,	3865},
+{3895,	4016},
+{3813,	4196},
+{3419,	4498},
+{3478,	4487},
+{3688,	4257},
+{4069,	3708},
+{2562,	5350},
+{3070,	4800},
+{3585,	4328},
+{3660,	4209},
+{3656,	4264},
+{4715,	3195},
+{5631,	2010},
+{5516,	2414},
+{5427,	2429},
+{5637,	2225},
+{5864,	1953},
+{5903,	1738},
+{0,0},
+};
+
 
 	TPlace* p;
 	TDrill* d;
@@ -1934,10 +2090,16 @@ typedef struct {
 	d = p->drill_list[0];
 	m = d->meas_list[0];
 
+	m->records_cnt = sizeof(td_f)/sizeof(td_f[0]);
+
 	for (int i = 0; i < m->records_cnt; i++)
 	{
-		m->records[i].X1 = td[i].x1;
-		m->records[i].X2 = td[i].x2;
+		m->records[i].X1 = td_f[i].x1;
+		m->records[i].X2 = td_b[i].x2;
+
+		m->records[i].Y1 = td_f[i].x1;
+		m->records[i].Y2 = td_b[i].x2;
+
 	}
 
 	//m->SaveData(0);
@@ -2023,37 +2185,77 @@ void TFMain::ShowChartHint_v(TChart* chart, int X, int Y)
 				 if (chart->Series[i]->Clicked(X,Y)!=-1)
 				 {
 
+				   WideString pname;
+				   WideString dname;
+				   WideString tmeas;
+
+				   TMeas* m;
+				   TPlace* p;
+				   TDrill* d;
+
+				   //m = this->GBISystem->selected_meas_list [i];
+
+				   d = selected_drill;
+				   p = GBISystem->place_list[d->pnum-1];
+				   m = d->meas_list[i];
+
+
+				   //p = this->GBISystem->place_list[m->pnum-1];
+				   //d = p->drill_list[m->dnum-1];
+
+				   pname = p->name;
+				   dname = d->name;
+				   tmeas = FormatDateTime(L"dd.mm.yy hh:mm",m->create_time);
+
 				   Application->HintHidePause=10000;
 				   Screen->Cursor=crDrag;	//crCross;
 
 					WideString s(L"");
-					double x,y=0;
+					double x,y,a,ax=0;
 					double& xx=x; double& yy=y;
 					chart->Series[i]->GetCursorValues(xx,yy);
 					WideString st(L"");
 
-					if (chart == Chart_x_h) {
+					st.printf(L"[%s]\r\n[%s]\r\n[%s]", pname.c_bstr(), dname.c_bstr(), tmeas.c_bstr());
+					s += st;
 
-						st.printf(L"%.1f ì",xx);
-						s.printf(L"[%.1f ìì]\r\n",yy);
+					st.printf(L"\r\n%.2f мм [%.1f м]", xx, yy);
+					s += st;
 
-					}
-					else
+					int px = FMain->Left + Panel_tree->Width + 35;
+					int py = FMain->Top + 140;
+
+					if (chart == Chart_y_v)
 					{
-						st.printf(L"%.1f ì",yy);
-						s.printf(L"[%.1f ìì]\r\n",xx);
+						px += Panel_chart_x_v->Width + 5;
 					}
 
+					if (chart == Chart_r)
+					{
+						px += Panel_chart_x_v->Width + 5;
+						px += Panel_chart_y_v->Width + 5;
+					}
+
+					px+=X;
+					py+=Y;
+
+					if ((px + 200) > i_screen_Width)
+					{
+						px -= 200 + 25;
+					}
 
 					int id = 0;
 
 					id = chart->Series[i]->GetCursorValueIndex();
 
-                    Sleep(1);
+					Sleep(1);
 
-					s+=st;
-					chart->Hint=s;
-					chart->ShowHint=true;
+					chart->Hint="";
+					chart->ShowHint=false;
+
+					Form_show_hint->Show(s);
+					Form_show_hint->Move(px,py);
+
 					sel = true;
 					break;
 				 }
@@ -2064,9 +2266,103 @@ void TFMain::ShowChartHint_v(TChart* chart, int X, int Y)
 				chart->ShowHint=false;
 				Screen->Cursor=(TCursor)0;
 				Application->HintHidePause=1;
+				Form_show_hint->Hide();
 			 }
 
 }
+
+void TFMain::ShowChartHint_a(TChart* chart, int X, int Y)
+{
+			 bool sel = false;
+
+			 for (int i = 0; i < 10; i++)
+			 {
+
+				 if (chart->Series[i]->Clicked(X,Y)!=-1)
+				 {
+
+				   WideString pname;
+				   WideString dname;
+				   WideString tmeas;
+
+				   TMeas* m;
+				   TPlace* p;
+				   TDrill* d;
+
+				   d = selected_drill;
+				   p = GBISystem->place_list[d->pnum-1];
+				   m = d->meas_list[i];
+
+				   pname = p->name;
+				   dname = d->name;
+				   tmeas = FormatDateTime(L"dd.mm.yy hh:mm",m->create_time);
+
+				   Application->HintHidePause=10000;
+				   Screen->Cursor=crDrag;	//crCross;
+
+					WideString s(L"");
+					double x,y,a,ax=0;
+					double& xx=x; double& yy=y;
+					chart->Series[i]->GetCursorValues(xx,yy);
+					WideString st(L"");
+
+					st.printf(L"[%s]\r\n[%s]\r\n[%s]", pname.c_bstr(), dname.c_bstr(), tmeas.c_bstr());
+					s += st;
+
+					st.printf(L"\r\n%.2f° [%.1f м]", xx, yy);
+					s += st;
+
+					int px = FMain->Left + Panel_tree->Width + 35;
+					int py = FMain->Top + 140;
+
+					if (chart == Chart_y_v)
+					{
+						px += Panel_chart_x_v->Width + 5;
+					}
+
+					if (chart == Chart_asimut)
+					{
+						px += Panel_chart_x_v->Width + 5;
+						px += Panel_chart_y_v->Width + 5;
+						px += Panel_chart_r->Width + 5;
+					}
+
+					px+=X;
+					py+=Y;
+
+					if ((px + 200) > i_screen_Width)
+					{
+						px -= 200 + 25;
+					}
+
+					int id = 0;
+
+					id = chart->Series[i]->GetCursorValueIndex();
+
+					Sleep(1);
+
+					chart->Hint="";
+					chart->ShowHint=false;
+
+					Form_show_hint->Show(s);
+					Form_show_hint->Move(px,py);
+
+					sel = true;
+					break;
+				 }
+			 }
+
+			 if (sel == false) {
+
+				chart->ShowHint=false;
+				Screen->Cursor=(TCursor)0;
+				Application->HintHidePause=1;
+				Form_show_hint->Hide();
+			 }
+
+}
+
+
 void __fastcall TFMain::Chart_x_vMouseMove(TObject *Sender, TShiftState Shift, int X,
 		  int Y)
 {
@@ -2075,7 +2371,7 @@ void __fastcall TFMain::Chart_x_vMouseMove(TObject *Sender, TShiftState Shift, i
 //---------------------------------------------------------------------------
 
 void __fastcall TFMain::Chart_y_vMouseMove(TObject *Sender, TShiftState Shift, int X,
-          int Y)
+		  int Y)
 {
 	ShowChartHint_v(Chart_y_v, X, Y);
 }
@@ -2208,6 +2504,13 @@ void __fastcall TFMain::ToolButton_exportClick(TObject *Sender)
 {
 	LPageControl_console->ActivePage = TabSheet_console;
 	GBISystem->ExportConfTxt(SaveDialog);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFMain::Chart_asimutMouseMove(TObject *Sender, TShiftState Shift,
+          int X, int Y)
+{
+		ShowChartHint_a(Chart_asimut, X, Y);
 }
 //---------------------------------------------------------------------------
 

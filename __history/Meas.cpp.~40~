@@ -66,7 +66,9 @@ TMeas::TMeas (TStringGrid* t, WideString n)
 	drill_start_point = 0;
 	type_drill = 0;
 
-    mark = "Маркировка измерения";
+	mark = "Маркировка измерения";
+
+    drill_asimut = 0.;
 }
 
 
@@ -143,11 +145,13 @@ int TMeas::DataToTable(void)
 		PutDblCell(table,3,i+1,this->records[i].X1);
 		PutDblCell(table,4,i+1,this->records[i].X2);
 		PutDblCell(table,5,i+1,this->records[i].Xres);
+
 		PutDblCell(table,6,i+1,this->records[i].LX);
 
 		PutDblCell(table,7,i+1,this->records[i].Y1);
 		PutDblCell(table,8,i+1,this->records[i].Y2);
 		PutDblCell(table,9,i+1,this->records[i].Yres);
+
 		PutDblCell(table,10,i+1,this->records[i].LY);
 
 		PutDblCell(table,11,i+1,this->records[i].LR);
@@ -288,6 +292,8 @@ int TMeas::Calc_Vert_Double_Bottom(void)
    double xres_prev = 0.;
    double yres_prev = 0.;
 
+#define   TEST_DRILL_ASIMUT 350
+
    for (int i = records_cnt - 1; i >=0 ; i--)
    {
 		/* Выбрать отсчет начиная с последнего */
@@ -332,13 +338,32 @@ int TMeas::Calc_Vert_Double_Bottom(void)
 		records[i].LR = sqrt((lx*lx)+(ly*ly));
 
 		/* Результирующий угол */
-		if (abs(records[i].LX) > 0.0001)
+		//if (abs(records[i].LX) > 0.0001)
 		{
 					records[i].AR = atan(records[i].LY/records[i].LX);
-					records[i].AR *= PI;
-					records[i].AR /= 180;
+
+					//records[i].AR *= PI;
+					//records[i].AR /= 180;
+
+					records[i].AR /= PI;
+					records[i].AR *= 180;
+
+					//Применяем азимут скважины - задается в градусах, просто прибавить
+					//records[i].AR += TEST_DRILL_ASIMUT;
+					records[i].AR += drill_asimut;
+
+					if (records[i].AR > 360)
+					{
+						records[i].AR -= 360;
+					}
+
+					//if (records[i].AR < 0)
+					//{
+					//	records[i].AR = 0;
+					//}
+
 					//переводим в секунды
-					records[i].AR *= 3600;
+					//!!!records[i].AR *= 3600;
 		}
 
 	}
@@ -972,6 +997,7 @@ int TMeas::LoadData()
 	fread(&pnum, sizeof(pnum),1,f);
 	fread(&dnum, sizeof(dnum),1,f);
 	fread(&num, sizeof(num),1,f);
+
 	fread(&create_time, sizeof(create_time),1,f);
 	fread(&finalize_time, sizeof(finalize_time),1,f);
 	fread(&finalized, sizeof(finalized),1,f);
@@ -1059,6 +1085,9 @@ WideString TMeas::dts(double d)
 
 	return s;
 }
+
+extern TMeas* g_prev_meas;
+extern Double g_drill_asimut;
 
 int TMeas::Excel (int par)
 {
@@ -1167,6 +1196,11 @@ int TMeas::Excel (int par)
     s = FormatDateTime(L"dd-mm-yy hh:nn",create_time);
 	WriteExcelReportCell(irow,1,L"Создано:"); WriteExcelReportCell(irow,2,s); irow++;
 
+	//s.printf(L"%.2f", this->drill_asimut);
+	s.printf(L"%.2f", 180.);
+
+	WriteExcelReportCell(irow,1,L"Азимут сещение:"); WriteExcelReportCell(irow,2,s); irow++;
+
 	if ((double) finalize_time > 0.0)
 	{
 		//s = FormatDateTime(L"dd-mm-yyyy hh:nn:ss",finalize_time);
@@ -1181,16 +1215,24 @@ int TMeas::Excel (int par)
 
 	icol = 1;
 
-	WriteExcelReportCell(irow,icol,L"Глубина"); icol++;
-	WriteExcelReportCell(irow,icol,L"Погр. тр."); icol++;
-	WriteExcelReportCell(irow,icol,L"X1"); icol++;
-	WriteExcelReportCell(irow,icol,L"X2"); icol++;
-	WriteExcelReportCell(irow,icol,L"Y1"); icol++;
-	WriteExcelReportCell(irow,icol,L"Y2"); icol++;
-	WriteExcelReportCell(irow,icol,L"LX"); icol++;
-	WriteExcelReportCell(irow,icol,L"LY"); icol++;
-	WriteExcelReportCell(irow,icol,L"LR"); icol++;
-	WriteExcelReportCell(irow,icol,L"AR"); icol++;
+	WriteExcelReportCell(irow,icol,L"Уровень"); icol++;
+
+	//!!!WriteExcelReportCell(irow,icol,L"Погр. тр."); icol++;
+
+	WriteExcelReportCell(irow,icol,L"Показания зонда, X1, угл. сек"); icol++;
+	WriteExcelReportCell(irow,icol,L"Показания зонда, X2, угл. сек"); icol++;
+	WriteExcelReportCell(irow,icol,L"Отклонение скважины от вертикали  по оси X,мм"); icol++;
+	WriteExcelReportCell(irow,icol,L" Показания зонда, Y1, угл. сек"); icol++;
+	WriteExcelReportCell(irow,icol,L" Показания зонда, Y2, угл. сек"); icol++;
+	WriteExcelReportCell(irow,icol,L"Отклонение скважины от вертикали  по оси Y,мм"); icol++;
+	WriteExcelReportCell(irow,icol,L"Отклонение скважины от вертикали  суммарное"); icol++;
+	WriteExcelReportCell(irow,icol,L"Азимут отклонения скважины в системе координат, где 0 - вдоль оси X"); icol++;
+
+	WriteExcelReportCell(irow,icol,L"Азимут отклонения скважины в географической системе координат, °"); icol++;
+	WriteExcelReportCell(irow,icol,L"Смещение скважины относительно нулевого цикла  по оси Х, мм"); icol++;
+	WriteExcelReportCell(irow,icol,L"Смещение скважины относительно нулевого цикла  по оси Y, мм"); icol++;
+	WriteExcelReportCell(irow,icol,L"Результирующее смещение скважины относительно нулевого цикла, мм"); icol++;
+	WriteExcelReportCell(irow,icol,L"Азимут результирующего смещения относительно нулевого цикла, °"); icol++;
 
 	irow++;
 
@@ -1203,15 +1245,80 @@ int TMeas::Excel (int par)
 		r = &this->records[i];
 		icol = 1;
 		WriteExcelReportCell(irow,icol,dts(r->depth)); icol++;
-		WriteExcelReportCell(irow,icol,dts(r->tuberr)); icol++;
+
+		//!!!WriteExcelReportCell(irow,icol,dts(r->tuberr)); icol++;
+
 		WriteExcelReportCell(irow,icol,dts(r->X1)); icol++;
 		WriteExcelReportCell(irow,icol,dts(r->X2)); icol++;
+		WriteExcelReportCell(irow,icol,dts(r->LX)); icol++;
 		WriteExcelReportCell(irow,icol,dts(r->Y1)); icol++;
 		WriteExcelReportCell(irow,icol,dts(r->Y2)); icol++;
-		WriteExcelReportCell(irow,icol,dts(r->LX)); icol++;
 		WriteExcelReportCell(irow,icol,dts(r->LY)); icol++;
 		WriteExcelReportCell(irow,icol,dts(r->LR)); icol++;
 		WriteExcelReportCell(irow,icol,dts(r->AR)); icol++;
+
+
+		double dd_asimut_geo = 0.;
+		double dd_shift_zero_X = 0.;
+		double dd_shift_zero_Y = 0.;
+		double dd_shift_zero_res = 0.;
+		double dd_asimut_res = 0.;
+		double asimut_shift = 180.;
+
+		if (num > 1)
+		{
+			/* Смещение скважины относительно нулевого цикла  по оси Х, мм */
+			/* =E10-Измерение_1!E9 */
+			dd_shift_zero_X = r->LX - g_prev_meas->records[i].LX;
+
+			/* Смещение скважины относительно нулевого цикла  по оси Y, мм */
+			/* =H10-Измерение_1!H9 */
+			dd_shift_zero_Y = r->LY - g_prev_meas->records[i].LY;
+
+			/* Азимут отклонения скважины в географической системе координат, ° */
+			/* =IF((J10+$B$7)<=360;J10+$B$7;K3+$L$1-360) */
+
+			if ((g_drill_asimut + r->AR) <=360.)
+			{
+			   dd_asimut_geo = r->AR + asimut_shift;
+			}
+			else
+			{
+			   dd_asimut_geo = dd_shift_zero_X - 360; //???
+			}
+
+			/* Результирующее смещение скважины относительно нулевого цикла, мм */
+			/* =SQRT(L10*L10+M10*M10) */
+			dd_shift_zero_res = sqrt((dd_shift_zero_X*dd_shift_zero_X)+(dd_shift_zero_Y*dd_shift_zero_Y));
+
+			/* Азимут результирующего смещения относительно нулевого цикла, ° */
+			/* =IF(N10=0;0;IF(L10>=0;DEGREES(ASIN(M10/N10));(180-DEGREES(ASIN(M10/N10))))) */
+			if (dd_shift_zero_res == 0)
+			{
+			   dd_asimut_res = 0;
+			}
+			else if (dd_shift_zero_X >= 0)
+			{
+			   dd_asimut_res = asin(dd_shift_zero_Y/dd_shift_zero_res);
+			   dd_asimut_res *= 180;
+			   dd_asimut_res /= M_PI;
+			}
+			else
+			{
+			   dd_asimut_res = asin(dd_shift_zero_Y/dd_shift_zero_res);
+			   dd_asimut_res *= 180;
+			   dd_asimut_res /= M_PI;
+			   dd_asimut_res = 180 - dd_asimut_res;
+            }
+
+		}
+
+		WriteExcelReportCell(irow,icol,dts(dd_asimut_geo)); icol++;
+		WriteExcelReportCell(irow,icol,dts(dd_shift_zero_X)); icol++;
+		WriteExcelReportCell(irow,icol,dts(dd_shift_zero_Y)); icol++;
+		WriteExcelReportCell(irow,icol,dts(dd_shift_zero_res)); icol++;
+		WriteExcelReportCell(irow,icol,dts(dd_asimut_res)); icol++;
+
 		irow++;
 
 		per = ((i+1)/records_cnt)*100;
@@ -1332,11 +1439,6 @@ int TMeas::AcceptDataFileRecord(int dir, double d, double x, double y)
     /* auto adjust the records cnt using step 0.5 */
 	int rec_num_calc = (d/0.5) + 1;
 
-	//if (this->records_cnt > rec_num_calc)
-	//{
-	//	this->records_cnt = rec_num_calc;
-	//}
-
 	if (this->records_cnt < rec_num_calc)
 	{
 		records_cnt = rec_num_calc;
@@ -1350,7 +1452,6 @@ int TMeas::AcceptDataFileRecord(int dir, double d, double x, double y)
 		}
 	}
 	/* end of records cnt auto adjust */
-
 
 	 for (int i =0; i < records_cnt; i++)
 	 {

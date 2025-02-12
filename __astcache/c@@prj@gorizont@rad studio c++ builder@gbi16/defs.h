@@ -10,7 +10,7 @@ extern bool b_MessageConfirmParamsetShow;
 
 #define BUILD           2
 #define VERSION         12
-#define SUBVERSION      0
+#define SUBVERSION      1
 
 /*
 	Forms control macro definitions
@@ -39,6 +39,15 @@ extern bool b_MessageConfirmParamsetShow;
 	For debuf development mode
 */
 
-//#define DEBUG_DEVELOPMENT_MODE
+#define DEBUG_DEVELOPMENT_MODE
+
+#define T_ONE_DAY       (1.)
+#define T_ONE_HOUR      (1./24.)
+#define T_ONE_MIN       (1./(24.*60.))
+#define T_ONE_SEC       (1./(24.*60.*60.))
+#define T_ONE_MSEC      ((1./(24.*60.*60.))/1000)
+#define T_ONE_DSEC      ((1./(24.*60.*60.))/10)
+
+
 
 

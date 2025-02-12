@@ -294,7 +294,7 @@ int TMeas::Calc_Vert_Double_Bottom(void)
 
 #define   TEST_DRILL_ASIMUT 350
 
-   for (int i = records_cnt - 1; i >=0 ; i--)
+   for (int i = records_cnt - 2; i >=0 ; i--)
    {
 		/* Выбрать отсчет начиная с последнего */
 

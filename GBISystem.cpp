@@ -1138,6 +1138,16 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 	 bool b_forw = false;
 	 bool b_back = false;
 
+	 bool cur_forw = false;
+	 bool cur_back = false;
+
+	 bool dir_01 = false;
+	 bool dir_10 = false;
+
+	 double level_start = 0;// = dfm->record [0].level;
+	 double level_end = 0;//dfm->record [dfm->record_cnt - 1].level;
+	 int calc_records_cnt = 0;
+
 	 for (int i =0; i < dfm->record_cnt; i++)
 	 {
 
@@ -1151,19 +1161,56 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 
 		if ((data_file_record->dir == L"Forward")||(data_file_record->dir == L"Forward Start"))
 		{
-			dir = 0; b_forw = true;
+			dir = 0;
+
+			if (cur_back == true)
+			{
+				dir_10 = true;
+				dir_01 = false;
+			}
+			else
+			{
+				dir_10 = false;
+				dir_01 = false;
+			}
+
+			b_forw = true; cur_forw = true; cur_back = false;
 		}
 		else
 		{
-		   dir = 1; b_back = true;
+		   dir = 1;
+
+			if (cur_forw == true)
+			{
+				dir_10 = false;
+				dir_01 = true;
+			}
+			else
+			{
+				dir_10 = false;
+				dir_01 = false;
+			}
+
+		   b_back = true;  cur_forw = false; cur_back = true;
 		}
 
 		if (m->AcceptDataFileRecord(dir, data_file_record->level, data_file_record->X, data_file_record->Y) == 0)
 		{
-			 total_accepted_meas_records++;
 
 			 if (data_file_record->level > level_max) level_max = data_file_record->level;
 			 if (data_file_record->level < level_min) level_min = data_file_record->level;
+
+			 if (total_accepted_meas_records == 0)
+			 {
+				level_start = dfm->record [0].level;
+			 }
+
+			 if ((dir_10)||(dir_01))
+			 {
+				level_end = dfm->record [total_accepted_meas_records].level;
+			 }
+
+			 total_accepted_meas_records++;
 
 		}
 	 }
@@ -1177,9 +1224,9 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 		d->single_way = 1;
 	 }
 
-	 double level_start = dfm->record [0].level;
-	 double level_end = dfm->record [dfm->record_cnt - 1].level;
-	 int calc_records_cnt = 0;
+	 //double level_start = dfm->record [0].level;
+	 //double level_end = dfm->record [dfm->record_cnt - 1].level;
+	 //int calc_records_cnt = 0;
 
 	 if (level_start > level_end)
 	 {
