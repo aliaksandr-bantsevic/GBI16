@@ -110,22 +110,22 @@ void __fastcall TForm_DrillAdjust::FormCreate(TObject *Sender)
 	this->RadioGroup_calc_start->Visible = true;
 	this->RadioButton_top->Visible = TRUE;
 	this->RadioButton_bot->Visible = TRUE;
-	this->RadioButton_top->Checked = TRUE;
-	this->RadioButton_bot->Checked = FALSE;
+	this->RadioButton_top->Checked = FALSE;
+	this->RadioButton_bot->Checked = TRUE;
 
 	//start collect data
 	GroupBox_start_collect_data->Visible = true;
 	RadioButton_start_first->Visible = TRUE;
 	RadioButton_start_last->Visible = TRUE;
-	RadioButton_start_first->Checked = TRUE;
-	RadioButton_start_last->Checked = FALSE;
+	RadioButton_start_first->Checked = FALSE;
+	RadioButton_start_last->Checked = TRUE;
 
 	//pass 1/2
 	GroupBox_pass->Visible = true;
 	RadioButton_pass_1->Visible = TRUE;
 	RadioButton_pass_2->Visible = TRUE;
-	RadioButton_pass_1->Checked = TRUE;
-	RadioButton_pass_2->Checked = FALSE;
+	RadioButton_pass_1->Checked = FALSE;
+	RadioButton_pass_2->Checked = TRUE;
 
 	//Geo bind
 	GroupBox_geo->Visible = true;
@@ -393,6 +393,12 @@ int TForm_DrillAdjust::FormToDrill()
 	{
 		drill->start_point = DRILL_BOT_POINT;
 	}
+
+	if (RadioButton_start_last ->Checked == TRUE)
+	{
+		drill->records_cnt++;
+		drill->level_start += 0.5;
+    }
 
 	//start collect data
 	/*

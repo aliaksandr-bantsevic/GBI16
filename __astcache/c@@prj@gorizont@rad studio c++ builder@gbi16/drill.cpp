@@ -19,13 +19,13 @@ TDrill::TDrill()
 	geo_data.output_point = 0.;
 
 	drill_asimut = 0.;
-	level_start = 0.;
-	level_end = 5.0;
+	level_start = 25.5;
+	level_end = 0.0;
 
-    meas_list_idx = 0;
+	meas_list_idx = 0;
 	name = L"Скважина";
 
-	single_way = 1;
+	single_way = 0;
     start_point = 0;
 }
 

@@ -1243,6 +1243,39 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 	 d->level_start = level_start;
 	 d->level_end = level_end;
 
+     //ЕСЛИ НЕТ ФИНАЛЬНОЙ ТОЧКИ С НУЛЕВЫМИ УГЛАМИ ДОБАВЛЯЕМ ПРИНУДИТЕЛЬНО
+
+	 if (
+		(m->records[m->records_cnt-1].X1 != 0)||
+		(m->records[m->records_cnt-1].X2 != 0)||
+		(m->records[m->records_cnt-1].Y1 != 0)||
+		(m->records[m->records_cnt-1].Y2 != 0)
+
+		)
+	 {
+
+		 if (level_start > level_end) {
+
+			level_start += 0.5;
+
+		 }
+		 else
+		 {
+			 level_end += 0.5;
+		 }
+
+		 d->records_cnt++;
+		 m->records_cnt++;
+
+		 for (int i = m->records_cnt; i > 0; i--)
+		 {
+			memcpy(&m->records[i], &m->records[i-1], sizeof(meas_record));
+		 }
+
+		 m->records[m->records_cnt-1].depth = m->records[m->records_cnt-2].depth + 0.5;
+
+	 }
+
 	 ws.printf(L" [%d записей]", total_accepted_meas_records);
 	 msg = msg + ws;
 	 console(L"Система", msg);

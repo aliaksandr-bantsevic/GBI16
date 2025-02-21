@@ -3,8 +3,8 @@ object Form_DrillAdjust: TForm_DrillAdjust
   Top = 0
   BorderStyle = bsDialog
   Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '#1089#1082#1074#1072#1078#1080#1085#1091
-  ClientHeight = 399
-  ClientWidth = 1004
+  ClientHeight = 398
+  ClientWidth = 1000
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

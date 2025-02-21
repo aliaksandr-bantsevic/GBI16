@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------
 
 #pragma hdrstop
 
@@ -43,6 +43,8 @@
 		backup_limit = 1.0;
 		auto_backup_flag = false;
 		auto_backup_flag_completed = false;   */
+
+        ini = NULL;
    }
 
    TSysConfMgr::~TSysConfMgr()
