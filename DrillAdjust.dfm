@@ -143,7 +143,7 @@ object Form_DrillAdjust: TForm_DrillAdjust
       Top = 32
       Width = 193
       Height = 17
-      Caption = #1053#1072#1095#1080#1085#1072#1090#1100' '#1089' '#1087#1077#1088#1074#1086#1075#1086
+      Caption = #1053#1072#1095#1080#1085#1072#1090#1100' '#1089' '#1074#1077#1088#1093#1085#1077#1075#1086
       TabOrder = 0
     end
     object RadioButton_start_last: TRadioButton
@@ -151,7 +151,7 @@ object Form_DrillAdjust: TForm_DrillAdjust
       Top = 72
       Width = 206
       Height = 17
-      Caption = #1053#1072#1095#1080#1085#1072#1090#1100' '#1089' '#1087#1086#1089#1083#1077#1076#1085#1077#1075#1086
+      Caption = #1053#1072#1095#1080#1085#1072#1090#1100' '#1089' '#1085#1080#1078#1085#1077#1075#1086
       TabOrder = 1
     end
   end

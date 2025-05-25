@@ -1479,6 +1479,7 @@ void TFMain::ViewSelectedMeas(void)
 	}
 
 		this->LPageControl_console->Visible = true;
+        this->LPageControl_console->ActivePageIndex = 0;
 		this->TabSheet_charts->TabVisible = false;
 		this->TabSheet_charts_v->TabVisible = false;
 		this->TabSheet_meas_table->TabVisible = true;

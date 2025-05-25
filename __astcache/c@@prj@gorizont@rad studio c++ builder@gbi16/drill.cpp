@@ -26,7 +26,8 @@ TDrill::TDrill()
 	name = L"Скважина";
 
 	single_way = 0;
-    start_point = 0;
+	start_point = 0;
+    drill_orient = 1;
 }
 
 

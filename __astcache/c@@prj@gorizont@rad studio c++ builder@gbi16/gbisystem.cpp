@@ -1215,6 +1215,17 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 		}
 	 }
 
+	 //if (dir_10)
+	 //{
+	 //level_start = level_max;
+	 //	level_end = level_min;
+	 //}
+	 //else //if (dir_01)
+	 //{
+	 //	level_start = level_min;
+	 //	level_end = level_max;
+	 //}
+
 	 if ((b_forw == true) && (b_back == true))
 	 {
 		d->single_way = 0;
@@ -1274,6 +1285,13 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 
 		 m->records[m->records_cnt-1].depth = m->records[m->records_cnt-2].depth + 0.5;
 
+	 }
+
+	 /////
+	 if (d->level_start == d->level_end)
+	 {
+		d->level_start = level_max;
+		d->level_end = level_min;
 	 }
 
 	 ws.printf(L" [%d записей]", total_accepted_meas_records);
