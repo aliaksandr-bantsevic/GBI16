@@ -522,6 +522,9 @@ int TDataFile::ParsDaTaFile(TCHAR* tdir)
 
 int TDataFile::ProcessDataFilemeas(data_file_meas_type* dm)
 {
+
+   dm->is_valued = true; return 0;//!!!
+
 	int res = 0;
 
 	boolean record_is_started_f = false;
@@ -530,6 +533,8 @@ int TDataFile::ProcessDataFilemeas(data_file_meas_type* dm)
 	data_file_record_type* dfr = NULL;
 
 	dm->is_valued = false;
+
+
 
 	/* -------------------Forward------------------------------ */
 
@@ -543,7 +548,7 @@ int TDataFile::ProcessDataFilemeas(data_file_meas_type* dm)
 		{
 			dfr = &dm->record [i];
 
-			if ((dfr->dir == L"Forward")||(dfr->dir == L"ForwardStart"))
+			if ((dfr->dir == L"Forward")||(dfr->dir == L"Forward Start"))
 			{
 			   dm->record [i].is_sign_value = true; dm->is_valued = true;
 			}

@@ -237,7 +237,6 @@ __published:	// IDE-managed Components
 	void __fastcall Timer_excel_export_progressTimer(TObject *Sender);
 	void __fastcall Panel1DblClick(TObject *Sender);
 	void __fastcall Chart_y_hDblClick(TObject *Sender);
-	void __fastcall ToolButton_testClick(TObject *Sender);
 	void __fastcall Chart_x_vDblClick(TObject *Sender);
 	void __fastcall Chart_y_vDblClick(TObject *Sender);
 	void __fastcall Chart_rDblClick(TObject *Sender);

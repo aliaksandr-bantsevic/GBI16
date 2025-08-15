@@ -1153,13 +1153,15 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 
 		data_file_record = &dfm->record [i];
 
+		/*
 		if (data_file_record->is_sign_value == false)
 		{
 			console(L"Система", L"Не валидная запись пропущена");
-			continue; //miss not valid recore
+			continue; //miss not valid record
 		}
+		*/
 
-		if ((data_file_record->dir == L"Forward")||(data_file_record->dir == L"Forward Start"))
+		if ((data_file_record->dir == L"Forward")||(data_file_record->dir == L"ForwardStart"))
 		{
 			dir = 0;
 
@@ -1297,6 +1299,12 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 	 ws.printf(L" [%d записей]", total_accepted_meas_records);
 	 msg = msg + ws;
 	 console(L"Система", msg);
+
+
+
+	d->single_way = 1;
+    d->start_point = DRILL_BOT_POINT; //start from bottom
+    d->records_cnt = m->records_cnt;
 
 	 m->SaveData(0); //Save accepted Data
 
@@ -1442,7 +1450,7 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 				else
 				{
 					max_cnt = back_cnt;
-                }
+				}
 
 				if ((level_start == 0.)&&(level_end == 0.))
 				{
@@ -1504,7 +1512,7 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 	 {
 		 console(L"Система", L"Не удалось найти/создать измерение");
 		 res = -1; //can not find/create place
-     }
+	 }
 
 	 if (single_way != 0)
 	 {
