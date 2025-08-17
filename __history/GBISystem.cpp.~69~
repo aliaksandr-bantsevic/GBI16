@@ -1161,7 +1161,7 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 		}
 		*/
 
-		if ((data_file_record->dir == L"Forward")||(data_file_record->dir == L"Forward Start"))
+		if ((data_file_record->dir == L"Forward")||(data_file_record->dir == L"ForwardStart"))
 		{
 			dir = 0;
 
@@ -1299,6 +1299,12 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 	 ws.printf(L" [%d записей]", total_accepted_meas_records);
 	 msg = msg + ws;
 	 console(L"Система", msg);
+
+
+
+	d->single_way = 1;
+    d->start_point = DRILL_BOT_POINT; //start from bottom
+    d->records_cnt = m->records_cnt;
 
 	 m->SaveData(0); //Save accepted Data
 

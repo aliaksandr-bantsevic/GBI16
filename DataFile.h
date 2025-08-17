@@ -6,6 +6,7 @@
 #endif
 
 #include "defs.h"
+#include "Meas.h"
 
 #define DATA_FILE_RECORD_CNT_MAX 	1000
 #define DATA_FILE_MEAS_CNT_MAX 		1000
@@ -44,7 +45,20 @@ typedef struct {
 	boolean is_started_b;
 	boolean is_finished;
 
+	double d_forward_start;
+	double d_forward_end;
+	double d_back_start;
+	double d_back_end;
+
+	int i_forward_start;
+	int i_forward_end;
+	int i_back_start;
+	int i_back_end;
+
 	boolean is_valued;
+
+	boolean is_forward_valued;
+	boolean is_back_valued;
 
 } data_file_meas_type;
 
@@ -105,6 +119,7 @@ public:
     int AcceptDaTaFileMeasRecord(void);
 	int ParsDaTaFile(TCHAR* tdir);
 	int ProcessDataFilemeas(data_file_meas_type* dm);
+	int session_correctness_check(void);
 
 	double d_par;
 	TDateTime t_par;

@@ -510,172 +510,134 @@ int TDataFile::ParsDaTaFile(TCHAR* tdir)
    int i = 0;
    data_file_meas_type* m = NULL;
 
-   while (data_file_meas_set[i] != NULL)
-   {
-	  m = data_file_meas_set[i];
-	  ProcessDataFilemeas(m);
-	  i++;
-   }
+   //while (data_file_meas_set[i] != NULL)
+   //{
+   //	  m = data_file_meas_set[i];
+   //	  ProcessDataFilemeas(m);
+   //	  i++;
+   //}
+
+   session_correctness_check();
 
    return res;
 }
 
 int TDataFile::ProcessDataFilemeas(data_file_meas_type* dm)
 {
-	int res = 0;
 
-	boolean record_is_started_f = false;
-	boolean record_is_started_b = false;
-
-	data_file_record_type* dfr = NULL;
-
-	dm->is_valued = false;
-
-	/* -------------------Forward------------------------------ */
-
-	record_is_started_f = false;
-
-	/* No start no finish */
-	if ((dm->is_started_f == false)&&(dm->is_finished == false))
-	{
-
-		for (int i = 0; i < dm->record_cnt ; i++)
-		{
-			dfr = &dm->record [i];
-
-			if ((dfr->dir == L"Forward")||(dfr->dir == L"ForwardStart"))
-			{
-			   dm->record [i].is_sign_value = true; dm->is_valued = true;
-			}
-		}
-	}
-
-	/* Is start & finish */
-
-	else if ((dm->is_started_f == true)&&(dm->is_finished == true))
-	{
-
-		for (int i = 0; i < dm->record_cnt ; i++)
-		{
-			dfr = &dm->record [i];
-
-			if ((dfr->dir == L"Forward")||(dfr->dir == L"ForwardStart"))
-			{
-			   record_is_started_f = true;
-			}
-
-			if (((dfr->dir == L"Forward")||(dfr->dir == L"ForwardStart"))&&(record_is_started_f))
-			{
-			   dm->record [i].is_sign_value = true; dm->is_valued = true;
-			}
-		}
-
-	}
-
-	/* Is start & NO finish */
-	else if ((dm->is_started_f == true)&&(dm->is_finished == false))
-	{
-
-		for (int i = 0; i < dm->record_cnt ; i++)
-		{
-			dfr = &dm->record [i];
-
-			if (dfr->dir == L"Forward")
-			{
-			   dm->record [i].is_sign_value = false; dm->is_valued = false;
-			}
-		}
-
-	}
-
-	/* No start & is finish */
-	else if ((dm->is_started_f == false)&&(dm->is_finished == true))
-	{
-
-		for (int i = 0; i < dm->record_cnt ; i++)
-		{
-			dfr = &dm->record [i];
-
-			if (dfr->dir == L"Forward")
-			{
-			   dm->record [i].is_sign_value = true; dm->is_valued = true;
-			}
-		}
-
-	}
-
-	/* -------------------Backward------------------------------ */
-
-	record_is_started_b = false;
-
-	/* No start no finish */
-	if ((dm->is_started_b == false)&&(dm->is_finished == false))
-	{
-
-		for (int i = 0; i < dm->record_cnt ; i++)
-		{
-			dfr = &dm->record [i];
-
-			if ((dfr->dir == L"Back")||(dfr->dir == L"BackStart"))
-			{
-			   dm->record [i].is_sign_value = true; dm->is_valued = true;
-			}
-		}
-	}
-
-	/* Is start & finish */
-
-	else if ((dm->is_started_b == true)&&(dm->is_finished == true))
-	{
-
-		for (int i = 0; i < dm->record_cnt ; i++)
-		{
-			dfr = &dm->record [i];
-
-			if ((dfr->dir == L"Back")||(dfr->dir == L"BackStart"))
-			{
-			   record_is_started_b = true;
-			}
-
-			if (((dfr->dir == L"Back")||(dfr->dir == L"BackStart"))&&(record_is_started_b))
-			{
-			   dm->record [i].is_sign_value = true; dm->is_valued = true;
-			}
-		}
-
-	}
-
-	/* Is start & NO finish */
-	else if ((dm->is_started_b == true)&&(dm->is_finished == false))
-	{
-
-		for (int i = 0; i < dm->record_cnt ; i++)
-		{
-			dfr = &dm->record [i];
-
-			if (dfr->dir == L"Back")
-			{
-			   dm->record [i].is_sign_value = false; dm->is_valued = false;
-			}
-		}
-
-	}
-
-	/* No start & is finish */
-	else if ((dm->is_started_b == false)&&(dm->is_finished == true))
-	{
-
-		for (int i = 0; i < dm->record_cnt ; i++)
-		{
-			dfr = &dm->record [i];
-
-			if (dfr->dir == L"back")
-			{
-			   dm->record [i].is_sign_value = true; dm->is_valued = true;
-			}
-		}
-
-	}
-
-	return res;
+	return 0;
 }
+
+int TDataFile::session_correctness_check(void)
+{
+
+   int i = 0;
+   int j = 0;
+
+   data_file_meas_type* m = NULL;
+   data_file_record_type* record;
+
+   bool is_forward_start = false;
+   bool is_forward_end = false;
+
+   bool is_back_start = false;
+   bool is_back_end = false;
+
+   while (data_file_meas_set[j] != NULL)
+   {
+	  m = data_file_meas_set[i];
+
+	  is_forward_start = false;
+	  is_forward_end = false;
+
+	  is_back_start = false;
+	  is_back_end = false;
+
+	  m->d_forward_start = -1.;
+	  m->d_forward_end = -1.;
+	  m->d_forward_start = -1.;
+	  m->d_forward_end = -1.;
+
+	  m->i_forward_start = -1;
+	  m->i_forward_end = -1;
+	  m->i_forward_start = -1;
+	  m->i_forward_end = -1;
+
+	  m->is_valued = false;
+	  m->is_forward_valued = false;
+	  m->is_back_valued = false;
+
+	  for (i = 0; i < m->record_cnt; i++)
+	  {
+		  record = &m->record [i];
+
+		  record->is_sign_value = false;
+
+		  if (record->dir == L"ForwardStart")
+		  {
+			   is_forward_start = true;
+			   m->d_forward_start = record->level;
+			   m->i_forward_start = i;
+		  }
+
+		  if (record->dir == L"BackStart")
+		  {
+			   is_back_start = true;
+			   m->d_back_start = record->level;
+			   m->i_back_start = i;
+		  }
+
+		  if (record.dir == L"ForwardEnd")
+		  {
+			   is_forward_end = true;
+			   m->d_forward_end = record->level;
+			   m->i_forward_end = i;
+		  }
+
+		  if (record->dir == L"BackEnd")
+		  {
+			   is_back_end = true;
+			   m->d_back_end = record->level;
+			   m->i_back_end = i;
+		  }
+
+		  Sleep(1);
+	  }
+
+	  /* forward part is valid */
+	  if ((is_forward_start)&&(is_forward_end))
+	  {
+		  for (i = 0; i < m->record_cnt; i++)
+		  {
+			  record = &m->record [i];
+
+			  if ((i >= m->i_forward_start)&&(i <= m->i_forward_end))
+			  {
+				  record->is_sign_value = true;
+			  }
+		  }
+
+		  m->is_forward_valued = true;
+	  }
+
+	  /* forward part is valid */
+	  if ((is_back_start)&&(is_back_end))
+	  {
+		  for (i = 0; i < m->record_cnt; i++)
+		  {
+			  record = &m->record [i];
+
+			  if ((i >= m->i_back_start)&&(i <= m->i_back_end))
+			  {
+				  record->is_sign_value = true;
+			  }
+		  }
+
+		  m->is_back_valued = true;
+	  }
+
+	  j++;
+   }
+
+}
+

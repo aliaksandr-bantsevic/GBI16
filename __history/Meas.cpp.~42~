@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------
 
 #pragma hdrstop
 
@@ -294,49 +294,39 @@ int TMeas::Calc_Vert_Double_Bottom(void)
 
 #define   TEST_DRILL_ASIMUT 350
 
-   for (int i = records_cnt - 1; i >=0 ; i--)
+   for (int i = records_cnt - 2; i >=0 ; i--)
    {
 		/* Выбрать отсчет начиная с последнего */
 
+		x1 = records[i].X1;
+		x2 = records[i].X2;
+
+		y1 = records[i].Y1;
+		y2 = records[i].Y2;
 
 		d  = records[i].depth;
 
-		/* Для последней точки */
+		/* Для последней точки принимает что следующая будет через 0.5 м*/
 		if (i == records_cnt - 1)
 		{
-			//records[i+1].depth = records[i].depth + 0.5;
-			x1 = 0;
-			y2 = 0;
-			y1 = 0;
-			y2 = 0;
-		}
-		else
-		{
-			x1 = records[i].X1;
-			x2 = records[i].X2;
-
-			y1 = records[i].Y1;
-			y2 = records[i].Y2;
+			records[i+1].depth = records[i].depth + 0.5;
 		}
 
-
-		{
-			/* Xres = (x1-x2)/2) */
-			xres = (x1-x2)/2;
-			/* Yres = (y1-y2)/2) */
-			yres = (y1-y2)/2;
-		}
+		/* Xres = (x1-x2)/2) */
+		xres = (x1-x2)/2;
+		/* Yres = (y1-y2)/2) */
+		yres = (y1-y2)/2;
 
 		/* пишем в базу */
 		records[i].Xres = xres;
 		records[i].Yres = yres;
 
 		/* Lx = (depth[i+1] - depth) * sin(Xres[i]))/3600*PI/180) * 1000 + Lx[предыдущее]  */
-		if (i < records_cnt - 1) lx = (records[i+1].depth - records[i].depth) * sin((records[i].Xres)/3600*PI/180) * 1000 + xres_prev;
+		lx = (records[i+1].depth - records[i].depth) * sin((records[i].Xres)/3600*PI/180) * 1000 + xres_prev;
 		xres_prev = lx;
 
 		/* Ly = (depth[i+1] - depth) * sin(Yres[i]))/3600*PI/180) * 1000 + Ly[предыдущее]; */
-		if (i < records_cnt - 1) ly = (records[i+1].depth - records[i].depth) * sin((records[i].Yres)/3600*PI/180) * 1000 + yres_prev;
+		ly = (records[i+1].depth - records[i].depth) * sin((records[i].Yres)/3600*PI/180) * 1000 + yres_prev;
 		yres_prev = ly;
 
 		/* пишем в базу */
@@ -348,7 +338,7 @@ int TMeas::Calc_Vert_Double_Bottom(void)
 		records[i].LR = sqrt((lx*lx)+(ly*ly));
 
 		/* Результирующий угол */
-		if (abs(records[i].LX) > 0.0001)
+		//if (abs(records[i].LX) > 0.0001)
 		{
 					records[i].AR = atan(records[i].LY/records[i].LX);
 
@@ -377,17 +367,6 @@ int TMeas::Calc_Vert_Double_Bottom(void)
 		}
 
 	}
-
-	records[records_cnt - 1].AR = records[records_cnt - 2].AR;
-
-	this->finalize_time = Now();
-
-	finalized = true;
-
-
-	SaveData(0);
-	DataToTable();
-
 
 	return 0;
 }
@@ -514,7 +493,6 @@ int TMeas::Calculate(void)
 		if (type_drill == 1)
 		{
 
-			Calc_Vert_Double_Bottom(); return 0;//
 
 			xres = (x1-x2)/2;
 			yres = (y1-y2)/2;

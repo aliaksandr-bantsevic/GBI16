@@ -361,7 +361,8 @@ int TDataFile::GetDaTaFileMeasIdx(void)
 	data_file_meas_type* m;
 	bool exist = false;
 
-	bool started = false;
+	bool started_f = false;
+	bool started_b = false;
 
 	if (data_file_record.dir == L"Finish")
 	{
@@ -387,12 +388,12 @@ int TDataFile::GetDaTaFileMeasIdx(void)
 
 	if (data_file_record.dir == L"BackStart")
 	{
-		started = true;
+		started_b = true;
 	}
 
 	if (data_file_record.dir == L"ForwardStart")
 	{
-		started = true;
+		started_f = true;
 	}
 
 	for (int i = 0; i < data_file_meas_set_idx; i++)
@@ -424,7 +425,6 @@ int TDataFile::GetDaTaFileMeasIdx(void)
 		m->drill = data_file_record.drill;
 		m->time = data_file_record.time;
 
-		m->is_started = false;
 		m->is_finished = false;
 
 		data_file_meas_set [data_file_meas_set_idx] = m;
@@ -436,10 +436,8 @@ int TDataFile::GetDaTaFileMeasIdx(void)
 
 	last_proceeded_dm = m;
 
-	if (started)
-	{
-		m->is_started = true;
-	}
+	if (started_f) m->is_started_f = true;
+	if (started_b) m->is_started_b = true;
 
 	return res;
 }
@@ -512,22 +510,134 @@ int TDataFile::ParsDaTaFile(TCHAR* tdir)
    int i = 0;
    data_file_meas_type* m = NULL;
 
-   while (data_file_meas_set[i] != NULL)
-   {
-	  m = data_file_meas_set[i];
-	  i++;
-   }
+   //while (data_file_meas_set[i] != NULL)
+   //{
+   //	  m = data_file_meas_set[i];
+   //	  ProcessDataFilemeas(m);
+   //	  i++;
+   //}
+
+   session_correctness_check();
 
    return res;
 }
 
-int TDataFile::ParsDaTaFile(data_file_meas_type* dm)
+int TDataFile::ProcessDataFilemeas(data_file_meas_type* dm)
 {
-	int res = 0;
 
-	dm->is_started = false;
-	dm->is_finished = false;
-
-
-	return res;
+	return 0;
 }
+
+int TDataFile::session_correctness_check(void)
+{
+
+   int i = 0;
+   int j = 0;
+
+   data_file_meas_type* m = NULL;
+   data_file_record_type* record;
+
+   bool is_forward_start = false;
+   bool is_forward_end = false;
+
+   bool is_back_start = false;
+   bool is_back_end = false;
+
+   while (data_file_meas_set[j] != NULL)
+   {
+	  m = data_file_meas_set[i];
+
+	  is_forward_start = false;
+	  is_forward_end = false;
+
+	  is_back_start = false;
+	  is_back_end = false;
+
+	  m->d_forward_start = -1.;
+	  m->d_forward_end = -1.;
+	  m->d_forward_start = -1.;
+	  m->d_forward_end = -1.;
+
+	  m->i_forward_start = -1;
+	  m->i_forward_end = -1;
+	  m->i_forward_start = -1;
+	  m->i_forward_end = -1;
+
+	  m->is_valued = false;
+	  m->is_forward_valued = false;
+	  m->is_back_valued = false;
+
+	  for (i = 0; i < m->record_cnt; i++)
+	  {
+		  record = &m->record [i];
+
+		  record->is_sign_value = false;
+
+		  if (record->dir == L"ForwardStart")
+		  {
+			   is_forward_start = true;
+			   m->d_forward_start = record->level;
+			   m->i_forward_start = i;
+		  }
+
+		  if (record->dir == L"BackStart")
+		  {
+			   is_back_start = true;
+			   m->d_back_start = record->level;
+			   m->i_back_start = i;
+		  }
+
+		  if (record->dir == L"ForwardEnd")
+		  {
+			   is_forward_end = true;
+			   m->d_forward_end = record->level;
+			   m->i_forward_end = i;
+		  }
+
+		  if (record->dir == L"BackEnd")
+		  {
+			   is_back_end = true;
+			   m->d_back_end = record->level;
+			   m->i_back_end = i;
+		  }
+
+		  Sleep(1);
+	  }
+
+	  /* forward part is valid */
+	  if ((is_forward_start)&&(is_forward_end))
+	  {
+		  for (i = 0; i < m->record_cnt; i++)
+		  {
+			  record = &m->record [i];
+
+			  if ((i >= m->i_forward_start)&&(i <= m->i_forward_end))
+			  {
+				  record->is_sign_value = true;
+			  }
+		  }
+
+		  m->is_forward_valued = true;
+	  }
+
+	  /* forward part is valid */
+	  if ((is_back_start)&&(is_back_end))
+	  {
+		  for (i = 0; i < m->record_cnt; i++)
+		  {
+			  record = &m->record [i];
+
+			  if ((i >= m->i_back_start)&&(i <= m->i_back_end))
+			  {
+				  record->is_sign_value = true;
+			  }
+		  }
+
+		  m->is_back_valued = true;
+	  }
+
+	  j++;
+   }
+
+}
+

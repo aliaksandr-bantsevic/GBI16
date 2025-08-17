@@ -2,8 +2,8 @@ object FMain: TFMain
   Left = 0
   Top = 0
   Caption = 'GorizontMaster'
-  ClientHeight = 949
-  ClientWidth = 1681
+  ClientHeight = 948
+  ClientWidth = 1677
   Color = clBtnFace
   TransparentColorValue = clBlue
   Font.Charset = RUSSIAN_CHARSET
@@ -154,14 +154,14 @@ object FMain: TFMain
     Left = 401
     Top = 70
     Width = 4
-    Height = 853
+    Height = 852
     ResizeStyle = rsUpdate
     ExplicitHeight = 797
   end
   object MStatusBar: TStatusBar
     Left = 0
-    Top = 923
-    Width = 1681
+    Top = 922
+    Width = 1677
     Height = 26
     BorderWidth = 2
     Panels = <
@@ -184,7 +184,7 @@ object FMain: TFMain
   object MToolBar: TToolBar
     Left = 0
     Top = 0
-    Width = 1681
+    Width = 1677
     Height = 70
     ButtonHeight = 71
     ButtonWidth = 103
@@ -323,14 +323,14 @@ object FMain: TFMain
     Left = 0
     Top = 70
     Width = 401
-    Height = 853
+    Height = 852
     Align = alLeft
     TabOrder = 2
     object TreeView_system: TTreeView
       Left = 1
       Top = 1
       Width = 399
-      Height = 851
+      Height = 850
       Align = alClient
       BorderWidth = 1
       Color = clInfoBk
@@ -356,14 +356,14 @@ object FMain: TFMain
   object Panel2: TPanel
     Left = 405
     Top = 70
-    Width = 1276
-    Height = 853
+    Width = 1272
+    Height = 852
     Align = alClient
     TabOrder = 3
     object Splitter2: TSplitter
       Left = 1
       Top = 529
-      Width = 1274
+      Width = 1270
       Height = 4
       Cursor = crVSplit
       Align = alTop
@@ -373,14 +373,14 @@ object FMain: TFMain
     object Panel_work_area: TPanel
       Left = 1
       Top = 1
-      Width = 1274
+      Width = 1270
       Height = 528
       Align = alTop
       TabOrder = 0
       object MPageControl: TPageControl
         Left = 1
         Top = 1
-        Width = 1272
+        Width = 1268
         Height = 526
         ActivePage = TabSheet_meas_table
         Align = alClient
@@ -392,7 +392,7 @@ object FMain: TFMain
           object Panel_meas_table: TPanel
             Left = 0
             Top = 0
-            Width = 1264
+            Width = 1260
             Height = 493
             Align = alClient
             Caption = #1042#1067#1041#1045#1056#1048#1058#1045' '#1048#1047#1052#1045#1056#1045#1053#1048#1045' '#1042' '#1044#1045#1056#1045#1042#1045' '#1057#1048#1057#1058#1045#1052#1067
@@ -400,7 +400,7 @@ object FMain: TFMain
             object StringGrid_meas: TStringGrid
               Left = 1
               Top = 1
-              Width = 1262
+              Width = 1258
               Height = 491
               Align = alClient
               Font.Charset = RUSSIAN_CHARSET
@@ -1061,15 +1061,15 @@ object FMain: TFMain
     object Panel_console_meas_control: TPanel
       Left = 1
       Top = 533
-      Width = 1274
-      Height = 319
+      Width = 1270
+      Height = 318
       Align = alClient
       TabOrder = 1
       object LPageControl_console: TPageControl
         Left = 1
         Top = 1
-        Width = 1272
-        Height = 317
+        Width = 1268
+        Height = 316
         ActivePage = TabSheet_meas_control
         Align = alClient
         TabOrder = 0
@@ -1079,8 +1079,8 @@ object FMain: TFMain
           object Panel_meas_control: TPanel
             Left = 0
             Top = 0
-            Width = 1264
-            Height = 284
+            Width = 1260
+            Height = 283
             Align = alClient
             Color = clInfoBk
             ParentBackground = False

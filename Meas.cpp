@@ -338,7 +338,7 @@ int TMeas::Calc_Vert_Double_Bottom(void)
 		records[i].LR = sqrt((lx*lx)+(ly*ly));
 
 		/* Результирующий угол */
-		//if (abs(records[i].LX) > 0.0001)
+		if (abs(records[i].LX) > 0.0001)
 		{
 					records[i].AR = atan(records[i].LY/records[i].LX);
 
@@ -357,16 +357,19 @@ int TMeas::Calc_Vert_Double_Bottom(void)
 						records[i].AR -= 360;
 					}
 
-					//if (records[i].AR < 0)
-					//{
-					//	records[i].AR = 0;
-					//}
+					if (records[i].AR < 0)
+					{
+						records[i].AR = 0;
+					}
 
 					//переводим в секунды
 					//!!!records[i].AR *= 3600;
 		}
 
 	}
+
+	records[records_cnt - 2].AR = records[records_cnt - 3].AR;
+	records[records_cnt - 1].AR = records[records_cnt - 3].AR;
 
 	return 0;
 }
