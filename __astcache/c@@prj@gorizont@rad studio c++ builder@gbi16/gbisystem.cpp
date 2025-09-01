@@ -1086,7 +1086,7 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 
 	 TDateTime tt = dfm->time;
 
-	 WideString st = FormatDateTime(L"0 [yyyy-mm-dd hh-nn-ss]", tt);
+	 WideString st = FormatDateTime(L" [yyyy-mm-dd hh:nn:ss]", tt);
 
 	 if ((dfm->is_forward_valued == false)&&(dfm->is_back_valued == false))
 	 {
@@ -1298,7 +1298,7 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 		d->level_end = level_min;
 	 }
 
-	 ws.printf(L" [Импортировано %d записей]", total_accepted_meas_records/2);
+	 ws.printf(L" [Импортировано %d записей]", total_accepted_meas_records);
 	 msg = msg + ws;
 	 console(L"Система", msg);
 

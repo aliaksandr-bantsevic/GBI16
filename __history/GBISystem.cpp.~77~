@@ -1084,10 +1084,29 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 
 	 int dir = 0;
 
-	 if (dfm->is_valued == false)
+	 TDateTime tt = dfm->time;
+
+	 WideString st = FormatDateTime(L"0 [yyyy-mm-dd hh-nn-ss]", tt);
+
+	 if ((dfm->is_forward_valued == false)&&(dfm->is_back_valued == false))
 	 {
-		console(L"Система", L"Не валидное измерение пропущено");
+		console(L"Система", L"НЕвалидное измерение пропущено" + st);
 		return -1; //meas is not valued
+	 }
+
+	 if ((dfm->is_forward_valued == true)&&(dfm->is_back_valued == false))
+	 {
+		console(L"Система", L"Частично (F) валидное измерение обрабатывается" + st);
+	 }
+
+	 if ((dfm->is_forward_valued == false)&&(dfm->is_back_valued == true))
+	 {
+		console(L"Система", L"Частично (B) валидное измерение обрабатывается" + st);
+	 }
+
+	 if ((dfm->is_forward_valued == true)&&(dfm->is_back_valued == true))
+	 {
+		console(L"Система", L"Валидное измерение обрабатывается" + st);
 	 }
 
 	 /* obtain Place */
@@ -1113,17 +1132,17 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 	 /* obtain meas */
 	 d->pname = p->name;
 	 d->drill_orient = DRILL_ORIENT_VERTICAL; //consider the droll as vertical
-	 wtm = FormatDateTime(L" yyyy-mm-dd hh:nn:ss ", dfm->time);
-	 msg =  p->name + L"-" + d->name + L"-" + wtm;
+	 wtm = FormatDateTime(L" [yyyy-mm-dd hh:nn:ss] ", dfm->time);
+	 msg =  p->name + L"->" + d->name + L"->" + wtm;
 	 if (d->MeasExistByTimeCreate(dfm->time) == true)
 	 {
 		 console(L"Система", L"Измерение уже существует");
 		 return -4; //meas already exist
 	 }
 
-	 int record_cnt_accepted = 0;
-	 msg = msg + L"добавлено";
-	 ws.printf(L" [%d записей]", dfm->record_cnt);
+	 //int record_cnt_accepted = 0;
+	 //msg = msg + L"добавлено";
+	 //ws.printf(L" [%d записей]", dfm->record_cnt);
 
 	 d->AddMeas(NULL, L"new_meas");
 	 m = d->meas_list[d->meas_list_idx-1];
@@ -1153,13 +1172,11 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 
 		data_file_record = &dfm->record [i];
 
-		/*
 		if (data_file_record->is_sign_value == false)
 		{
-			console(L"Система", L"Не валидная запись пропущена");
+			console(L"Система", L"НЕвалидная запись пропущена");
 			continue; //miss not valid record
 		}
-		*/
 
 		if ((data_file_record->dir == L"Forward")||(data_file_record->dir == L"ForwardStart"))
 		{
@@ -1217,17 +1234,6 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 		}
 	 }
 
-	 //if (dir_10)
-	 //{
-	 //level_start = level_max;
-	 //	level_end = level_min;
-	 //}
-	 //else //if (dir_01)
-	 //{
-	 //	level_start = level_min;
-	 //	level_end = level_max;
-	 //}
-
 	 if ((b_forw == true) && (b_back == true))
 	 {
 		d->single_way = 0;
@@ -1236,10 +1242,6 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 	 {
 		d->single_way = 1;
 	 }
-
-	 //double level_start = dfm->record [0].level;
-	 //double level_end = dfm->record [dfm->record_cnt - 1].level;
-	 //int calc_records_cnt = 0;
 
 	 if (level_start > level_end)
 	 {
@@ -1296,228 +1298,19 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 		d->level_end = level_min;
 	 }
 
-	 ws.printf(L" [%d записей]", total_accepted_meas_records);
+	 ws.printf(L" [Импортировано %d записей]", total_accepted_meas_records/2);
 	 msg = msg + ws;
 	 console(L"Система", msg);
 
+
+	/* приведение к единому формату скважины */
+	d->single_way = 1;
+	d->start_point = DRILL_BOT_POINT; //start from bottom
+	d->records_cnt = m->records_cnt;
+
 	 m->SaveData(0); //Save accepted Data
 
-	d->single_way = 1;
-    d->start_point = DRILL_BOT_POINT; //start from bottom
-
 	 return 0;
-
-/*
-//////////////////////////////////////////////////////////////////////////////////////////
-//!!!	 meas_record* r = NULL;
-	 data_file_record_type* dr;
-
-
-	 int dircnt = 0;
-	 int single_way = 1;
-
-	 int forward_cnt = 0;
-	 int back_cnt = 0;
-	 int max_cnt = 0;
-
-	 p = GetPlaceByName(dfm->place);
-
-
-
-	 if (dfm->is_valued == false)
-	 {
-		return -1; //meas is not valued
-	 }
-
-	 if (p != NULL)
-	 {
-
-
-		wcscpy(tbuf,dfm->drill.c_bstr());
-		CutSpaces(tbuf, wcslen(tbuf));
-		dfm->drill = L"";
-		dfm->drill += tbuf;
-
-		d = GetDrillByName(p, dfm->drill, dfm->record_cnt);
-
-		if (d != NULL)
-		{
-			 d->pname = p->name;
-			 d->drill_orient = 1;
-
-			 //if (dfm->record_cnt > d->records_cnt) d->records_cnt = dfm->record_cnt/2;
-
-			 wtm = FormatDateTime(L" yyyy-mm-dd hh:nn:ss ", dfm->time);
-
-			 msg =  p->name + L"-" + d->name + L"-" + wtm;
-
-
-			 if (d->MeasExistByTimeCreate(dfm->time) == false)
-			 {
-				int record_cnt_accepted = 0;
-				msg = msg + L"добавлено";
-				ws.printf(L" [%d записей]", dfm->record_cnt);
-
-				d->AddMeas(NULL, L"new_meas");
-				m = d->meas_list[d->meas_list_idx-1];
-
-				//!!!if (m->records_cnt < d->records_cnt) m->records_cnt = d->records_cnt;
-
-				m->name_place = p->name;
-				m->name_drill = d->name;
-				m->create_time = dfm->time;
-
-				int iback = 0;
-				int iforw = 0;
-
-				double level_start = 0.;
-				double level_end = 0;
-
-				bool start = false;
-
-				for (int i =0; i < dfm->record_cnt; i++)
-				{
-
-				   dr = &dfm->record [i];
-
-
-				   if ((dr->dir == L"Forward")||(dr->dir == L"Forward Start"))
-				   {
-					   dir = 0;
-				   }
-				   else
-				   {
-					   dir = 1;
-				   }
-
-				   if (dr->is_sign_value)
-				   {
-						iforw = 1;
-
-						if (dr->level != 0.)
-						{
-							if (level_start == 0.) level_start = dr->level;
-						}
-
-						if (i > 0)
-						{
-							if (level_start != 0.)
-							{
-								level_end = dr->level;
-							}
-						}
-
-						//dir = 0;
-						dircnt = 1;
-						forward_cnt++;
-					}
-					//else if (start == true)
-					//{
-					//	dir = 1;
-					//	dircnt = 2;
-					//	single_way = 0;
-					//	back_cnt++;
-					//}
-
-					//!!!r = &m->records[i];
-
-					if (dr->is_sign_value == true)
-					{
-						if (m->AcceptDataFileRecord(dir, dr->level, dr->X, dr->Y) == 0)
-						{
-							record_cnt_accepted++;
-
-							int records_cnt_calc = (dr->level)/0.5f + 1;
-
-							if (d->records_cnt < records_cnt_calc)
-							{
-								d->records_cnt = records_cnt_calc;
-							}
-						}
-					}
-				}
-
-				ws.printf(L" [%d записей]", record_cnt_accepted);
-				msg = msg + ws;
-
-				if (forward_cnt>=back_cnt)
-				{
-					max_cnt = forward_cnt;
-				}
-				else
-				{
-					max_cnt = back_cnt;
-				}
-
-				if ((level_start == 0.)&&(level_end == 0.))
-				{
-
-					level_end = dfm->record_cnt*0.5 - 1;
-
-				}
-
-				d->level_start = level_start;
-				d->level_end = level_end;
-
-				int calc_rec_cnt = 0;
-
-				if (level_end > level_start)
-				{
-					calc_rec_cnt = (int)(level_end / 0.5f);
-					d->start_point = DRILL_TOP_POINT;
-				}
-				else
-				{
-					calc_rec_cnt = (int)(level_start / 0.5f);
-					d->start_point = DRILL_BOT_POINT;
-				}
-
-				if ((calc_rec_cnt + 1) > d->records_cnt)
-				{
-					//!!!d->records_cnt = (calc_rec_cnt + 1);
-				}
-
-
-				int isingle = (iback + iforw) - 1;
-
-				if (isingle <0)
-				{
-					isingle = 0;
-				}
-
-				d->single_way = isingle;
-
-				m->SaveData(0);
-				console(L"Система", msg);
-			 }
-			 else
-			 {
-				 msg = msg + L" уже существует";
-				 console(L"Система", msg);
-				 res = -3; //meas already exist
-			 }
-
-		}
-		else
-		{
-			console(L"Система", L"Не удалось найти/создать скважину");
-			res = -2; //can not find/create drill
-		}
-
-	 }
-	 else
-	 {
-		 console(L"Система", L"Не удалось найти/создать измерение");
-		 res = -1; //can not find/create place
-	 }
-
-	 if (single_way != 0)
-	 {
-	   d->single_way = 1;
-	 }
-
-	 return res;
-*/
  }
 
  TPlace* TGBISystem::GetPlaceByName(WideString n)

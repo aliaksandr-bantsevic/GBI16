@@ -376,16 +376,17 @@ int TDataFile::GetDaTaFileMeasIdx(void)
 		return -1;
 	}
 
-	if (data_file_record.place == "")
+	if (data_file_record.place == L"")
 	{
 		return -1;
 	}
 
-	if (data_file_record.drill == "")
+	if (data_file_record.drill == L"")
 	{
 		return -1;
 	}
 
+	/*
 	if (data_file_record.dir == L"BackStart")
 	{
 		started_b = true;
@@ -395,6 +396,7 @@ int TDataFile::GetDaTaFileMeasIdx(void)
 	{
 		started_f = true;
 	}
+	*/
 
 	for (int i = 0; i < data_file_meas_set_idx; i++)
 	{
@@ -436,8 +438,8 @@ int TDataFile::GetDaTaFileMeasIdx(void)
 
 	last_proceeded_dm = m;
 
-	if (started_f) m->is_started_f = true;
-	if (started_b) m->is_started_b = true;
+	//if (started_f) m->is_started_f = true;
+	//if (started_b) m->is_started_b = true;
 
 	return res;
 }
@@ -507,8 +509,8 @@ int TDataFile::ParsDaTaFile(TCHAR* tdir)
    }
 
 
-   int i = 0;
-   data_file_meas_type* m = NULL;
+   //int i = 0;
+   //data_file_meas_type* m = NULL;
 
    //while (data_file_meas_set[i] != NULL)
    //{
@@ -543,9 +545,9 @@ int TDataFile::session_correctness_check(void)
    bool is_back_start = false;
    bool is_back_end = false;
 
-   while (data_file_meas_set[j] != NULL)
+   while ((data_file_meas_set[j] != NULL)&&(j<data_file_meas_set_idx))
    {
-	  m = data_file_meas_set[i];
+	  m = data_file_meas_set[j];
 
 	  is_forward_start = false;
 	  is_forward_end = false;
@@ -576,28 +578,28 @@ int TDataFile::session_correctness_check(void)
 		  if (record->dir == L"ForwardStart")
 		  {
 			   is_forward_start = true;
-			   m->d_forward_start = record.level;
+			   m->d_forward_start = record->level;
 			   m->i_forward_start = i;
 		  }
 
 		  if (record->dir == L"BackStart")
 		  {
 			   is_back_start = true;
-			   m->d_back_start = record.level;
+			   m->d_back_start = record->level;
 			   m->i_back_start = i;
 		  }
 
-		  if (record.dir == L"ForwardEnd")
+		  if (record->dir == L"ForwardEnd")
 		  {
 			   is_forward_end = true;
-			   m->d_forward_end = record.level;
+			   m->d_forward_end = record->level;
 			   m->i_forward_end = i;
 		  }
 
 		  if (record->dir == L"BackEnd")
 		  {
 			   is_back_end = true;
-			   m->d_back_end = record.level;
+			   m->d_back_end = record->level;
 			   m->i_back_end = i;
 		  }
 

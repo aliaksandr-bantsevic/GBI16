@@ -373,6 +373,8 @@ int TDataFile::GetDaTaFileMeasIdx(void)
 			last_proceeded_dm = NULL;
 		}
 
+		is_finish_discovered = true;
+
 		return -1;
 	}
 
@@ -487,6 +489,7 @@ int TDataFile::ParsDaTaFile(TCHAR* tdir)
    memset(data_file_meas_set, 0, sizeof(data_file_meas_set));
    data_file_meas_set_idx = 0;
    data_file_meas_set_idx_cur = 0;
+   is_finish_discovered = false;
 
    pars_en = false;
 
@@ -605,6 +608,19 @@ int TDataFile::session_correctness_check(void)
 
 		  Sleep(1);
 	  }
+
+
+	  if (is_finish_discovered == true)
+	  {
+			   is_forward_end = true;
+			   m->d_forward_end = record->level;
+			   m->i_forward_end = i;
+
+			   is_back_end = true;
+			   m->d_back_end = record->level;
+			   m->i_back_end = i;
+	  }
+
 
 	  /* forward part is valid */
 	  if ((is_forward_start)&&(is_forward_end))
