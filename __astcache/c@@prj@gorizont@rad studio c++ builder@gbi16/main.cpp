@@ -674,8 +674,8 @@ void __fastcall TFMain::Button_recordClick(TObject *Sender)
 				}
 			}
 
-	  if (col == 6) col = 5;
-	  if (col == 4) col = 3;
+	  //if (col == 6) col = 5;
+	  //if (col == 4) col = 3;
 
 
 	  bool probnotmoved = false;
@@ -708,7 +708,7 @@ void __fastcall TFMain::Button_recordClick(TObject *Sender)
 	  StringGrid_meas->Cells[col][row] = s;
 
 	  s.printf(L"%.1f",sensor->curr_Y);
-	  StringGrid_meas->Cells[col+1][row] = s;
+	  StringGrid_meas->Cells[col+4][row] = s;
 
 	  TDrill* d = NULL;
 
@@ -720,7 +720,7 @@ void __fastcall TFMain::Button_recordClick(TObject *Sender)
 			else
 			{
 			   StringGrid_meas->Row = 1;
-			   StringGrid_meas->Col = 5;
+			   StringGrid_meas->Col = 4;
 			}
 	  }
 	  else
@@ -729,7 +729,7 @@ void __fastcall TFMain::Button_recordClick(TObject *Sender)
 			else
 			{
 			   StringGrid_meas->Row = selected_meas->records_cnt;
-			   StringGrid_meas->Col = 5;
+			   StringGrid_meas->Col = 4;
             }
 	  }
 

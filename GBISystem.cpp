@@ -170,7 +170,7 @@ void TGBISystem::LoadSysConf()
 	port->port = ini->ReadInteger(L"PORT",L"Port",1);
 	port->mark = ini->ReadString(L"PORT",L"Mark",L"Порт инклинометра");
 
-	sensor->addr = ini->ReadInteger(L"SENSOR",L"Addr",1);
+	sensor->addr = ini->ReadInteger(L"SENSOR",L"Addr",1); //!!!
 	sensor->mark = ini->ReadString(L"SENSOR",L"Mark",L"Скважинный инклинометр");
 	sensor->used_protocol = ini->ReadInteger(L"SENSOR",L"Protocol",1);
 

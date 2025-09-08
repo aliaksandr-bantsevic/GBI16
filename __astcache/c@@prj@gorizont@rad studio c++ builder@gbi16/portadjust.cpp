@@ -1,4 +1,4 @@
-﻿//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 
 #include <vcl.h>
 #pragma hdrstop
@@ -53,7 +53,7 @@ void __fastcall TForm_PortAdjust::Button_saveClick(TObject *Sender)
 {
 	MACRO_IF_OPERATION_SAVE_PARAM_CONFIRMED
 	PortSet();
-	//MessageBox(NULL,"Íàñòðîéêè ñîõðàíåíû","Ïîðò",0);
+	//MessageBox(NULL,"Настройки сохранены","Порт",0);
 	Button_exitClick(NULL);
 }
 //---------------------------------------------------------------------------
