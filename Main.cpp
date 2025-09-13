@@ -680,12 +680,12 @@ void __fastcall TFMain::Button_recordClick(TObject *Sender)
 
 	  bool probnotmoved = false;
 
-	  if ((xprev != -31777.)&&(abs(sensor->curr_X - xprev) < 50.))
+	  if ((xprev != -31777.)&&(abs(sensor->curr_X - xprev) < 0.05))
 	  {
 		 probnotmoved = true;
 	  }
 
-	   if ((yprev != -31777.)&&(abs(sensor->curr_Y - yprev) < 50.))
+	   if ((yprev != -31777.)&&(abs(sensor->curr_Y - yprev) < 0.05))
 	  {
 		 probnotmoved = true;
 	  }

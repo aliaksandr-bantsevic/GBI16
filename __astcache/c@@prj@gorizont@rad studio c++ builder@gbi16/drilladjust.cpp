@@ -1,4 +1,4 @@
-﻿//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 
 #include <vcl.h>
 #pragma hdrstop
@@ -151,7 +151,7 @@ void TForm_DrillAdjust::DrillToForm()
 
 	//orient
 	this->ComboBox_orient->ItemIndex = drill->drill_orient;
-
+    ComboBox_orient->Enabled = false;
 
 	//asimut vertical only
 	if (drill->drill_orient == DRILL_ORIENT_HORIZONT)
@@ -218,8 +218,18 @@ void TForm_DrillAdjust::DrillToForm()
 	//forward
 	if (dl2>dl1)
 	{
+			utils_ShowMessage(L"В данной версии программы предусмотрена только работа от НИЖНЕЙ точки!");
+			//sl1.printf(L"%.1f",dl1);
+			//sl2.printf(L"%.1f",dl2);
+			this->ComboBox_level_start->ItemIndex = 50;
+			this->ComboBox_level_end->ItemIndex = 0;
+			drill->level_start = 25.5;
+			drill->level_end = 0;;
+			return;
+			/*
 			RadioButton_start_first->Checked = TRUE;
 			RadioButton_start_last->Checked = FALSE;
+			*/
 	}
 	//backward
 	else if (dl1>dl2)

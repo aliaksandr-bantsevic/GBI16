@@ -18,47 +18,11 @@ void __fastcall TForm_DrillAdjust::Button_applyClick(TObject *Sender)
 {
 	 Update();
 
+		CutSpacesEdit(Edit_name);
 		FormToDrill();
 		OK = true;
         *OOK = true;
 		Close();
-
-	 return;//!!!
-
-
-	 if (MAX_RECORDS_MEAS  < *records_cnt) {
-
-		utils_ShowMessage(L"Превышен лимит числа уровней!");
-		Close();
-	 }
-	 else
-	 {
-		 drill->name = this->Edit_name->Text;
-		 drill->single_way = (int) CheckBox_single->Checked;
-		 drill->drill_orient = this->ComboBox_orient->ItemIndex;
-		 drill->start_point = (this->RadioButton_top->Checked)?0:1;
-		 drill->i_first_request_point = (this->RadioButton_start_first->Checked)?0:1;
-
-		 drill->drill_asimut = this->Edit_asimut->Text.ToDouble();
-		 drill->own_zero_shift = this->Edit_zshift->Text.ToDouble();
-		 drill->records_cnt = this->ComboBox_meas_cnt->Text.ToDouble()+1;
-
-		 drill->geo_data.geo_on = (CheckBox_GeoOn->Checked)?true:false;
-
-		 try {
-
-			drill->geo_data.input_point = this->Edit_Input_point->Text.ToDouble();
-			drill->geo_data.output_point = this->Edit_Output_point->Text.ToDouble();
-
-		 }
-		 catch (...) {
-
-		 }
-
-	 }
-
-	 OK = true;
-	 Close();
 }
 
 void TForm_DrillAdjust::Start(TDrill* d, int m)
@@ -80,7 +44,7 @@ void __fastcall TForm_DrillAdjust::Timer_startTimer(TObject *Sender)
 	{
 		Button_apply->Caption = L"Добавить";
 		this->Caption = L"Добавить скважину";
-        FormToDrill();
+		DrillToForm();
 	}
 	else
 	{
@@ -146,22 +110,22 @@ void __fastcall TForm_DrillAdjust::FormCreate(TObject *Sender)
 	this->RadioGroup_calc_start->Visible = true;
 	this->RadioButton_top->Visible = TRUE;
 	this->RadioButton_bot->Visible = TRUE;
-	this->RadioButton_top->Checked = TRUE;
-	this->RadioButton_bot->Checked = FALSE;
+	this->RadioButton_top->Checked = FALSE;
+	this->RadioButton_bot->Checked = TRUE;
 
 	//start collect data
 	GroupBox_start_collect_data->Visible = true;
 	RadioButton_start_first->Visible = TRUE;
 	RadioButton_start_last->Visible = TRUE;
-	RadioButton_start_first->Checked = TRUE;
-	RadioButton_start_last->Checked = FALSE;
+	RadioButton_start_first->Checked = FALSE;
+	RadioButton_start_last->Checked = TRUE;
 
 	//pass 1/2
 	GroupBox_pass->Visible = true;
 	RadioButton_pass_1->Visible = TRUE;
 	RadioButton_pass_2->Visible = TRUE;
-	RadioButton_pass_1->Checked = TRUE;
-	RadioButton_pass_2->Checked = FALSE;
+	RadioButton_pass_1->Checked = FALSE;
+	RadioButton_pass_2->Checked = TRUE;
 
 	//Geo bind
 	GroupBox_geo->Visible = true;
@@ -184,22 +148,101 @@ void TForm_DrillAdjust::DrillToForm()
 
 	//name
 	this->Edit_name->Text = drill->name;
-
 	//orient
 	this->ComboBox_orient->ItemIndex = drill->drill_orient;
-
 
 	//asimut vertical only
 	if (drill->drill_orient == DRILL_ORIENT_HORIZONT)
 	{
-		this->Edit_asimut->Visible = false;
+		//this->Edit_asimut->Visible = false;
+		GroupBox_pass->Visible = true;
+		RadioButton_pass_1->Caption = L"Глухая (односторонняя)";
+		RadioButton_pass_2->Caption = L"Проходная (двухсторонняя)";
+
+		RadioButton_pass_1->Enabled = true;
+		RadioButton_pass_2->Enabled = true;
+
+		GroupBox_pass->Enabled = true;
+
+		GroupBox_start_collect_data->Visible = false;
+
+		RadioGroup_calc_start->Visible = false;
+		RadioButton_top->Visible = false;
+		RadioButton_bot->Visible = false;
+
+
+		if (drill->geo_data.geo_on == true)
+		{
+			GroupBox_geo->Visible = true;
+
+			CheckBox_GeoOn->Checked = true;
+			Edit_Input_point->Enabled = true;
+			Edit_Output_point->Enabled = true;
+
+			WideString sip("");
+			WideString sop("");
+
+			sip.printf(L"%.1f", drill->geo_data.input_point);
+			sop.printf(L"%.1f", drill->geo_data.output_point);
+
+			Edit_Input_point->Text = sip;
+			Edit_Output_point->Text = sop;
+		}
+		else
+		{
+			GroupBox_geo->Visible = true;
+			Edit_Input_point->Enabled = false;
+			Edit_Output_point->Enabled = false;
+
+			Edit_Input_point->Text = L"0";
+			Edit_Output_point->Text = L"0";
+
+		}
+
 	}
 	else
 	{
+
+		GroupBox_start_collect_data->Visible = true;
+		RadioGroup_calc_start->Visible = true;
+		GroupBox_pass->Visible = true;
+
+		RadioButton_top->Visible = true;
+		RadioButton_bot->Visible = true;
+
+        GroupBox_geo->Visible = false;
+
+		RadioButton_pass_1->Caption = L"ОДИН проход";
+		RadioButton_pass_2->Caption = L"ДВА прохода";
+
 		this->Edit_asimut->Visible = true;
 		WideString sda("");
 		sda.printf(L"%.1f", drill->drill_asimut);
 		this->Edit_asimut->Text = sda;
+		ComboBox_level_end->ItemIndex = 0;
+		ComboBox_level_end->Enabled = false;
+
+		RadioButton_start_first->Checked = false;
+		RadioButton_start_last->Checked = true;
+
+		RadioButton_start_first->Enabled = false;
+		RadioButton_start_last->Enabled = false;
+
+		RadioButton_pass_1->Checked = false;
+		RadioButton_pass_2->Checked = true;
+
+		RadioButton_pass_1->Enabled = false;
+		RadioButton_pass_2->Enabled = false;
+
+		RadioButton_top->Checked = false;
+		RadioButton_bot->Checked = true;
+
+		RadioButton_top->Enabled = false;
+		RadioButton_bot->Enabled = false;
+
+		RadioGroup_calc_start->Enabled = false;
+		GroupBox_start_collect_data->Enabled = false;
+		GroupBox_pass->Enabled = false;
 	}
 
 	//levels
@@ -214,6 +257,10 @@ void TForm_DrillAdjust::DrillToForm()
 	this->ComboBox_level_start->Text = sl1;
 	this->ComboBox_level_end->Text = sl2;
 
+return;
+
+//------------------------------------------------------------------------------------------
+
 	//calc start TOP/BOTTOM vertical only
 	if (drill->drill_orient == DRILL_ORIENT_HORIZONT)
 	{
@@ -224,6 +271,9 @@ void TForm_DrillAdjust::DrillToForm()
 	else if (drill->drill_orient == DRILL_ORIENT_VERTICAL)
 	{
 		this->RadioGroup_calc_start->Visible = true;
+
+		/* вертикальная всегда от нижней точки */
+		drill->start_point = DRILL_BOT_POINT;
 
 		if (drill->start_point == DRILL_TOP_POINT)
 		{
@@ -242,15 +292,28 @@ void TForm_DrillAdjust::DrillToForm()
 			this->RadioButton_bot->Checked = TRUE;
 		}
 
+		this->RadioButton_top->Enabled = FALSE;
+		this->RadioButton_bot->Enabled = FALSE;
 	}
 
 	//start collect data
     GroupBox_start_collect_data->Enabled = false;
 	//forward
+	if (drill->drill_orient == DRILL_ORIENT_VERTICAL){
 	if (dl2>dl1)
 	{
+			utils_ShowMessage(L"В данной версии программы предусмотрена только работа от НИЖНЕЙ точки!");
+			//sl1.printf(L"%.1f",dl1);
+			//sl2.printf(L"%.1f",dl2);
+			this->ComboBox_level_start->ItemIndex = 50;
+			this->ComboBox_level_end->ItemIndex = 0;
+			drill->level_start = 25.5;
+			drill->level_end = 0;;
+			return;
+			/*
 			RadioButton_start_first->Checked = TRUE;
 			RadioButton_start_last->Checked = FALSE;
+			*/
 	}
 	//backward
 	else if (dl1>dl2)
@@ -263,7 +326,15 @@ void TForm_DrillAdjust::DrillToForm()
 			//RadioButton_start_first->Checked = FALSE;
 			//RadioButton_start_last->Checked = FALSE;
 			//utils_ShowMessage(L"Ошибка задания уровней скважины!");
-	}
+	}}
+
+	/* для вертикальных всегда два прохода*/
+	if (drill->drill_orient == DRILL_ORIENT_VERTICAL)
+	{
+		drill->single_way = 0;
+		RadioButton_pass_1->Enabled = FALSE;
+		RadioButton_pass_2->Enabled = FALSE;
+
 
 	//pass 1/2
 	if (drill->single_way == 1)
@@ -275,7 +346,7 @@ void TForm_DrillAdjust::DrillToForm()
 	{
 		RadioButton_pass_1->Checked = FALSE;
 		RadioButton_pass_2->Checked = TRUE;
-	}
+	} }
 
 	//Geo bind horizontal only
 	if (drill->drill_orient == DRILL_ORIENT_VERTICAL)
@@ -311,7 +382,7 @@ void TForm_DrillAdjust::DrillToForm()
 			Edit_Input_point->Text = L"0";
 			Edit_Output_point->Text = L"0";
 
-        }
+		}
 	}
 
 	Update();
@@ -345,7 +416,7 @@ int TForm_DrillAdjust::FormToDrill()
 	}
 
 	//asimut only for vertical
-	if (drill->drill_orient == DRILL_ORIENT_HORIZONT)
+	if (drill->drill_orient == DRILL_ORIENT_VERTICAL)
 	{
 		double das = 0.;
 
@@ -353,13 +424,19 @@ int TForm_DrillAdjust::FormToDrill()
 
 			das = this->Edit_asimut->Text.ToDouble();
 
+			drill->drill_asimut = das;
+
+			for (int i = 0; i < drill->meas_list_idx; i++)
+			{
+				drill->meas_list[i]->drill_asimut = das;
+			}
+
 		}
 		 catch (...) {
 
 		   utils_ShowMessage(L"Ошибка задания азимута скважины!");
 		}
 
-		drill->drill_asimut = das;
 	}
 
 	//levels
@@ -389,7 +466,7 @@ int TForm_DrillAdjust::FormToDrill()
 		double dlmax = dl1;
 		if (dl2>dl1)  dlmax = dl2;
 
-		drill->records_cnt = (int)(dlmax/0.5);
+		drill->records_cnt = (int)(dlmax/0.5) + 1;
 
 		if (dl2 > dl1)
 		{
@@ -410,6 +487,12 @@ int TForm_DrillAdjust::FormToDrill()
 	{
 		drill->start_point = DRILL_BOT_POINT;
 	}
+
+	if (RadioButton_start_last ->Checked == TRUE)
+	{
+		drill->records_cnt++;
+		drill->level_start += 0.5;
+    }
 
 	//start collect data
 	/*
@@ -506,6 +589,18 @@ void __fastcall TForm_DrillAdjust::ComboBox_level_startChange(TObject *Sender)
 void __fastcall TForm_DrillAdjust::ComboBox_level_endChange(TObject *Sender)
 {
 	FormChange();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_DrillAdjust::Edit_nameChange(TObject *Sender)
+{
+     //CutSpacesEdit(Edit_name);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_DrillAdjust::Edit_asimutChange(TObject *Sender)
+{
+	 ArrangeToDigitFloatEdit(Edit_asimut);
 }
 //---------------------------------------------------------------------------
 

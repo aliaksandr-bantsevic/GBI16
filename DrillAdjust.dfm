@@ -4,7 +4,7 @@ object Form_DrillAdjust: TForm_DrillAdjust
   BorderStyle = bsDialog
   Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '#1089#1082#1074#1072#1078#1080#1085#1091
   ClientHeight = 398
-  ClientWidth = 1000
+  ClientWidth = 1032
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -134,14 +134,14 @@ object Form_DrillAdjust: TForm_DrillAdjust
   object GroupBox_start_collect_data: TGroupBox
     Left = 542
     Top = 90
-    Width = 225
+    Width = 211
     Height = 106
     Caption = #1053#1072#1087#1088#1072#1074#1083#1077#1085#1080#1077' '#1080#1079#1084#1077#1088#1077#1085#1080#1081
     TabOrder = 11
     object RadioButton_start_first: TRadioButton
       Left = 16
       Top = 32
-      Width = 193
+      Width = 249
       Height = 17
       Caption = #1053#1072#1095#1080#1085#1072#1090#1100' '#1089' '#1074#1077#1088#1093#1085#1077#1075#1086
       TabOrder = 0
@@ -149,7 +149,7 @@ object Form_DrillAdjust: TForm_DrillAdjust
     object RadioButton_start_last: TRadioButton
       Left = 16
       Top = 72
-      Width = 206
+      Width = 249
       Height = 17
       Caption = #1053#1072#1095#1080#1085#1072#1090#1100' '#1089' '#1085#1080#1078#1085#1077#1075#1086
       TabOrder = 1
@@ -201,16 +201,16 @@ object Form_DrillAdjust: TForm_DrillAdjust
     end
   end
   object GroupBox_pass: TGroupBox
-    Left = 773
+    Left = 759
     Top = 90
-    Width = 225
+    Width = 266
     Height = 106
     Caption = #1055#1088#1086#1093#1086#1076#1086#1074
     TabOrder = 13
     object RadioButton_pass_1: TRadioButton
       Left = 16
       Top = 36
-      Width = 169
+      Width = 233
       Height = 17
       Caption = #1054#1044#1048#1053' '#1087#1088#1086#1093#1086#1076
       TabOrder = 0
@@ -218,7 +218,7 @@ object Form_DrillAdjust: TForm_DrillAdjust
     object RadioButton_pass_2: TRadioButton
       Left = 16
       Top = 72
-      Width = 161
+      Width = 233
       Height = 17
       Caption = #1044#1042#1040' '#1087#1088#1086#1093#1086#1076#1072
       TabOrder = 1
@@ -234,16 +234,17 @@ object Form_DrillAdjust: TForm_DrillAdjust
     object Label6: TLabel
       Left = 16
       Top = 32
-      Width = 125
+      Width = 166
       Height = 18
-      Caption = #1055#1077#1088#1074#1072#1103' '#1090#1086#1095#1082#1072', '#1084
+      Caption = #1043#1083#1091#1073#1080#1085#1072' '#1089#1082#1074#1072#1078#1080#1085#1099', '#1084
     end
     object Label7: TLabel
-      Left = 14
+      Left = 15
       Top = 72
       Width = 154
       Height = 18
       Caption = #1055#1086#1089#1083#1077#1076#1085#1103#1103' '#1090#1086#1095#1082#1072', '#1084
+      Visible = False
     end
     object ComboBox_level_start: TComboBox
       Left = 200
@@ -261,6 +262,7 @@ object Form_DrillAdjust: TForm_DrillAdjust
       Height = 26
       TabOrder = 1
       Text = '10'
+      Visible = False
       OnChange = ComboBox_level_endChange
     end
   end
@@ -301,15 +303,15 @@ object Form_DrillAdjust: TForm_DrillAdjust
   object GroupBox6: TGroupBox
     Left = 773
     Top = 8
-    Width = 225
+    Width = 244
     Height = 65
     Caption = #1040#1079#1080#1084#1091#1090' '#1086#1089#1080' X ('#1087#1086' '#1089#1082#1083#1086#1085#1091')'
     TabOrder = 17
   end
   object Edit_asimut: TEdit
-    Left = 789
+    Left = 793
     Top = 33
-    Width = 196
+    Width = 208
     Height = 26
     TabOrder = 18
     Text = 'Edit_asimut'

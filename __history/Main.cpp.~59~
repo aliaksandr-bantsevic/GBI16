@@ -674,8 +674,8 @@ void __fastcall TFMain::Button_recordClick(TObject *Sender)
 				}
 			}
 
-	  if (col == 6) col = 5;
-	  if (col == 4) col = 3;
+	  //if (col == 6) col = 5;
+	  //if (col == 4) col = 3;
 
 
 	  bool probnotmoved = false;
@@ -708,7 +708,7 @@ void __fastcall TFMain::Button_recordClick(TObject *Sender)
 	  StringGrid_meas->Cells[col][row] = s;
 
 	  s.printf(L"%.1f",sensor->curr_Y);
-	  StringGrid_meas->Cells[col+1][row] = s;
+	  StringGrid_meas->Cells[col+4][row] = s;
 
 	  TDrill* d = NULL;
 
@@ -720,7 +720,7 @@ void __fastcall TFMain::Button_recordClick(TObject *Sender)
 			else
 			{
 			   StringGrid_meas->Row = 1;
-			   StringGrid_meas->Col = 5;
+			   StringGrid_meas->Col = 4;
 			}
 	  }
 	  else
@@ -729,7 +729,7 @@ void __fastcall TFMain::Button_recordClick(TObject *Sender)
 			else
 			{
 			   StringGrid_meas->Row = selected_meas->records_cnt;
-			   StringGrid_meas->Col = 5;
+			   StringGrid_meas->Col = 4;
             }
 	  }
 
@@ -1479,6 +1479,7 @@ void TFMain::ViewSelectedMeas(void)
 	}
 
 		this->LPageControl_console->Visible = true;
+        this->LPageControl_console->ActivePageIndex = 0;
 		this->TabSheet_charts->TabVisible = false;
 		this->TabSheet_charts_v->TabVisible = false;
 		this->TabSheet_meas_table->TabVisible = true;
@@ -1906,214 +1907,6 @@ void __fastcall TFMain::Chart_y_hDblClick(TObject *Sender)
 
 #include "CalcTest.h"
 
-void __fastcall TFMain::ToolButton_testClick(TObject *Sender)
-{
-
-typedef struct {
-
-	double x1;
-	double x2;
-
-} tstdata_x;
-
-
-typedef struct {
-
-	double y1;
-	double y2;
-
-} tstdata_y;
-/*
-	tstdata td [] =
-	{
-
-		{-3764, 163},
-		{-3132, -482},
-		{-2392, -1218},
-		{-2936, -637},
-		{-3302, -308},
-		{-3018, -669},
-		{-3583, 91},
-		{-3849, 267},
-		{-3933, 340},
-		{-4528, 935},
-		{-5716, 2116},
-		{-7080, 3467},
-		{-8056, 4521},
-		{-7976, 4373},
-		{-7075, 3492},
-		{-5755, 2190},
-		{-4798, 1206},
-		{-4744, 1262},
-		{-5320, 1677},
-		{-5719, 2107},
-		{-5572, 2009},
-		{-5056, 1461},
-		{-4539, 934},
-		{-4139, 550},
-		{-4189, 600},
-		{-3941, 359},
-		{-4014, 480},
-		{-3635, 16},
-		{-2879, -695},
-		{-2201, -1318},
-		{-2483, -1194},
-		{-2666, -908},
-		{-3029, -522},
-		{-3361, -268},
-		{-4001, 457},
-		{-4329, 852},
-		{-4317, 599},
-		{-3029, -516},
-		{-1833, -1741},
-		{-1411, -2193},
-		{-1059, -2512},
-		{-632,  -2847},
-
-	};
- */
-
-tstdata_x td_x [] =
-{
-{-1018,	-1688},
-{-1640,	-1274},
-{-2178,	-756},
-{-2228,	-907},
-{-2147,	-868},
-{-1848,	-1254},
-{-1059,	-2008},
-{-643,	-2429},
-{-177,	-2882},
-{532,	-3493},
-{569,	-3695},
-{304,	-3299},
-{-24,	-2911},
-{231,	-3254},
-{188,	-3281},
-{810,	-3762},
-{1383,	-4441},
-{318,	-3323},
-{-1087,	-1940},
-{-2531,	-428},
-{-4091,	990},
-{-4117,	1192},
-{-2976,	-204},
-{-3582,	459},
-{-3867,	881},
-{-4199,	1111},
-{-4710,	1797},
-{-5076,	2082},
-{-4528,	1386},
-{-3690,	638},
-{-2790,	-268},
-{-2094,	-932},
-{-1339,	-1656},
-{-676,	-2399},
-{-251,	-2706},
-{-130,	-2896},
-{-139,	-2910},
-{-615,	-2579},
-{-1235,	-1765},
-{-2224,	-1107},
-{-1571,	-1277},
-{-2137,	-783},
-{-2698,	-351},
-{-2647,	-397},
-{-2118,	-840},
-{-2691,	-242},
-{-3158,	221},
-{-3418,	334},
-{-3495,	469},
-{-3958,	1026},
-{-4256,	1249},
-{-4296,	1279},
-{0,0},
-};
-
-
-tstdata_y td_y [] =
-{
-{1544,	6104},
-{2010,	5904},
-{2498,	5402},
-{2584,	5361},
-{2174,	5756},
-{1398,	6567},
-{993,	6872},
-{959,	7001},
-{647,	7254},
-{609,	7170},
-{1013,	6884},
-{1563,	6323},
-{2287,	5576},
-{2656,	5254},
-{2831,	5062},
-{2220,	5307},
-{1512,	6451},
-{1718,	6182},
-{1949,	5928},
-{2075,	5932},
-{2419,	5511},
-{2276,	5316},
-{1926,	6005},
-{2665,	5290},
-{3310,	4666},
-{3414,	4450},
-{3573,	4367},
-{3289,	4132},
-{3439,	4478},
-{3320,	4621},
-{3537,	4367},
-{4005,	3971},
-{4086,	3776},
-{3940,	3865},
-{3895,	4016},
-{3813,	4196},
-{3419,	4498},
-{3478,	4487},
-{3688,	4257},
-{4069,	3708},
-{2562,	5350},
-{3070,	4800},
-{3585,	4328},
-{3660,	4209},
-{3656,	4264},
-{4715,	3195},
-{5631,	2010},
-{5516,	2414},
-{5427,	2429},
-{5637,	2225},
-{5864,	1953},
-{5903,	1738},
-{0,0},
-};
-
-
-	TPlace* p;
-	TDrill* d;
-	TMeas* m;
-
-	p = GBISystem->place_list[0];
-	d = p->drill_list[0];
-	m = d->meas_list[0];
-
-	m->records_cnt = sizeof(td_x)/sizeof(td_x[0]);
-
-	for (int i = 0; i < m->records_cnt; i++)
-	{
-		m->records[i].X1 = td_x[i].x1;
-		m->records[i].X2 = td_x[i].x2;
-
-		m->records[i].Y1 = td_y[i].y1;
-		m->records[i].Y2 = td_y[i].y2;
-
-	}
-
-	//m->SaveData(0);
-    m->DataToTable();
-}
-
-//---------------------------------------------------------------------------
 
 void __fastcall TFMain::Chart_x_vDblClick(TObject *Sender)
 {
