@@ -322,7 +322,7 @@ return;
 			this->ComboBox_level_start->ItemIndex = 50;
 			this->ComboBox_level_end->ItemIndex = 0;
 			drill->level_start = 25.5;
-			drill->level_end = 0;;
+			drill->level_end = 0;
 			return;
 			/*
 			RadioButton_start_first->Checked = TRUE;
@@ -480,8 +480,15 @@ int TForm_DrillAdjust::FormToDrill()
 		double dlmax = dl1;
 		if (dl2>dl1)  dlmax = dl2;
 
+#ifdef  DRILL_FORMAT_EXTRA_BOTTOM_POINT
+
 		drill->records_cnt = (int)(dlmax/0.5) + 1;
 
+#else
+
+		drill->records_cnt = (int)(dlmax/0.5);
+
+#endif
 		if (dl2 > dl1)
 		{
 			drill->start_point == DRILL_TOP_POINT; //from me
@@ -505,7 +512,7 @@ int TForm_DrillAdjust::FormToDrill()
 	if ((RadioButton_start_last ->Checked == TRUE)&&(apply_flag))
 	{
 		drill->records_cnt++;
-		drill->level_start += 0.5;
+		//!!!drill->level_start += 0.5;
     }
 
 	//start collect data

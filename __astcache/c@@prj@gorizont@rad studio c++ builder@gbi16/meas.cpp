@@ -1,4 +1,4 @@
-﻿//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 
 #pragma hdrstop
 
@@ -157,6 +157,8 @@ int TMeas::DataToTable(void)
 		PutDblCell(table,11,i+1,this->records[i].LR);
 		PutDblCell(table,12,i+1,this->records[i].AR);
 
+		//PutDblCell(table,12,i+1,this->records[i].ARsys);
+
 	}
 
 
@@ -292,9 +294,19 @@ int TMeas::Calc_Vert_Double_Bottom(void)
    double xres_prev = 0.;
    double yres_prev = 0.;
 
+   double lx_prev = 0.;
+   double ly_prev = 0.;
+
 #define   TEST_DRILL_ASIMUT 350
 
-   for (int i = records_cnt - 2; i >=0 ; i--)
+	records[records_cnt - 1].Xres = 0;
+	records[records_cnt - 1].Yres = 0;
+
+	records[records_cnt - 1].AR = 0;
+	records[records_cnt - 1].ARsys = 0;
+
+   for (int i = records_cnt - 1; i >=0 ; i--)
+   //for (int i = 0; i < records_cnt ; i++)
    {
 		/* Выбрать отсчет начиная с последнего */
 
@@ -307,10 +319,14 @@ int TMeas::Calc_Vert_Double_Bottom(void)
 		d  = records[i].depth;
 
 		/* Для последней точки принимает что следующая будет через 0.5 м*/
+		/*
+
 		if (i == records_cnt - 1)
 		{
 			records[i+1].depth = records[i].depth + 0.5;
 		}
+
+		*/
 
 		/* Xres = (x1-x2)/2) */
 		xres = (x1-x2)/2;
@@ -321,13 +337,70 @@ int TMeas::Calc_Vert_Double_Bottom(void)
 		records[i].Xres = xres;
 		records[i].Yres = yres;
 
+
 		/* Lx = (depth[i+1] - depth) * sin(Xres[i]))/3600*PI/180) * 1000 + Lx[предыдущее]  */
-		lx = (records[i+1].depth - records[i].depth) * sin((records[i].Xres)/3600*PI/180) * 1000 + xres_prev;
-		xres_prev = lx;
+		//lx = (records[i+1].depth - records[i].depth) * sin((records[i].Xres)/3600*PI/180) * 1000 + xres_prev;
+		//xres_prev = lx;
 
 		/* Ly = (depth[i+1] - depth) * sin(Yres[i]))/3600*PI/180) * 1000 + Ly[предыдущее]; */
-		ly = (records[i+1].depth - records[i].depth) * sin((records[i].Yres)/3600*PI/180) * 1000 + yres_prev;
-		yres_prev = ly;
+		//ly = (records[i+1].depth - records[i].depth) * sin((records[i].Yres)/3600*PI/180) * 1000 + yres_prev;
+		//yres_prev = ly;
+
+		/* =0,5*SIN(D3/3600*PI()/180)*1000+E4 */
+
+		if (i == records_cnt - 1)
+		{
+			lx = 0;
+			ly = 0;
+
+
+		}
+		else
+		{
+
+			if (i ==  records_cnt - 2)
+			{
+				lx = xres_prev / 3600;
+			}
+			else
+			{
+				lx = xres / 3600;
+			}
+
+			lx *= M_PI;
+			lx /= 180;
+			lx = sin(lx);
+			lx *= 1000;
+			lx *= 0.5;
+			lx += lx_prev;
+
+			if (i ==  records_cnt - 2)
+			{
+				ly = yres_prev / 3600;
+			}
+			else
+			{
+				ly = yres / 3600;
+			}
+
+			ly *= M_PI;
+			ly /= 180;
+			ly = sin(ly);
+			ly *= 1000;
+			ly *= 0.5;
+			ly += ly_prev;
+
+			//lx = 0.5 * (sin ((xres_prev / 3600)) * M_PI)) * 1000 + lx_prev;
+
+
+			//ly = 0.5 * sin (yres_prev / 3600 * M_PI) * 1000 + ly_prev;
+		}
+
+		xres_prev = xres;
+		yres_prev = yres;
+
+		lx_prev = lx;
+        ly_prev = ly;
 
 		/* пишем в базу */
 		records[i].LX = lx;
@@ -340,6 +413,49 @@ int TMeas::Calc_Vert_Double_Bottom(void)
 		/* Результирующий угол */
 		if (abs(records[i].LX) > 0.0001)
 		{
+
+#ifdef CALC_ASIMUT_ABSOLUTE
+
+			double AR = 0;
+			double ARsys = 0;
+
+			if (i < records_cnt - 1) {
+
+				if (xres >=0)
+				{
+				   ARsys = asin(-ly/records[i].LR);
+				   ARsys *= 180;
+				   ARsys /= M_PI;
+				}
+				else
+				{
+					ARsys = asin(-ly/records[i].LR);
+					ARsys *= 180;
+					ARsys /= M_PI;
+					//ARsys = 360 - ARsys;
+				}
+
+				AR = ARsys + 180;
+
+				if (AR > 360)
+				{
+					AR = 360 - AR;
+				}
+
+			}
+			else
+			{
+				AR = 0;
+				ARsys = 0;
+			}
+
+			records[i].AR = AR;
+			records[i].ARsys = ARsys;
+
+
+
+#else
+
 					records[i].AR = atan(records[i].LY/records[i].LX);
 
 					//records[i].AR *= PI;
@@ -362,14 +478,19 @@ int TMeas::Calc_Vert_Double_Bottom(void)
 						records[i].AR = 0;
 					}
 
+					records[records_cnt - 2].AR = records[records_cnt - 3].AR;
+					records[records_cnt - 1].AR = records[records_cnt - 3].AR;
+
 					//переводим в секунды
 					//!!!records[i].AR *= 3600;
+#endif
+
 		}
 
 	}
 
-	records[records_cnt - 2].AR = records[records_cnt - 3].AR;
-	records[records_cnt - 1].AR = records[records_cnt - 3].AR;
+	records[records_cnt - 1].AR = records[records_cnt - 2].AR;
+	records[records_cnt - 1].ARsys = records[records_cnt - 2].ARsys;
 
 	return 0;
 }

@@ -32,6 +32,8 @@ typedef struct {
 	double LY;
 	double LR;
 	double AR;
+	double ARsys;
+
 
     double res[5];
 

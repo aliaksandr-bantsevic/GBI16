@@ -1254,12 +1254,13 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 		calc_records_cnt = (int)(level_end / 0.5f);
 	 }
 
-	 d->records_cnt = calc_records_cnt + 1;
+	 d->records_cnt = calc_records_cnt;//!!! + 1;
 	 d->level_start = level_start;
 	 d->level_end = level_end;
 
      //ЕСЛИ НЕТ ФИНАЛЬНОЙ ТОЧКИ С НУЛЕВЫМИ УГЛАМИ ДОБАВЛЯЕМ ПРИНУДИТЕЛЬНО
 
+	 /*
 	 if (
 		(m->records[m->records_cnt-1].X1 != 0)||
 		(m->records[m->records_cnt-1].X2 != 0)||
@@ -1290,6 +1291,7 @@ TMeas* TGBISystem::GetMeasByNode(TTreeNode *node)
 		 m->records[m->records_cnt-1].depth = m->records[m->records_cnt-2].depth + 0.5;
 
 	 }
+     */
 
 	 /////
 	 if (d->level_start == d->level_end)

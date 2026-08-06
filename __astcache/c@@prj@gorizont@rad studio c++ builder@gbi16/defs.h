@@ -9,8 +9,8 @@
 extern bool b_MessageConfirmParamsetShow;
 
 #define BUILD           2
-#define VERSION         15
-#define SUBVERSION      3
+#define VERSION         16
+#define SUBVERSION      1
 
 /*
 	Forms control macro definitions
@@ -48,6 +48,7 @@ extern bool b_MessageConfirmParamsetShow;
 #define T_ONE_MSEC      ((1./(24.*60.*60.))/1000)
 #define T_ONE_DSEC      ((1./(24.*60.*60.))/10)
 
-
+//#define DRILL_FORMAT_EXTRA_BOTTOM_POINT
+#define CALC_ASIMUT_ABSOLUTE
 
 

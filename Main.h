@@ -257,6 +257,7 @@ __published:	// IDE-managed Components
 	void __fastcall ToolButton_exportClick(TObject *Sender);
 	void __fastcall Chart_asimutMouseMove(TObject *Sender, TShiftState Shift, int X,
           int Y);
+	void __fastcall ToolButton_testClick(TObject *Sender);
 
 private:	// User declarations
 	void Test1();
